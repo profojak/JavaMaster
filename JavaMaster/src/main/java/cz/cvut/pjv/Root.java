@@ -1,5 +1,7 @@
 package cz.cvut.pjv.JavaMaster;
 
+import cz.cvut.pjv.game.Game;
+
 public class Root {
   /*
    * This method is entered when the game launches. Exiting this method quits the game.
