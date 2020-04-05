@@ -3,36 +3,40 @@ package cz.cvut.fel.pjv.player;
 public class Player {
   // Damage
 
-  /*
-   * Get damage player deals to monster.
+  /**
+   * Gets damage player deals to monster.
+   *
+   * <p>This method gets weapon damage from Inventory object.
+   *
+   * @return player damage
    */
-  public void getDamage() {
+  public Integer getDamage() {
   }
 
-  /*
-   * Take damage from monster.
+  /**
+   * Takes damage from monster.
+   *
+   * @param damage - damage dealt by monster
    */
   public void takeDamage() {
   }
 
   // HP
 
-  /*
-   * Get current HP of player.
+  /**
+   * Gets current HP of player.
+   *
+   * @return current HP of player
    */
-  public void getHP() {
+  public Integer getHP() {
   }
 
-  /*
-   * Heal player.
+  /**
+   * Heals player.
+   *
+   * @param hp - give player this much HP
    */
   public void heal() {
-  }
-
-  // GUI
-
-  /* To be implemented. */
-  public void getSprite() {
   }
 }
 

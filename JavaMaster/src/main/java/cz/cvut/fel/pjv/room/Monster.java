@@ -3,29 +3,35 @@ package cz.cvut.fel.pjv.room;
 public class Monster {
   // Damage
 
-  /*
-   * Get damage monster deals to player.
+  /**
+   * Gets damage monster deals to player.
+   *
+   * @return monster damage
    */
-  public void getDamage() {
+  public Integer getDamage() {
   }
 
-  /*
-   * Take damage from player.
+  /**
+   * Takes damage from player.
+   *
+   * @param damage - damage dealt by player
    */
   public void takeDamage() {
   }
 
   // HP
 
-  /*
-   * Get current HP of monster.
+  /**
+   * Gets current HP of monster.
+   *
+   * @return current HP of monster
    */
-  public void getHP() {
+  public Integer getHP() {
   }
 
   // GUI
 
-  /* To be implemented. */
+  /** To be implemented. */
   public void getSprite() {
   }
 }

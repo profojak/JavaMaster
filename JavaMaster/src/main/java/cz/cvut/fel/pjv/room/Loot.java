@@ -3,21 +3,27 @@ package cz.cvut.fel.pjv.room;
 public class Loot {
   // Loot
 
-  /*
-   * Get type of loot.
+  /**
+   * Gets type of loot.
+   *
+   * <p>Returns type of loot. Can be Potion, Bomb or Weapon.
+   *
+   * @return type of loot
    */
-  public void getType() {
+  public String getType() {
   }
 
-  /*
-   * Get damage of weapon.
+  /**
+   * Gets damage of weapon.
+   *
+   * @return damage of weapon
    */
-  public void getDamage() {
+  public Integer getDamage() {
   }
 
   // GUI
 
-  /* To be implemented. */
+  /** To be implemented. */
   public void getSprite() {
   }
 }

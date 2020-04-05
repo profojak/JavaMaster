@@ -1,6 +1,10 @@
 package cz.cvut.fel.pjv.modes;
 
+/** @see Mode */
 public class Game implements Mode {
+  public void close() {
+  }
+
   // Key methods
 
   public void keyUp() {
@@ -26,7 +30,7 @@ public class Game implements Mode {
 
   // GUI
 
-  /* To be implemented. */
+  /** To be implemented. */
   private void redraw() {
   }
 }

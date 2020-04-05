@@ -1,62 +1,83 @@
 package cz.cvut.fel.pjv.room;
 
+import cz.cvut.fel.pjv.room.Monster;
+import cz.cvut.fel.pjv.room.Loot;
+
 public class Room {
   // Boolean methods
 
-  /*
+  /**
    * Is there any monster?
+   *
+   * @return whether Room has Monster object assigned
    */
-  public void hasMonster() {
+  public Boolean hasMonster() {
   }
 
-  /*
+  /**
    * Is there any loot?
+   *
+   * @return whether Room has Loot object assigned
    */
   public void hasLoot() {
   }
 
-  /*
+  /**
    * Is there any story dialog before monster encounter?
+   *
+   * @return whether Room has StoryBefore variable set
    */
   public void hasStoryBefore() {
   }
 
-  /*
+  /**
    * Is there any story dialog after monster encounter?
+   *
+   * @return whether Room has StoryAfter variable set
    */
   public void hasStoryAfter() {
   }
 
-  /*
+  /**
    * Is room already visited?
+   *
+   * @return whether Room is already visited
    */
   public void isVisited() {
   }
 
   // Getters
 
-  /*
-   * Get monster.
+  /**
+   * Gets monster.
+   *
+   * @return Monster assigned to this room
    */
-  public void getMonster() {
+  public Monster getMonster() {
   }
 
-  /*
-   * Get loot.
+  /**
+   * Gets loot.
+   *
+   * @return Loot assigned to this room
    */
-  public void getLoot() {
+  public Loot getLoot() {
   }
 
-  /*
-   * Get story dialog before monster encounter.
+  /**
+   * Gets story dialog before monster encounter.
+   *
+   * @return StoryBefore variable assigned to this room
    */
-  public void getStoryBefore() {
+  public String getStoryBefore() {
   }
 
-  /*
-   * Get story dialog after monster encounter.
+  /**
+   * Gets story dialog after monster encounter.
+   *
+   * @return StoryAfter variable assigned to this room
    */
-  public void getStoryAfter() {
+  public String getStoryAfter() {
   }
 }
 

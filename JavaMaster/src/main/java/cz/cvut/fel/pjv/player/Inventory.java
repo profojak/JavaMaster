@@ -3,59 +3,65 @@ package cz.cvut.fel.pjv.player;
 public class Inventory {
   // Potion and bomb
   
-  /*
-   * Get number of potions.
+  /**
+   * Gets number of potions.
+   *
+   * @return number of potions
    */
-  public void getPotionCount() {
+  public Integer getPotionCount() {
   }
 
-  /*
-   * Get number of bombs.
+  /**
+   * Gets number of bombs.
+   *
+   * @return number of bombs
    */
-  public void getBombCount() {
+  public Integer getBombCount() {
   }
 
-  /*
-   * Use potion.
+  /**
+   * Uses potion.
    */
   public void usePotion() {
   }
 
-  /*
-   * Use bomb.
+  /**
+   * Uses bomb.
    */
   public void useBomb() {
   }
 
-  /*
-   * Add potion to inventory.
+  /**
+   * Adds potion to inventory.
    */
   public void addPotion() {
   }
 
-  /*
-   * Add bomb to inventory.
+  /**
+   * Adds bomb to inventory.
    */
   public void addBomb() {
   }
 
   // Weapon
 
-  /*
-   * Add new weapon to inventory.
+  /**
+   * Adds new weapon to inventory.
    */
   public void setWeapon() {
   }
 
-  /*
-   * Get damage of weapon.
+  /**
+   * Gets damage of weapon.
+   *
+   * @return damage of weapon.
    */
-  public void getWeaponDamage() {
+  public Integer getWeaponDamage() {
   }
 
   // GUI
 
-  /* To be implemented. */
+  /** To be implemented. */
   public void getWeaponSprite() {
   }
 }
