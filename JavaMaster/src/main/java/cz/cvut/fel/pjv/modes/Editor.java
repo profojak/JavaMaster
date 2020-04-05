@@ -1,9 +1,6 @@
-package cz.cvut.pjv.JavaMaster;
+package cz.cvut.fel.pjv.modes;
 
-public class Game {
-  public Game() {
-  }
-
+public class Editor {
   // Key methods
   
   /*

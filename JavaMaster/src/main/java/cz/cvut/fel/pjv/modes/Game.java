@@ -1,9 +1,6 @@
-package cz.cvut.pjv.JavaMaster;
+package cz.cvut.fel.pjv.modes;
 
-public class MainMenu {
-  public MainMenu() {
-  }
-
+public class Game {
   // Key methods
   
   /*

@@ -1,6 +1,8 @@
-package cz.cvut.pjv.JavaMaster;
+package cz.cvut.fel.pjv;
 
-import cz.cvut.pjv.game.Game;
+import cz.cvut.fel.pjv.modes.MainMenu;
+import cz.cvut.fel.pjv.modes.Game;
+import cz.cvut.fel.pjv.modes.Editor;
 
 public class Root {
   /*

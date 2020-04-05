@@ -1,9 +1,6 @@
-package cz.cvut.pjv.JavaMaster;
+package cz.cvut.fel.pjv.modes;
 
-public class Editor {
-  public Editor() {
-  }
-
+public class MainMenu {
   // Key methods
   
   /*
