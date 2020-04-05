@@ -1,4 +1,4 @@
-package cz.cvut.fel.pjv.player;
+package cz.cvut.fel.pjv.inventory;
 
 public class Inventory {
   // Potion and bomb
@@ -9,6 +9,7 @@ public class Inventory {
    * @return number of potions
    */
   public Integer getPotionCount() {
+    return 0;
   }
 
   /**
@@ -17,6 +18,7 @@ public class Inventory {
    * @return number of bombs
    */
   public Integer getBombCount() {
+    return 0;
   }
 
   /**
@@ -57,6 +59,7 @@ public class Inventory {
    * @return damage of weapon.
    */
   public Integer getWeaponDamage() {
+    return 0;
   }
 
   // GUI

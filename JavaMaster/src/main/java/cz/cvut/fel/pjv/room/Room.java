@@ -1,7 +1,7 @@
 package cz.cvut.fel.pjv.room;
 
-import cz.cvut.fel.pjv.room.Monster;
-import cz.cvut.fel.pjv.room.Loot;
+import cz.cvut.fel.pjv.entities.Monster;
+import cz.cvut.fel.pjv.inventory.Loot;
 
 public class Room {
   // Boolean methods
@@ -12,6 +12,7 @@ public class Room {
    * @return whether Room has Monster object assigned
    */
   public Boolean hasMonster() {
+    return true;
   }
 
   /**
@@ -43,7 +44,8 @@ public class Room {
    *
    * @return whether Room is already visited
    */
-  public void isVisited() {
+  public Boolean isVisited() {
+    return true;
   }
 
   // Getters
@@ -54,6 +56,7 @@ public class Room {
    * @return Monster assigned to this room
    */
   public Monster getMonster() {
+    return new Monster();
   }
 
   /**
@@ -62,6 +65,7 @@ public class Room {
    * @return Loot assigned to this room
    */
   public Loot getLoot() {
+    return new Loot();
   }
 
   /**
@@ -70,6 +74,7 @@ public class Room {
    * @return StoryBefore variable assigned to this room
    */
   public String getStoryBefore() {
+    return "";
   }
 
   /**
@@ -78,6 +83,7 @@ public class Room {
    * @return StoryAfter variable assigned to this room
    */
   public String getStoryAfter() {
+    return "";
   }
 }
 

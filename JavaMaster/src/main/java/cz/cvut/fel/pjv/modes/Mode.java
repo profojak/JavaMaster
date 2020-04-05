@@ -1,48 +1,48 @@
 package cz.cvut.fel.pjv.modes;
 
-public interface Mode {
+abstract public class Mode {
   /**
    * Destructor.
    *
    * <p>This method handles proper unloading of class instance. It must be called before deleting.
    */
-  public void close();
+  abstract public void close();
 
   // Key methods
   
   /**
    * Called when up key is pressed.
    */
-  public void keyUp();
+  abstract public void keyUp();
 
   /**
    * Called when down key is pressed.
    */
-  public void keyDown();
+  abstract public void keyDown();
 
   /**
    * Called when left key is pressed.
    */
-  public void keyLeft();
+  abstract public void keyLeft();
 
   /**
    * Called when right key is pressed.
    */
-  public void keyRight();
+  abstract public void keyRight();
 
   /**
    * Called when escape key is pressed.
    */
-  public void keyEscape();
+  abstract public void keyEscape();
 
   /**
    * Called when enter key is pressed.
    */
-  public void keyEnter();
+  abstract public void keyEnter();
 
   /**
    * Called when delete key is pressed.
    */
-  public void keyDelete();
+  abstract public void keyDelete();
 }
 

@@ -1,18 +1,19 @@
-package cz.cvut.fel.pjv.room;
+package cz.cvut.fel.pjv.entities;
 
-public class Monster {
+abstract class Entity {
   // Damage
 
   /**
-   * Gets damage monster deals to player.
+   * Gets damage entity deals to other entity.
    *
    * @return monster damage
    */
   public Integer getDamage() {
+    return 0;
   }
 
   /**
-   * Takes damage from player.
+   * Takes damage from other entity.
    *
    * @param damage - damage dealt by player
    */
@@ -22,17 +23,12 @@ public class Monster {
   // HP
 
   /**
-   * Gets current HP of monster.
+   * Gets current HP of entity.
    *
    * @return current HP of monster
    */
   public Integer getHP() {
-  }
-
-  // GUI
-
-  /** To be implemented. */
-  public void getSprite() {
+    return 0;
   }
 }
 

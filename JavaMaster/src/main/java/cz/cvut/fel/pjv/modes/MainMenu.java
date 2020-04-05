@@ -1,7 +1,7 @@
 package cz.cvut.fel.pjv.modes;
 
 /** @see Mode */
-public class MainMenu implements Mode {
+public class MainMenu extends Mode {
   public void close() {
   }
 
