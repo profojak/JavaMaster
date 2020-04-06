@@ -1,7 +1,7 @@
 package cz.cvut.fel.pjv.modes;
 
 /** @see Mode */
-public class Game extends Mode {
+public class Game implements Mode {
   public void close() {
   }
 
