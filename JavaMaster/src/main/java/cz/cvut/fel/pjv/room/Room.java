@@ -4,6 +4,12 @@ import cz.cvut.fel.pjv.entities.Monster;
 import cz.cvut.fel.pjv.inventory.Loot;
 
 public class Room {
+  private Boolean isVisited = false;
+  private String storyBefore = "", storyAfter = "";
+  private String sprite;
+  private Monster monster;
+  private Loot loot;
+
   // Boolean methods
 
   /**
@@ -45,28 +51,10 @@ public class Room {
    * @return whether Room is already visited
    */
   public Boolean isVisited() {
-    return true;
+    return isVisited;
   }
 
   // Getters
-
-  /**
-   * Gets monster.
-   *
-   * @return Monster assigned to this room
-   */
-  public Monster getMonster() {
-    return new Monster();
-  }
-
-  /**
-   * Gets loot.
-   *
-   * @return Loot assigned to this room
-   */
-  public Loot getLoot() {
-    return new Loot();
-  }
 
   /**
    * Gets story dialog before monster encounter.
@@ -74,7 +62,7 @@ public class Room {
    * @return StoryBefore variable assigned to this room
    */
   public String getStoryBefore() {
-    return "";
+    return storyBefore;
   }
 
   /**
@@ -83,7 +71,91 @@ public class Room {
    * @return StoryAfter variable assigned to this room
    */
   public String getStoryAfter() {
-    return "";
+    return storyAfter;
+  }
+
+  /**
+   * Gets wall texture.
+   *
+   * @return texture of room wall
+   */
+  public String getSprite() {
+    return sprite;
+  }
+
+  /**
+   * Gets monster texture.
+   *
+   * @return texture of monster
+   */
+  public String getMonsterSprite() {
+    return monster.getSprite();
+  }
+
+  /**
+   * Gets loot texture.
+   *
+   * @return texture of loot
+   */
+  public String getLootSprite() {
+    return loot.getSprite();
+  }
+
+  // Setters
+
+  /**
+   * Sets room as visited.
+   */
+  public void setVisited() {
+    isVisited = true;
+  }
+
+  /**
+   * Sets story dialog before monster encounter.
+   *
+   * @param dialog - string to save as story dialog
+   */
+  public void setStoryBefore(String dialog) {
+    storyBefore = dialog;
+  }
+
+  /**
+   * Sets story dialog after monster encounter.
+   *
+   * @param dialog - string to save as story dialog
+   */
+  public void setStoryAfter(String dialog) {
+    storyAfter = dialog;
+  }
+
+  /**
+   * Sets texture of room walls.
+   *
+   * @param sprite - texture of room walls
+   */
+  public void setSprite(String sprite) {
+    this.sprite = sprite;
+  }
+
+  /**
+   * Sets monster.
+   *
+   * @param sprite - monster texture
+   * @param hp - monster HP
+   * @param damage - monster damage
+   */
+  public void setMonster(String sprite, Integer hp, Integer damage) {
+    monster = new Monster(sprite, hp, damage);
+  }
+
+  /**
+   * Sets loot.
+   *
+   * @param sprite - loot type/texture
+   * @param count - loot count/damage
+   */
+  public void setLoot(String sprite, Integer count) {
+    loot = new Loot(sprite, count);
   }
 }
 

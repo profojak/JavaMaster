@@ -1,0 +1,10 @@
+start 22 12
+player sword.png 10 2
+id 12
+id 17
+story "You_can_see_red_eyes_lurking_from_the_darkness..." "Dragon_burns_to_dust_with_horrible_scream!"
+monster dragon.png 5 1
+loot potion 1
+id 22
+wall window.png
+end

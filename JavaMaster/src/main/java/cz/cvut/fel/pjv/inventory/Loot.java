@@ -1,32 +1,34 @@
 package cz.cvut.fel.pjv.inventory;
 
 public class Loot {
-  // Loot
+  private String sprite;
+  private Integer count;
 
   /**
-   * Gets type of loot.
+   * Constructor.
    *
-   * <p>Returns type of loot. Can be Potion, Bomb or Weapon.
-   *
-   * @return type of loot
+   * @param sprite - loot type/texture
+   * @param count - loot count/damage
    */
-  public String getType() {
-    return "";
+  public Loot(String sprite, Integer count) {
+    this.sprite = sprite;
+    this.count = count;
   }
+
+  // Getters
 
   /**
    * Gets damage of weapon.
    *
    * @return damage of weapon
    */
-  public Integer getDamage() {
-    return 0;
+  public Integer getCount() {
+    return count;
   }
 
-  // GUI
-
   /** To be implemented. */
-  public void getSprite() {
+  public String getSprite() {
+    return sprite;
   }
 }
 

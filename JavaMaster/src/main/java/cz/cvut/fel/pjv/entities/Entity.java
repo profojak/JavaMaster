@@ -1,34 +1,45 @@
 package cz.cvut.fel.pjv.entities;
 
 abstract class Entity {
-  // Damage
+  protected Integer hp, hpMax;
 
-  /**
-   * Gets damage entity deals to other entity.
-   *
-   * @return monster damage
-   */
-  public Integer getDamage() {
-    return 0;
-  }
+  // Setters
 
   /**
    * Takes damage from other entity.
    *
    * @param damage - damage dealt by player
    */
-  public void takeDamage() {
+  public void takeDamage(Integer damage) {
+    hp -= damage;
   }
 
-  // HP
+  /**
+   * Sets maximum HP of entity.
+   *
+   * @param hp - set maximum HP of entity
+   */
+  public void setHp(Integer hp) {
+    this.hpMax = hp;
+    this.hp = hp;
+  }
+
+  // Getters
+
+  /**
+   * Gets current damage of entity.
+   *
+   * @return current damage of entity
+   */
+  abstract public Integer getDamage();
 
   /**
    * Gets current HP of entity.
    *
-   * @return current HP of monster
+   * @return current HP of entity
    */
-  public Integer getHP() {
-    return 0;
+  public Integer getHp() {
+    return hp;
   }
 }
 
