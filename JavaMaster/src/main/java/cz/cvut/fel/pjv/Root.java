@@ -5,6 +5,8 @@ import cz.cvut.fel.pjv.modes.MainMenu;
 import cz.cvut.fel.pjv.modes.Game;
 import cz.cvut.fel.pjv.modes.Editor;
 
+import java.util.Scanner;
+
 public class Root {
   private static Boolean isListening = true;
   private static Mode mode;
@@ -22,9 +24,10 @@ public class Root {
    * @author profojak
    */
   private static void consoleListen() {
+    Scanner commandListener = new Scanner(System.in);
     while (isListening) {
       System.out.print(">>> ");
-      String command = System.console().readLine();
+      String command = commandListener.next();
 
       switch (command) {
         // Help
