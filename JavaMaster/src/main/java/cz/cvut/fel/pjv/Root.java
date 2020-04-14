@@ -1,86 +1,18 @@
 package cz.cvut.fel.pjv;
 
-import cz.cvut.fel.pjv.modes.Mode;
-import cz.cvut.fel.pjv.modes.MainMenu;
-import cz.cvut.fel.pjv.modes.Game;
-import cz.cvut.fel.pjv.modes.Editor;
+import cz.cvut.fel.pjv.modes.*;
 
 import java.util.Scanner;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.canvas.*;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
-public class Root {
-  private static Boolean isListening = true;
-  private static Mode mode;
-
-  /**
-   * Listens for key press and calls corresponding methods from MainMenu, Game or Editor classes.
-   *
-   * <p>This method is blocking. After each keypress and corresponding action, code execution stops
-   * here and waits for next key press.
-   */
-  private static void listen() {
-  } /**
-   * Reads commands from console, intended for debugging purposes.
-   *
-   * @author profojak
-   */
-  private static void consoleListen() {
-    Scanner commandListener = new Scanner(System.in);
-    while (isListening) {
-      System.out.print(">>> ");
-      String command = commandListener.next();
-
-      switch (command) {
-        // Help
-        case "help": // Fall through
-        case "h":
-          System.out.println("help, h        - shows this help");
-          System.out.println("left, l        - calls keyLeft()");
-          System.out.println("right, r       - calls keyRight()");
-          System.out.println("up, u          - calls keyUp()");
-          System.out.println("down, d        - calls keyDown()");
-          System.out.println("enter          - calls keyEnter()");
-          System.out.println("delete, del    - calls keyDelete()");
-          System.out.println("escape, esc    - calls keyEscape()");
-          System.out.println("quit, q        - quits");
-          break;
-        // Left
-        case "left": // Fall through
-        case "l":
-          break;
-        // Right
-        case "right": // Fall through
-        case "r":
-          break;
-        // Up
-        case "up": // Fall through
-        case "u":
-          break;
-        // Down
-        case "down": // Fall through
-        case "d":
-          break;
-        // Enter
-        case "enter":
-          break;
-        // Delete
-        case "delete": // Fall through
-        case "del":
-          break;
-        // Escape
-        case "escape": // Fall through
-        case "esc": 
-          break;
-        // Quit
-        case "quit": // Fall through
-        case "q":
-          isListening = false;
-          break;
-        default:
-          System.out.println("Unknown command! Type help to see all commands.");
-          break;
-      }
-    }
-  }
+public class Root extends Application {
+  private Mode mode;
+  private GraphicsContext gc;
 
   /**
    * Switches between MainMenu, Game and Editor objects.
@@ -89,15 +21,53 @@ public class Root {
    *
    * @param mode - mode to switch to, can be MainMenu, Game or Editor
    */
-  public static void switchMode() {
+  public void switchMode(String mode) {
+    switch (mode) {
+      case "MainMenu":
+        this.mode = new MainMenu();
+        break;
+    }
+    redraw(mode);
+  }
+
+  /**
+   * Redraws window contents to correspond to the current mode state.
+   *
+   * @param mode - mode to redraw, can be MainMenu, Game or Editor
+   */
+  private void redraw(String mode) {
+    switch (mode) {
+      case "MainMenu":
+        Image image = new Image("/sprites/monster/TEMP.png");
+        this.gc.drawImage(image, 40, 40);
+        this.gc.fillText("Hello, Jadernak! This is Bertík, very scary monster!", 300, 100);
+        break;
+    }
+  }
+
+  /** @see Application */
+  @Override
+  public void start(Stage stage) {
+    Canvas canvas = new Canvas(1000, 525); 
+    this.gc = canvas.getGraphicsContext2D();
+    StackPane stack = new StackPane();
+    stack.getChildren().add(canvas);
+    Scene scene = new Scene(stack);
+
+    switchMode("MainMenu");
+
+    // Window
+    stage.setScene(scene);
+    stage.setResizable(false);
+    stage.setTitle("Java Master: the Legend of Segfault");
+    stage.show();
   }
 
   /**
    * Entered when game launches, exiting this method quits game.
    */
   public static void main(String args[]) {
-    mode = new Game("complete_example.dung");
-    consoleListen();
+    launch();
   }
 }
 
