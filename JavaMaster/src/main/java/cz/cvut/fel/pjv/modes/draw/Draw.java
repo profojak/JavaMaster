@@ -1,4 +1,30 @@
 package cz.cvut.fel.pjv.modes.draw;
 
-public interface Draw {
+import cz.cvut.fel.pjv.modes.Mode;
+
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+
+abstract public class Draw {
+  protected GraphicsContext gc;
+  protected Mode mode;
+
+  /**
+   * @param gc - GraphicsContext to draw images to
+   * @param mode - Mode from which to get information to draw
+   */
+  public Draw(GraphicsContext gc, Mode mode) {
+    this.gc = gc;
+    this.mode = mode;
+  }
+
+  /**
+   * @deprecated use Draw(GraphicsContext, Mode) constructor instead
+   */
+  @Deprecated
+  public Draw() {
+  }
+
+  /** Redraws window. */
+  abstract public void redraw();
 }

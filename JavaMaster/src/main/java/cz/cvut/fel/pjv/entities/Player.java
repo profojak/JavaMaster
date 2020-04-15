@@ -7,9 +7,6 @@ import cz.cvut.fel.pjv.inventory.Inventory;
 public class Player extends Entity {
   private Inventory inventory;
 
-  /**
-   * Constructor.
-   */
   public Player() {
     inventory = new Inventory();
   }

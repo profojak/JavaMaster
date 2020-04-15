@@ -1,14 +1,20 @@
 package cz.cvut.fel.pjv.modes;
 
+import cz.cvut.fel.pjv.Root;
+import cz.cvut.fel.pjv.modes.draw.Draw;
+import cz.cvut.fel.pjv.modes.draw.GameDraw;
 import cz.cvut.fel.pjv.entities.Player;
 import cz.cvut.fel.pjv.room.Room;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import javafx.scene.canvas.GraphicsContext;
 
 /** @see Mode */
 public class Game implements Mode {
+  private Root root;
+  private Draw draw;
   private Player player;
   private Room[] rooms = new Room[35];
   private Integer roomStartId, roomEndId, roomCurrentId;
@@ -16,18 +22,18 @@ public class Game implements Mode {
   // Constructor and destructor
 
   /**
-   * Constructor.
-   *
    * @param saveName - dungeon to be parsed, saved in .dung file
+   * @param gc - GraphicsContext to draw images to
+   * @param root - parent object
    */
-  public Game(String saveName) {
+  public Game(String saveName, GraphicsContext gc, Root root) {
+    this.root = root;
+    this.draw = new GameDraw(gc, this);
     player = new Player();
     parseSaveFile(saveName);
   }
 
   /**
-   * Constructor.
-   *
    * @deprecated use Game(String) constructor instead
    */
   @Deprecated
@@ -87,49 +93,49 @@ public class Game implements Mode {
           // Room id where the dungeon starts and ends
           case "start":
             roomStartId = Integer.parseInt(line[1]);
-            System.out.println("roomStartId = " + roomStartId); // DEBUG
+            System.out.println(">>> roomStartId = " + roomStartId); // DEBUG
             roomEndId = Integer.parseInt(line[2]);
-            System.out.println("roomEndId = " + roomEndId); // DEBUG
+            System.out.println(">>> roomEndId = " + roomEndId); // DEBUG
             break;
           // Player variables
           case "player":
             player.setHp(Integer.parseInt(line[2]));
-            System.out.println("player = " + player.getHp()); // DEBUG
+            System.out.println(">>> player = " + player.getHp()); // DEBUG
             player.takeLoot(line[1], Integer.parseInt(line[3]));
-            System.out.println("player.getDamage = " + player.getDamage()); // DEBUG
-            System.out.println("player.getSprite = " + player.getSprite()); // DEBUG
+            System.out.println(">>> player.getDamage = " + player.getDamage()); // DEBUG
+            System.out.println(">>> player.getSprite = " + player.getSprite()); // DEBUG
             break;
           // Current room
           case "id":
             roomCurrentId = Integer.parseInt(line[1]);
-            System.out.println("roomCurrentId = " + roomCurrentId); // DEBUG
+            System.out.println(">>> roomCurrentId = " + roomCurrentId); // DEBUG
             rooms[roomCurrentId] = new Room();
-            System.out.println("isVisited = " + rooms[roomCurrentId].isVisited()); // DEBUG
+            System.out.println(">>> isVisited = " + rooms[roomCurrentId].isVisited()); // DEBUG
             break;
           // Story of current room
           case "story":
             rooms[roomCurrentId].setStoryBefore(line[1].replaceAll("_", " "));
-            System.out.println("storyBefore = " + rooms[roomCurrentId].getStoryBefore()); // DEBUG
+            System.out.println(">>> storyBefore = " + rooms[roomCurrentId].getStoryBefore()); // DEBUG
             rooms[roomCurrentId].setStoryAfter(line[2].replaceAll("_", " "));
-            System.out.println("storyAfter = " + rooms[roomCurrentId].getStoryAfter()); // DEBUG
+            System.out.println(">>> storyAfter = " + rooms[roomCurrentId].getStoryAfter()); // DEBUG
             break;
           // Monster in current room
           case "monster":
             rooms[roomCurrentId].setMonster(line[1],
               Integer.parseInt(line[2]), Integer.parseInt(line[3]));
-            System.out.println("room.getMonsterSprite = " +
+            System.out.println(">>> room.getMonsterSprite = " +
               rooms[roomCurrentId].getMonsterSprite()); // DEBUG
             break;
           // Loot in current room
           case "loot":
             rooms[roomCurrentId].setLoot(line[1], Integer.parseInt(line[2]));
-            System.out.println("room.getLootSprite = "
+            System.out.println(">>> room.getLootSprite = "
               + rooms[roomCurrentId].getLootSprite()); // DEBUG
             break;
           // Texture of current room
           case "wall":
             rooms[roomCurrentId].setSprite(line[1]);
-            System.out.println("room.sprite = " + rooms[roomCurrentId].getSprite()); // DEBUG
+            System.out.println(">>> room.sprite = " + rooms[roomCurrentId].getSprite()); // DEBUG
             break;
           // Wrong file format!
           default:

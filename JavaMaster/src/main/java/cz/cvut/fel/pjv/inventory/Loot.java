@@ -5,8 +5,6 @@ public class Loot {
   private Integer count;
 
   /**
-   * Constructor.
-   *
    * @param sprite - loot type/texture
    * @param count - loot count/damage
    */

@@ -8,8 +8,6 @@ public class Monster extends Entity {
   private Integer hp, damage;
 
   /**
-   * Constructor.
-   *
    * @param sprite - monster texture
    * @param hp - monster HP
    * @param damage - monster damage
