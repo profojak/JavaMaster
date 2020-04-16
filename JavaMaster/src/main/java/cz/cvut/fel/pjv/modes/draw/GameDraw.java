@@ -36,15 +36,18 @@ public class GameDraw extends Draw {
     gc.drawImage(image, 375, 0);
     gc.drawImage(image, 375, 475);
     // Room
-    image = new Image("/sprites/room/TEMP_BG.png");
+          // if wall is in front of you, then
+    image = new Image("/sprites/room/TEMP_BG.png"); // Front wall
     gc.drawImage(image, 375, 50);
     image = new Image("/sprites/room/TEMP_TOP.png");
     gc.drawImage(image, 375, 50);
     image = new Image("/sprites/room/TEMP_BOT.png");
     gc.drawImage(image, 375, 400);
-    image = new Image("/sprites/room/TEMP_LEFT.png");
+          // if wall is on the left, then
+    image = new Image("/sprites/room/TEMP_LEFT.png"); // Left wall
     gc.drawImage(image, 375, 50);
-    image = new Image("/sprites/room/TEMP_RIGHT.png");
+          // if wall is on the right, then
+    image = new Image("/sprites/room/TEMP_RIGHT.png"); // Right wall
     gc.drawImage(image, 825, 50);
     // Monster
     image = new Image("/sprites/monster/TEMP.png");

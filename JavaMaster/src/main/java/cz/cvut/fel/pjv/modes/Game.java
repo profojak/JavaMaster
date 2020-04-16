@@ -63,6 +63,23 @@ public class Game implements Mode {
   public void keyDelete() {
   }
 
+  // Boolean methods
+
+  // TODO
+  private Boolean hasRoomLeft() {
+    return true;
+  }
+
+  // TODO
+  private Boolean hasRoomRight() {
+    return true;
+  }
+
+  // TODO
+  private Boolean hasRoomFront() {
+    return true;
+  }
+
   // Loading files
 
   /**

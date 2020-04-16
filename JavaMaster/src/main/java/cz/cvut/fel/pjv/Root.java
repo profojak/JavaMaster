@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.*;
 
 public class Root extends Application {
   private Stage stage;
@@ -26,8 +25,6 @@ public class Root extends Application {
   public File getFile() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Choose dungeon file");
-    fileChooser.getExtensionFilters().addAll(
-      new ExtensionFilter("Dungeons", ".dung"), new ExtensionFilter("All Files", "*.*"));
     return fileChooser.showOpenDialog(this.stage);
   }
 
