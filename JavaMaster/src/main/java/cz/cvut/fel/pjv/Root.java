@@ -2,16 +2,34 @@ package cz.cvut.fel.pjv;
 
 import cz.cvut.fel.pjv.modes.*;
 
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.scene.canvas.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.*;
 
 public class Root extends Application {
+  private Stage stage;
   private Mode mode;
   private GraphicsContext gc;
+
+  /**
+   * Opens file chooser to choose files.
+   *
+   * @return selected file
+   */
+  public File getFile() {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Choose dungeon file");
+    fileChooser.getExtensionFilters().addAll(
+      new ExtensionFilter("Dungeons", ".dung"), new ExtensionFilter("All Files", "*.*"));
+    return fileChooser.showOpenDialog(this.stage);
+  }
 
   /**
    * Switches between MainMenu, Game and Editor objects.
@@ -26,7 +44,7 @@ public class Root extends Application {
         this.mode = new MainMenu(this.gc, this);
         break;
       case "Game":
-        this.mode = new Game("complete_example.dung", this.gc, this);
+        this.mode = new Game(this.gc, this);
         break;
     }
   }
@@ -81,6 +99,7 @@ public class Root extends Application {
   @Override
   public void start(Stage stage) {
     // Window content
+    this.stage = stage;
     Canvas canvas = new Canvas(1000, 525); 
     this.gc = canvas.getGraphicsContext2D();
     StackPane stack = new StackPane();

@@ -7,6 +7,11 @@ public class Button {
     this.action = action;
   }
 
+  /**
+   * Returns action of button.
+   *
+   * @return action string
+   */
   public String getAction() {
     return this.action;
   }

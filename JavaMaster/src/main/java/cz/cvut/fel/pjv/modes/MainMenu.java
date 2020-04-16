@@ -13,6 +13,10 @@ public class MainMenu implements Mode {
   private Draw draw;
   private Menu menu;
 
+  /**
+   * @param gc - GraphicsContext to draw images to
+   * @param root - parent object
+   */
   public MainMenu(GraphicsContext gc, Root root) {
     this.root = root;
     this.menu = new Menu();
@@ -41,12 +45,8 @@ public class MainMenu implements Mode {
   }
 
   public void keyEnter() {
-    switch (this.menu.getAction(this.menu.getActive())) {
-      case "Game":
-        this.root.switchMode("Game");
-        break;
-      default:
-        break;
+    if (this.menu.getAction(this.menu.getActive()) == "Game") {
+      this.root.switchMode("Game");
     }
   }
 
@@ -55,14 +55,21 @@ public class MainMenu implements Mode {
 
   // GUI
 
+  /**
+   * Following methods are connecting Menu with MainMenuDraw object.
+   */
+
+  /** @see Menu.java */
   public String getMenuAction(Integer index) {
     return this.menu.getAction(index);
   }
 
+  /** @see Menu.java */
   public Integer getMenuActive() {
     return this.menu.getActive();
   }  
 
+  /** @see Menu.java */
   public Integer getMenuCount() {
     return this.menu.getCount();
   }

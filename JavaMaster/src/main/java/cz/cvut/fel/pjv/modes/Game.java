@@ -5,11 +5,12 @@ import cz.cvut.fel.pjv.modes.draw.Draw;
 import cz.cvut.fel.pjv.modes.draw.GameDraw;
 import cz.cvut.fel.pjv.entities.Player;
 import cz.cvut.fel.pjv.room.Room;
-import cz.cvut.fel.pjv.menu.Layout;
+import cz.cvut.fel.pjv.menu.layouts.Layout;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.BufferedReader;
+
 import javafx.scene.canvas.GraphicsContext;
 
 /** @see Mode */
@@ -20,18 +21,16 @@ public class Game implements Mode {
   private Room[] rooms = new Room[35];
   private Integer roomStartId, roomEndId, roomCurrentId;
 
-  // Constructor and destructor
-
   /**
-   * @param saveName - dungeon to be parsed, saved in .dung file
    * @param gc - GraphicsContext to draw images to
    * @param root - parent object
    */
-  public Game(String saveName, GraphicsContext gc, Root root) {
+  public Game(GraphicsContext gc, Root root) {
     this.root = root;
-    this.draw = new GameDraw(gc, this);
     player = new Player();
-    parseSaveFile(saveName);
+    File saveFile = this.root.getFile();
+    parseSaveFile(saveFile);
+    this.draw = new GameDraw(gc, this);
   }
 
   /**
@@ -69,19 +68,16 @@ public class Game implements Mode {
   /**
    * Parses save file and prepares the dungeon.
    *
-   * <p>This method opens .dung text file from resources/saves/ directory and creates instances
-   * of described classes. After this method is finished, Game object is ready for playthrough.
+   * <p>This method reads .dung text file and creates instances of described classes. After this
+   * method is finished, Game object is ready for playthrough.
    *
+   * @param saveFile - dungeon to be parsed, saved in .dung file
    * @return whether parsing was succesful
-   * @param saveName - dungeon to be parsed, saved in .dung file
    * @author profojak
    */
-  private Boolean parseSaveFile(String saveName) {
-    InputStream saveInputStream = Game.class.getResourceAsStream("/saves/" + saveName);
-    BufferedReader saveReader = new BufferedReader(new InputStreamReader(saveInputStream));
-
+  private Boolean parseSaveFile(File saveFile) { 
     try {
-      System.out.println("Parsing " + saveName + ":"); // DEBUG
+      BufferedReader saveReader = new BufferedReader(new FileReader(saveFile));
       while (saveReader.ready()) {
         String[] line = saveReader.readLine().split(" ");
 

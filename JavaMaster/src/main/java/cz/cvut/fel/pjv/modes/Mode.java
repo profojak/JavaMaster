@@ -1,6 +1,6 @@
 package cz.cvut.fel.pjv.modes;
 
-import cz.cvut.fel.pjv.menu.Layout;
+import cz.cvut.fel.pjv.menu.layouts.Layout;
 
 public interface Mode {
   // Key methods

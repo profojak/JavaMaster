@@ -1,7 +1,7 @@
 package cz.cvut.fel.pjv.modes.draw;
 
 import cz.cvut.fel.pjv.modes.MainMenu;
-import cz.cvut.fel.pjv.menu.Layout;
+import cz.cvut.fel.pjv.menu.layouts.Layout;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;

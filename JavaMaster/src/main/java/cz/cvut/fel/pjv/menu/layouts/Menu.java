@@ -1,6 +1,5 @@
 package cz.cvut.fel.pjv.menu.layouts;
 
-import cz.cvut.fel.pjv.menu.Layout;
 import cz.cvut.fel.pjv.menu.Button;
 
 public class Menu extends Layout {
