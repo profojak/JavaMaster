@@ -86,6 +86,7 @@ public class Game implements Mode {
     BufferedReader saveReader = new BufferedReader(new InputStreamReader(saveInputStream));
 
     try {
+      System.out.println("Parsing " + saveName + ":"); // DEBUG
       while (saveReader.ready()) {
         String[] line = saveReader.readLine().split(" ");
 

@@ -39,38 +39,38 @@ public class Root extends Application {
    * @author profojak
    */
   private void keyPressHandler(KeyEvent e) {
-    System.out.println(e.getCode());
+    System.out.println(e.getCode()); // DEBUG
     switch (e.getCode()) {
       case W: // fall through
       case UP:
-        System.out.println("'-> up");
+        System.out.println("'-> up"); // DEBUG
         this.mode.keyUp();
         break;
       case S: // fall through
       case DOWN:
-        System.out.println("'-> down");
+        System.out.println("'-> down"); // DEBUG
         this.mode.keyDown();
         break;
       case A: // fall through
       case LEFT:
-        System.out.println("'-> left");
+        System.out.println("'-> left"); // DEBUG
         this.mode.keyLeft();
         break;
       case D: // fall through
       case RIGHT:
-        System.out.println("'-> right");
+        System.out.println("'-> right"); // DEBUG
         this.mode.keyRight();
         break;
       case ESCAPE:
-        System.out.println("'-> escape");
+        System.out.println("'-> escape"); // DEBUG
         this.mode.keyEscape();
         break;
       case ENTER:
-        System.out.println("'-> enter");
+        System.out.println("'-> enter"); // DEBUG
         this.mode.keyEnter();
         break;
       case DELETE:
-        System.out.println("'-> delete");
+        System.out.println("'-> delete"); // DEBUG
         this.mode.keyDelete();
         break;
       default:
