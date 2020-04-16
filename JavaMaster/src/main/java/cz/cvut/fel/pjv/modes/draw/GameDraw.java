@@ -1,14 +1,17 @@
 package cz.cvut.fel.pjv.modes.draw;
 
-import cz.cvut.fel.pjv.modes.Mode;
+import cz.cvut.fel.pjv.modes.Game;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 /** @see Draw.java */
 public class GameDraw extends Draw {
-  public GameDraw(GraphicsContext gc, Mode parent) {
-    super(gc, parent);
+  private Game parent;
+
+  public GameDraw(GraphicsContext gc, Game parent) {
+    super(gc);
+    this.parent = parent;
     redraw();
   }
 

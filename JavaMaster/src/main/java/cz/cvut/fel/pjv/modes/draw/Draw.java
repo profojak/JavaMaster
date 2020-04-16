@@ -7,15 +7,13 @@ import javafx.scene.image.Image;
 
 abstract public class Draw {
   protected GraphicsContext gc;
-  protected Mode mode;
 
   /**
    * @param gc - GraphicsContext to draw images to
    * @param mode - Mode from which to get information to draw
    */
-  public Draw(GraphicsContext gc, Mode mode) {
+  public Draw(GraphicsContext gc) {
     this.gc = gc;
-    this.mode = mode;
   }
 
   /**
@@ -28,3 +26,4 @@ abstract public class Draw {
   /** Redraws window. */
   abstract public void redraw();
 }
+

@@ -21,7 +21,6 @@ public class Root extends Application {
    * @param mode - mode to switch to, can be MainMenu, Game or Editor
    */
   public void switchMode(String mode) {
-    this.mode.close();
     switch (mode) {
       case "MainMenu":
         this.mode = new MainMenu(this.gc, this);
@@ -41,22 +40,22 @@ public class Root extends Application {
   private void keyPressHandler(KeyEvent e) {
     System.out.println(e.getCode()); // DEBUG
     switch (e.getCode()) {
-      case W: // fall through
+      case K: case W: // fall through
       case UP:
         System.out.println("'-> up"); // DEBUG
         this.mode.keyUp();
         break;
-      case S: // fall through
+      case J: case S: // fall through
       case DOWN:
         System.out.println("'-> down"); // DEBUG
         this.mode.keyDown();
         break;
-      case A: // fall through
+      case H: case A: // fall through
       case LEFT:
         System.out.println("'-> left"); // DEBUG
         this.mode.keyLeft();
         break;
-      case D: // fall through
+      case L: case D: // fall through
       case RIGHT:
         System.out.println("'-> right"); // DEBUG
         this.mode.keyRight();

@@ -5,6 +5,7 @@ import cz.cvut.fel.pjv.modes.draw.Draw;
 import cz.cvut.fel.pjv.modes.draw.GameDraw;
 import cz.cvut.fel.pjv.entities.Player;
 import cz.cvut.fel.pjv.room.Room;
+import cz.cvut.fel.pjv.menu.Layout;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,12 +39,6 @@ public class Game implements Mode {
    */
   @Deprecated
   public Game() {
-  }
-
-  /**
-   * Destructor, handles proper unloading of class instance.
-   */
-  public void close() {
   }
 
   // Key methods
@@ -148,12 +143,6 @@ public class Game implements Mode {
       return false; // File could not be loaded
     }
     return true;
-  }
-
-  // GUI
-
-  /** To be implemented. */
-  private void redraw() {
   }
 }
 

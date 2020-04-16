@@ -1,13 +1,8 @@
 package cz.cvut.fel.pjv.modes;
 
-public interface Mode {
-  /**
-   * Destructor.
-   *
-   * <p>This method handles proper unloading of class instance. It must be called before deleting.
-   */
-  public void close();
+import cz.cvut.fel.pjv.menu.Layout;
 
+public interface Mode {
   // Key methods
   
   /**
