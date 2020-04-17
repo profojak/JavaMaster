@@ -9,6 +9,11 @@ import javafx.scene.image.Image;
 public class GameDraw extends Draw {
   private Game parent;
 
+  /**
+   * @param gc - GraphicsContext to draw images to
+   * @param mode - Mode from which to get informaiton to draw
+   *
+   */
   public GameDraw(GraphicsContext gc, Game parent) {
     super(gc);
     this.parent = parent;
@@ -22,6 +27,9 @@ public class GameDraw extends Draw {
   public GameDraw() {
   }
 
+  /**
+   * Redraws game.
+   */
   public void redraw() {
     gc.clearRect(0, 0, 1000, 525);
     // Map
@@ -36,28 +44,23 @@ public class GameDraw extends Draw {
     gc.drawImage(image, 375, 0);
     gc.drawImage(image, 375, 475);
     // Room
-          // if wall is in front of you, then
-    if (!parent.hasRoomFront()) {
-      image = new Image("/sprites/room/TEMP_BG.png"); // Front wall
-      gc.drawImage(image, 375, 50);
-    }
-    image = new Image("/sprites/room/TEMP_TOP.png");
+    image = new Image("/sprites/room/default_bg.png");
     gc.drawImage(image, 375, 50);
-    image = new Image("/sprites/room/TEMP_BOT.png");
-    gc.drawImage(image, 375, 400);
-          // if wall is on the left, then
+    if (!parent.hasRoomFront()) {
+      image = new Image("/sprites/room/default_front.png");
+      gc.drawImage(image, 450, 50);
+    }
     if (!parent.hasRoomLeft()) {
-      image = new Image("/sprites/room/TEMP_LEFT.png"); // Left wall
+      image = new Image("/sprites/room/default_left.png");
       gc.drawImage(image, 375, 50);
     }
-          // if wall is on the right, then
     if (!parent.hasRoomRight()) {
-      image = new Image("/sprites/room/TEMP_RIGHT.png"); // Right wall
+      image = new Image("/sprites/room/default_right.png");
       gc.drawImage(image, 825, 50);
     }
     // Monster
-    image = new Image("/sprites/monster/TEMP.png");
-    gc.drawImage(image, 550, 160);
+    //image = new Image("/sprites/monster/TEMP.png");
+    //gc.drawImage(image, 550, 160);
     // Inventory
     image = new Image("/sprites/inventory/loot_bg.png");
     gc.drawImage(image, 900, 0);
@@ -68,3 +71,4 @@ public class GameDraw extends Draw {
     gc.drawImage(image, 900, 475);
   }
 }
+

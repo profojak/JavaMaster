@@ -68,17 +68,16 @@ public class Game implements Mode {
           return;
       }
 
-      System.out.println("Room index: " + roomCurrentId); // DEBUG
-      System.out.println("Room direction: " + direction); // DEBUG
+      System.out.println(">>> Room index: " + roomCurrentId + ", direction: " + direction); // DEBUG
 
       this.draw.redraw();
       if (!rooms[roomCurrentId].isVisited()) {
         rooms[roomCurrentId].setVisited();
         // Story
               // if room has story before entering, then
-        System.out.println(rooms[roomCurrentId].getStoryBefore()); // DEBUG
+        System.out.println(">>> Story before: " + rooms[roomCurrentId].getStoryBefore()); // DEBUG
               // if room has story after interacting, then
-        System.out.println(rooms[roomCurrentId].getStoryAfter()); // DEBUG
+        System.out.println(">>> Story after: " + rooms[roomCurrentId].getStoryAfter()); // DEBUG
       }
     } else {
       System.out.println(">>>  You can't go there."); // DEBUG
@@ -111,8 +110,8 @@ public class Game implements Mode {
         System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
         return;
     }
-    System.out.println("Room index: " + roomCurrentId); // DEBUG
-    System.out.println("Room direction: " + direction); // DEBUG
+
+    System.out.println(">>> Room index: " + roomCurrentId + ", direction: " + direction); // DEBUG
 
     this.draw.redraw();
   }
@@ -140,8 +139,8 @@ public class Game implements Mode {
         System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
         return;
     }
-    System.out.println("Room index: " + roomCurrentId); // DEBUG
-    System.out.println("Room direction: " + direction); // DEBUG
+
+    System.out.println(">>> Room index: " + roomCurrentId + ", direction: " + direction); // DEBUG
 
     this.draw.redraw();
   }

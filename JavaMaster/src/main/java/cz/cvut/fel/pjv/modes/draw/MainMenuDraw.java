@@ -10,12 +10,19 @@ import javafx.scene.image.Image;
 public class MainMenuDraw extends Draw {
   private MainMenu parent;
 
+  /**
+   * @param gc - GraphicsContext to draw images to
+   * @param mode - Mode from which to get information to draw
+   */
   public MainMenuDraw(GraphicsContext gc, MainMenu parent) {
     super(gc);
     this.parent = parent;
     redraw();
   }
 
+  /**
+   * Redraws main menu.
+   */
   public void redraw() {
     gc.clearRect(0, 0, 1000, 525);
     Image temp = new Image("/sprites/monster/TEMP.png");
