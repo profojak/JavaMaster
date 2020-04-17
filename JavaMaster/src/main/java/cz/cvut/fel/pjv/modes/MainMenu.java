@@ -47,6 +47,8 @@ public class MainMenu implements Mode {
   public void keyEnter() {
     if (this.menu.getAction(this.menu.getActive()) == "Game") {
       this.root.switchMode("Game");
+    } else if (this.menu.getAction(this.menu.getActive()) == "Exit") {
+      System.exit(0);
     }
   }
 

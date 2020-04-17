@@ -20,6 +20,7 @@ public class Game implements Mode {
   private Player player;
   private Room[] rooms = new Room[35];
   private Integer roomStartId, roomEndId, roomCurrentId;
+  String direction;
 
   /**
    * @param gc - GraphicsContext to draw images to
@@ -42,19 +43,114 @@ public class Game implements Mode {
 
   // Key methods
 
+  /**
+   * Moves the player forward if possible.
+   *
+   * @author povolji2
+   */
   public void keyUp() {
+    if (hasRoomFront()) {
+      switch (direction) {
+        case "UP":
+          roomCurrentId -= 5;
+          break;
+        case "RIGHT":
+          roomCurrentId += 1;
+          break;
+        case "DOWN":
+          roomCurrentId += 5;
+          break;
+        case "LEFT":
+          roomCurrentId -= 1;
+          break;
+        default:
+          System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
+          return;
+      }
+
+      System.out.println("Room index: " + roomCurrentId); // DEBUG
+      System.out.println("Room direction: " + direction); // DEBUG
+
+      this.draw.redraw();
+      if (!rooms[roomCurrentId].isVisited()) {
+        rooms[roomCurrentId].setVisited();
+        // Story
+              // if room has story before entering, then
+        System.out.println(rooms[roomCurrentId].getStoryBefore()); // DEBUG
+              // if room has story after interacting, then
+        System.out.println(rooms[roomCurrentId].getStoryAfter()); // DEBUG
+      }
+    } else {
+      System.out.println(">>>  You can't go there."); // DEBUG
+    }
   }
 
   public void keyDown() {
   }
 
+  /**
+   * Turns the player to the left.
+   *
+   * @author povolji2
+   */
   public void keyLeft() {
+    switch (direction) {
+      case "UP":
+        direction = "LEFT";
+        break;
+      case "RIGHT":
+        direction = "UP";
+        break;
+      case "DOWN":
+        direction = "RIGHT";
+        break;
+      case "LEFT":
+        direction = "DOWN";
+        break;
+      default:
+        System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
+        return;
+    }
+    System.out.println("Room index: " + roomCurrentId); // DEBUG
+    System.out.println("Room direction: " + direction); // DEBUG
+
+    this.draw.redraw();
   }
 
+  /**
+   * Turns the player to the right.
+   *
+   * @author povolji2
+   */
   public void keyRight() {
+    switch (direction) {
+      case "UP":
+        direction = "RIGHT";
+        break;
+      case "RIGHT":
+        direction = "DOWN";
+        break;
+      case "DOWN":
+        direction = "LEFT";
+        break;
+      case "LEFT":
+        direction = "UP";
+        break;
+      default:
+        System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
+        return;
+    }
+    System.out.println("Room index: " + roomCurrentId); // DEBUG
+    System.out.println("Room direction: " + direction); // DEBUG
+
+    this.draw.redraw();
   }
 
+  /**
+   * Exits the program.
+   */
   public void keyEscape() {
+    System.exit(0);
   }
 
   public void keyEnter() {
@@ -65,19 +161,64 @@ public class Game implements Mode {
 
   // Boolean methods
 
-  // TODO
-  private Boolean hasRoomLeft() {
-    return true;
+  /**
+   * @return whether there is a room to the left of the player
+   * @author povolji2
+   */
+  public Boolean hasRoomLeft() {
+    switch (direction) {
+      case "UP":
+        return roomCurrentId % 5 != 0 && rooms[roomCurrentId - 1] != null;
+      case "RIGHT":
+        return roomCurrentId > 4 && rooms[roomCurrentId - 5] != null;
+      case "DOWN":
+        return roomCurrentId % 5 != 4 && rooms[roomCurrentId + 1] != null;
+      case "LEFT":
+        return roomCurrentId < 30 && rooms[roomCurrentId + 5] != null;
+      default:
+        System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
+        return false;
+    }
   }
 
-  // TODO
-  private Boolean hasRoomRight() {
-    return true;
+  /**
+   * @return whether there is a room to the right of the player
+   * @author povolji2
+   */
+  public Boolean hasRoomRight() {
+    switch (direction) {
+      case "UP":
+        return roomCurrentId % 5 != 4 && rooms[roomCurrentId + 1] != null;
+      case "RIGHT":
+        return roomCurrentId < 30 && rooms[roomCurrentId + 5] != null;
+      case "DOWN":
+        return roomCurrentId % 5 != 0 && rooms[roomCurrentId - 1] != null;
+      case "LEFT":
+        return roomCurrentId > 4 && rooms[roomCurrentId - 5] != null;
+      default:
+        System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
+        return false;
+    }
   }
 
-  // TODO
-  private Boolean hasRoomFront() {
-    return true;
+  /**
+   * @return whether there is a room in front of the player
+   * @author povolji2
+   */
+  public Boolean hasRoomFront() {
+    switch (direction) {
+      case "UP":
+        return roomCurrentId > 4 && rooms[roomCurrentId - 5] != null;
+      case "RIGHT":
+        return roomCurrentId % 5 != 4 && rooms[roomCurrentId + 1] != null;
+      case "DOWN":
+        return roomCurrentId < 30 && rooms[roomCurrentId + 5] != null;
+      case "LEFT":
+        return roomCurrentId % 5 != 0 && rooms[roomCurrentId - 1] != null;
+      default:
+        System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
+        return false;
+    }
   }
 
   // Loading files
@@ -89,7 +230,7 @@ public class Game implements Mode {
    * method is finished, Game object is ready for playthrough.
    *
    * @param saveFile - dungeon to be parsed, saved in .dung file
-   * @return whether parsing was succesful
+   * @return whether parsing was successful
    * @author profojak
    */
   private Boolean parseSaveFile(File saveFile) { 
@@ -114,7 +255,7 @@ public class Game implements Mode {
             System.out.println(">>> player.getDamage = " + player.getDamage()); // DEBUG
             System.out.println(">>> player.getSprite = " + player.getSprite()); // DEBUG
             break;
-          // Current room
+          // Dungeon rooms
           case "id":
             roomCurrentId = Integer.parseInt(line[1]);
             System.out.println(">>> roomCurrentId = " + roomCurrentId); // DEBUG
@@ -145,6 +286,11 @@ public class Game implements Mode {
           case "wall":
             rooms[roomCurrentId].setSprite(line[1]);
             System.out.println(">>> room.sprite = " + rooms[roomCurrentId].getSprite()); // DEBUG
+            break;
+          // Current room and direction
+          case "end":
+            roomCurrentId = roomStartId;
+            direction = "UP";
             break;
           // Wrong file format!
           default:
