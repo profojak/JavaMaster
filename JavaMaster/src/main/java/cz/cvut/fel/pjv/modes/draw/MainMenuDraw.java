@@ -17,13 +17,13 @@ public class MainMenuDraw extends Draw {
   public MainMenuDraw(GraphicsContext gc, MainMenu parent) {
     super(gc);
     this.parent = parent;
-    redraw();
+    redraw("");
   }
 
   /**
    * Redraws main menu.
    */
-  public void redraw() {
+  public void redraw(String part) {
     gc.clearRect(0, 0, 1000, 525);
     Image temp = new Image("/sprites/monster/TEMP.png");
     gc.drawImage(temp, 600, 150);

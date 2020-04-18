@@ -2,46 +2,9 @@ package cz.cvut.fel.pjv.inventory;
 
 public class Inventory {
   private Integer numPotions = 0, numBombs = 0;
-  private Integer damage;
+  private Integer damage, activeItem = 2;
   private String sprite;
-
-  // Getters
-
-  /**
-   * Gets number of potions.
-   *
-   * @return number of potions
-   */
-  public Integer getPotionCount() {
-    return 0;
-  }
-
-  /**
-   * Gets number of bombs.
-   *
-   * @return number of bombs
-   */
-  public Integer getBombCount() {
-    return 0;
-  }
-
-  /**
-   * Gets weapon damage.
-   *
-   * @return damage of weapon.
-   */
-  public Integer getDamage() {
-    return damage;
-  }
-
-  /**
-   * Gets weapon texture.
-   *
-   * @return texture of weapon.
-   */
-  public String getSprite() {
-    return sprite;
-  }
+  private String[] items = { "bomb", "potion", "weapon" };
 
   // Pick ups
 
@@ -101,13 +64,84 @@ public class Inventory {
   /**
    * Uses potion.
    */
-  public void usePotion() {
+  public Boolean usePotion() {
+    return true;
   }
 
   /**
    * Uses bomb.
    */
-  public void useBomb() {
+  public Boolean useBomb() {
+    return true;
+  }
+
+  // Choosing item
+
+  /**
+   * Selects next item.
+   */
+  public void itemNext() {
+    activeItem += 1;
+    if (activeItem >= items.length) {
+      activeItem = 0;
+    }
+  }
+
+  /**
+   * Selects previous item.
+   */
+  public void itemPrevious() {
+    activeItem -= 1;
+    if (activeItem < 0) {
+      activeItem = items.length - 1;
+    }
+  }
+
+  // GUI
+
+  /**
+   * Gets number of potions.
+   *
+   * @return number of potions
+   */
+  public Integer getPotionCount() {
+    return 0;
+  }
+
+  /**
+   * Gets number of bombs.
+   *
+   * @return number of bombs
+   */
+  public Integer getBombCount() {
+    return 0;
+  }
+
+  /**
+   * Gets weapon damage.
+   *
+   * @return damage of weapon.
+   */
+  public Integer getDamage() {
+    return damage;
+  }
+
+  /**
+   * Gets weapon texture.
+   *
+   * @return texture of weapon.
+   */
+  public String getSprite() {
+    return sprite;
+  }
+
+  /**
+   * Gets active item.
+   *
+   * @return active item, can be weapon, potion or bomb.
+   */
+  public String getActiveItem() {
+    return items[activeItem];
   }
 }
 

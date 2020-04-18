@@ -70,7 +70,7 @@ public class Game implements Mode {
 
       System.out.println(">>> Room index: " + roomCurrentId + ", direction: " + direction); // DEBUG
 
-      this.draw.redraw();
+      this.draw.redraw("room");
       if (!rooms[roomCurrentId].isVisited()) {
         rooms[roomCurrentId].setVisited();
         // Story
@@ -113,7 +113,7 @@ public class Game implements Mode {
 
     System.out.println(">>> Room index: " + roomCurrentId + ", direction: " + direction); // DEBUG
 
-    this.draw.redraw();
+    this.draw.redraw("room");
   }
 
   /**
@@ -142,7 +142,7 @@ public class Game implements Mode {
 
     System.out.println(">>> Room index: " + roomCurrentId + ", direction: " + direction); // DEBUG
 
-    this.draw.redraw();
+    this.draw.redraw("room");
   }
 
   /**
@@ -301,6 +301,21 @@ public class Game implements Mode {
       return false; // File could not be loaded
     }
     return true;
+  }
+
+  // GUI
+
+  /**
+   * Returns index of current room.
+   *
+   * @return index of current room
+   */
+  public Integer getRoomId() {
+    return roomCurrentId;
+  }
+
+  public String getDirection() {
+    return direction;
   }
 }
 

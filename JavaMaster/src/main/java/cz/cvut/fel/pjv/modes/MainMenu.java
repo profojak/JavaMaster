@@ -23,16 +23,23 @@ public class MainMenu implements Mode {
     this.draw = new MainMenuDraw(gc, this);
   }
 
+  /**
+   * @deprecated use MainMenu(GraphicsContext, Root) instead
+   */
+  @Deprecated
+  public MainMenu() {
+  }
+
   // Key methods
 
   public void keyUp() {
     this.menu.buttonPrevious();
-    this.draw.redraw();
+    this.draw.redraw(" ");
   }
 
   public void keyDown() {
     this.menu.buttonNext();
-    this.draw.redraw();
+    this.draw.redraw(" ");
   }
 
   public void keyLeft() {
