@@ -93,12 +93,12 @@ public class Room {
   }
 
   /**
-   * Gets loot texture.
+   * Gets loot.
    *
-   * @return texture of loot
+   * @return loot
    */
-  public String getLootSprite() {
-    return loot.getSprite();
+  public Loot getLoot() {
+    return loot;
   }
 
   // Setters

@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.entities;
 
 import cz.cvut.fel.pjv.entities.Entity;
+import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.inventory.Inventory;
 
 /** @see Entity */
@@ -38,11 +39,10 @@ public class Player extends Entity {
   /**
    * Adds loot to player inventory.
    *
-   * @param sprite - loot type/texture
-   * @param count - loot count/damage
+   * @param loot - loot instance
    */
-  public void takeLoot(String sprite, Integer count) {
-    inventory.addLoot(sprite, count);
+  public void takeLoot(Loot loot) {
+    inventory.addLoot(loot);
   }
 }
 

@@ -5,6 +5,7 @@ import cz.cvut.fel.pjv.modes.draw.Draw;
 import cz.cvut.fel.pjv.modes.draw.GameDraw;
 import cz.cvut.fel.pjv.entities.Player;
 import cz.cvut.fel.pjv.room.Room;
+import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.menu.layouts.Layout;
 
 import java.io.File;
@@ -15,12 +16,20 @@ import javafx.scene.canvas.GraphicsContext;
 
 /** @see Mode */
 public class Game implements Mode {
+  enum Item {
+    BOMB, POTION, WEAPON
+  }
+
+  enum Direction {
+    LEFT, RIGHT, UP, DOWN
+  }
+
   private Root root;
   private Draw draw;
   private Player player;
   private Room[] rooms = new Room[35];
   private Integer roomStartId, roomEndId, roomCurrentId;
-  String direction;
+  private Direction direction = Direction.UP;
 
   /**
    * @param gc - GraphicsContext to draw images to
@@ -51,16 +60,16 @@ public class Game implements Mode {
   public void keyUp() {
     if (hasRoomFront()) {
       switch (direction) {
-        case "UP":
+        case UP:
           roomCurrentId -= 5;
           break;
-        case "RIGHT":
+        case RIGHT:
           roomCurrentId += 1;
           break;
-        case "DOWN":
+        case DOWN:
           roomCurrentId += 5;
           break;
-        case "LEFT":
+        case LEFT:
           roomCurrentId -= 1;
           break;
         default:
@@ -94,17 +103,17 @@ public class Game implements Mode {
    */
   public void keyLeft() {
     switch (direction) {
-      case "UP":
-        direction = "LEFT";
+      case UP:
+        direction = Direction.LEFT;
         break;
-      case "RIGHT":
-        direction = "UP";
+      case RIGHT:
+        direction = Direction.UP;
         break;
-      case "DOWN":
-        direction = "RIGHT";
+      case DOWN:
+        direction = Direction.RIGHT;
         break;
-      case "LEFT":
-        direction = "DOWN";
+      case LEFT:
+        direction = Direction.DOWN;
         break;
       default:
         System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
@@ -123,17 +132,17 @@ public class Game implements Mode {
    */
   public void keyRight() {
     switch (direction) {
-      case "UP":
-        direction = "RIGHT";
+      case UP:
+        direction = Direction.RIGHT;
         break;
-      case "RIGHT":
-        direction = "DOWN";
+      case RIGHT:
+        direction = Direction.DOWN;
         break;
-      case "DOWN":
-        direction = "LEFT";
+      case DOWN:
+        direction = Direction.LEFT;
         break;
-      case "LEFT":
-        direction = "UP";
+      case LEFT:
+        direction = Direction.UP;
         break;
       default:
         System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
@@ -166,13 +175,13 @@ public class Game implements Mode {
    */
   public Boolean hasRoomLeft() {
     switch (direction) {
-      case "UP":
+      case UP:
         return roomCurrentId % 5 != 0 && rooms[roomCurrentId - 1] != null;
-      case "RIGHT":
+      case RIGHT:
         return roomCurrentId > 4 && rooms[roomCurrentId - 5] != null;
-      case "DOWN":
+      case DOWN:
         return roomCurrentId % 5 != 4 && rooms[roomCurrentId + 1] != null;
-      case "LEFT":
+      case LEFT:
         return roomCurrentId < 30 && rooms[roomCurrentId + 5] != null;
       default:
         System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
@@ -186,13 +195,13 @@ public class Game implements Mode {
    */
   public Boolean hasRoomRight() {
     switch (direction) {
-      case "UP":
+      case UP:
         return roomCurrentId % 5 != 4 && rooms[roomCurrentId + 1] != null;
-      case "RIGHT":
+      case RIGHT:
         return roomCurrentId < 30 && rooms[roomCurrentId + 5] != null;
-      case "DOWN":
+      case DOWN:
         return roomCurrentId % 5 != 0 && rooms[roomCurrentId - 1] != null;
-      case "LEFT":
+      case LEFT:
         return roomCurrentId > 4 && rooms[roomCurrentId - 5] != null;
       default:
         System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
@@ -206,13 +215,13 @@ public class Game implements Mode {
    */
   public Boolean hasRoomFront() {
     switch (direction) {
-      case "UP":
+      case UP:
         return roomCurrentId > 4 && rooms[roomCurrentId - 5] != null;
-      case "RIGHT":
+      case RIGHT:
         return roomCurrentId % 5 != 4 && rooms[roomCurrentId + 1] != null;
-      case "DOWN":
+      case DOWN:
         return roomCurrentId < 30 && rooms[roomCurrentId + 5] != null;
-      case "LEFT":
+      case LEFT:
         return roomCurrentId % 5 != 0 && rooms[roomCurrentId - 1] != null;
       default:
         System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
@@ -250,7 +259,8 @@ public class Game implements Mode {
           case "player":
             player.setHp(Integer.parseInt(line[2]));
             System.out.println(">>> player = " + player.getHp()); // DEBUG
-            player.takeLoot(line[1], Integer.parseInt(line[3]));
+            Loot weapon = new Loot(line[1], Integer.parseInt(line[3]));
+            player.takeLoot(weapon);
             System.out.println(">>> player.getDamage = " + player.getDamage()); // DEBUG
             System.out.println(">>> player.getSprite = " + player.getSprite()); // DEBUG
             break;
@@ -279,17 +289,16 @@ public class Game implements Mode {
           case "loot":
             rooms[roomCurrentId].setLoot(line[1], Integer.parseInt(line[2]));
             System.out.println(">>> room.getLootSprite = "
-              + rooms[roomCurrentId].getLootSprite()); // DEBUG
+              + rooms[roomCurrentId].getLoot().getSprite()); // DEBUG
             break;
           // Texture of current room
           case "wall":
             rooms[roomCurrentId].setSprite(line[1]);
             System.out.println(">>> room.sprite = " + rooms[roomCurrentId].getSprite()); // DEBUG
             break;
-          // Current room and direction
+          // Current room
           case "end":
             roomCurrentId = roomStartId;
-            direction = "UP";
             break;
           // Wrong file format!
           default:
@@ -315,7 +324,18 @@ public class Game implements Mode {
   }
 
   public String getDirection() {
-    return direction;
+    switch (direction) {
+      case UP:
+        return "up";
+      case RIGHT:
+        return "right";
+      case DOWN:
+        return "down";
+      case LEFT:
+        return "left";
+      default:
+        return "up"; // TEMPORARY
+    }
   }
 }
 

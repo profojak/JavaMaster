@@ -1,10 +1,16 @@
 package cz.cvut.fel.pjv.inventory;
 
+import cz.cvut.fel.pjv.inventory.Loot;
+
 public class Inventory {
+  enum Item {
+    BOMB, POTION, WEAPON
+  }
+
   private Integer numPotions = 0, numBombs = 0;
-  private Integer damage, activeItem = 2;
-  private String sprite;
-  private String[] items = { "bomb", "potion", "weapon" };
+  private Integer weaponDamage;
+  private Item activeItem = Item.WEAPON;
+  private String weaponSprite;
 
   // Pick ups
 
@@ -13,22 +19,22 @@ public class Inventory {
    *
    * <p>Determines type of loot and updates inventory.
    *
-   * @param sprite - loot type/texture
-   * @param count - loot count/damage
+   * @param loot - loot instance
    */
-  public void addLoot(String sprite, Integer count) {
+  public void addLoot(Loot loot) {
+    String sprite = loot.getSprite();
     switch (sprite) {
       // Potion
       case "potion":
-        addPotion(count);
+        addPotion(loot.getCount());
         break;
       // Bomb
       case "bomb":
-        addPotion(count);
+        addPotion(loot.getCount());
         break;
       // Weapon
       default:
-        setWeapon(sprite, count);
+        setWeapon(sprite, loot.getCount());
     }
   }
 
@@ -57,8 +63,8 @@ public class Inventory {
    * @param damage - weapon damage
    */
   public void setWeapon(String sprite, Integer damage) {
-    this.sprite = sprite;
-    this.damage = damage;
+    this.weaponSprite = sprite;
+    this.weaponDamage = damage;
   }
 
   /**
@@ -81,9 +87,16 @@ public class Inventory {
    * Selects next item.
    */
   public void itemNext() {
-    activeItem += 1;
-    if (activeItem >= items.length) {
-      activeItem = 0;
+    switch (activeItem) {
+      case WEAPON:
+        activeItem = Item.BOMB;
+        break;
+      case BOMB:
+        activeItem = Item.POTION;
+        break;
+      case POTION:
+        activeItem = Item.WEAPON;
+        break;
     }
   }
 
@@ -91,9 +104,16 @@ public class Inventory {
    * Selects previous item.
    */
   public void itemPrevious() {
-    activeItem -= 1;
-    if (activeItem < 0) {
-      activeItem = items.length - 1;
+    switch (activeItem) {
+      case WEAPON:
+        activeItem = Item.POTION;
+        break;
+      case POTION:
+        activeItem = Item.BOMB;
+        break;
+      case BOMB:
+        activeItem = Item.WEAPON;
+        break;
     }
   }
 
@@ -123,7 +143,7 @@ public class Inventory {
    * @return damage of weapon.
    */
   public Integer getDamage() {
-    return damage;
+    return this.weaponDamage;
   }
 
   /**
@@ -132,7 +152,7 @@ public class Inventory {
    * @return texture of weapon.
    */
   public String getSprite() {
-    return sprite;
+    return this.weaponSprite;
   }
 
   /**
@@ -140,8 +160,8 @@ public class Inventory {
    *
    * @return active item, can be weapon, potion or bomb.
    */
-  public String getActiveItem() {
-    return items[activeItem];
+  public Item getActiveItem() {
+    return activeItem;
   }
 }
 

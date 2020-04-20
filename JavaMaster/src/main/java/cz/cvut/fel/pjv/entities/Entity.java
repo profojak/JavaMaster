@@ -17,6 +17,8 @@ abstract class Entity {
   /**
    * Sets maximum HP of entity.
    *
+   * <p>This method is used for initial setup of entity. It sets maximum HP and current HP.
+   *
    * @param hp - set maximum HP of entity
    */
   public void setHp(Integer hp) {

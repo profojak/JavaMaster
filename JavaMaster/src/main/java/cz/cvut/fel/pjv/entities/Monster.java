@@ -5,7 +5,7 @@ import cz.cvut.fel.pjv.entities.Entity;
 /** @see Entity */
 public class Monster extends Entity {
   private String sprite;
-  private Integer hp, damage;
+  private Integer damage;
 
   /**
    * @param sprite - monster texture
