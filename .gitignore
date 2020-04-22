@@ -2,3 +2,8 @@
 JavaMaster/target
 JavaMaster/shade
 
+# Intellij
+JavaMaster/.idea
+*.iml
+*.iws
+

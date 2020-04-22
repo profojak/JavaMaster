@@ -23,6 +23,6 @@ public abstract class Draw {
   }
 
   /** Redraws window. */
-  abstract public void redraw(String part);
+  public abstract void redraw(String partString);
 }
 

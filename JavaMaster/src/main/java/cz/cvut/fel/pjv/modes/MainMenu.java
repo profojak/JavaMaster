@@ -9,6 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 
 /** @see Mode */
 public class MainMenu implements Mode {
+  private final String GAME = "Game", EXIT = "Exit";
   private Root root;
   private Draw draw;
   private Menu menu;
@@ -34,12 +35,12 @@ public class MainMenu implements Mode {
 
   public void keyUp() {
     this.menu.buttonPrevious();
-    this.draw.redraw(" ");
+    this.draw.redraw(null);
   }
 
   public void keyDown() {
     this.menu.buttonNext();
-    this.draw.redraw(" ");
+    this.draw.redraw(null);
   }
 
   public void keyLeft() {
@@ -52,9 +53,9 @@ public class MainMenu implements Mode {
   }
 
   public void keyEnter() {
-    if (this.menu.getAction(this.menu.getActive()) == "Game") {
-      this.root.switchMode("Game");
-    } else if (this.menu.getAction(this.menu.getActive()) == "Exit") {
+    if (this.menu.getAction(this.menu.getActive()).equals(GAME)) {
+      this.root.switchMode(GAME);
+    } else if (this.menu.getAction(this.menu.getActive()).equals(EXIT)) {
       System.exit(0);
     }
   }
@@ -68,17 +69,17 @@ public class MainMenu implements Mode {
    * Following methods are connecting Menu with MainMenuDraw object.
    */
 
-  /** @see Menu.java */
+  /** @see Menu */
   public String getMenuAction(Integer index) {
     return this.menu.getAction(index);
   }
 
-  /** @see Menu.java */
+  /** @see Menu */
   public Integer getMenuActive() {
     return this.menu.getActive();
   }  
 
-  /** @see Menu.java */
+  /** @see Menu */
   public Integer getMenuCount() {
     return this.menu.getCount();
   }

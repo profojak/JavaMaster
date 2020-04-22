@@ -8,28 +8,58 @@ import cz.cvut.fel.pjv.room.Room;
 import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.menu.layouts.Layout;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 
 import javafx.scene.canvas.GraphicsContext;
 
+import javax.swing.text.LayoutQueue;
+import java.util.Objects;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 /** @see Mode */
 public class Game implements Mode {
   enum Item {
-    BOMB, POTION, WEAPON
+    BOMB,
+    POTION,
+    WEAPON
   }
 
   enum Direction {
-    LEFT, RIGHT, UP, DOWN
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST
   }
 
+  enum Load {
+    START,
+    PLAYER,
+    ID,
+    STORY,
+    MONSTER,
+    LOOT,
+    WALL,
+    END
+  }
+
+  private final int NUMBER_OF_ROOMS = 35, MAP_WIDTH = 5,
+    NUMBER_OF_DIRECTIONS = Direction.values().length, DONT_TURN = 0, TURN_RIGHT = 1,
+    TURN_LEFT = NUMBER_OF_DIRECTIONS - 1, GO_NORTH = -MAP_WIDTH, GO_EAST = 1, GO_SOUTH = MAP_WIDTH,
+    GO_WEST = -1, WESTERN_BORDER = 0, EASTERN_BORDER = MAP_WIDTH - 1,
+    NORTHERN_BORDER = MAP_WIDTH - 1, SOUTHERN_BORDER = NUMBER_OF_ROOMS - MAP_WIDTH;
+  private final String RED = "\u001B[31m", WHITE = "\u001B[37m", YELLOW = "\u001B[33m",
+    RESET = "\u001B[0m", PART_ROOM = "ROOM";
   private Root root;
   private Draw draw;
   private Player player;
-  private Room[] rooms = new Room[35];
+  private Room[] rooms = new Room[NUMBER_OF_ROOMS];
   private Integer roomStartId, roomEndId, roomCurrentId;
-  private Direction direction = Direction.UP;
+  private Direction direction = Direction.NORTH;
+  private static final Logger logger = Logger.getLogger(Game.class.getName());
 
   /**
    * @param gc - GraphicsContext to draw images to
@@ -50,6 +80,39 @@ public class Game implements Mode {
   public Game() {
   }
 
+  /**
+   * Returns changed direction.
+   *
+   * @param directionChange - number representing to which side to turn
+   * @return changed direction
+   * @author povolji2
+   */
+  private Direction changeDirection(int directionChange) {
+    Direction newDirection = null;
+    try {
+      int directionIndex = (direction.ordinal() + directionChange) % NUMBER_OF_DIRECTIONS;
+      newDirection = Direction.values()[directionIndex];
+    } catch (Exception exception) {
+      logger.log(Level.SEVERE, RED + ">>>  Error: Unexpected direction value: " + newDirection +
+        RESET, exception); // ERROR
+      return null;
+    }
+
+    return newDirection;
+  }
+
+  /**
+   * Turns the player.
+   *
+   * @param directionChange - number representing to which side to turn
+   * @author povolji2
+   */
+  private void turnPlayer(int directionChange) {
+    direction = changeDirection(directionChange);
+    logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction + RESET); // DEBUG
+    this.draw.redraw(PART_ROOM);
+  }
+
   // Key methods
 
   /**
@@ -60,36 +123,37 @@ public class Game implements Mode {
   public void keyUp() {
     if (hasRoomFront()) {
       switch (direction) {
-        case UP:
-          roomCurrentId -= 5;
+        case NORTH:
+          roomCurrentId += GO_NORTH;
           break;
-        case RIGHT:
-          roomCurrentId += 1;
+        case EAST:
+          roomCurrentId += GO_EAST;
           break;
-        case DOWN:
-          roomCurrentId += 5;
+        case SOUTH:
+          roomCurrentId += GO_SOUTH;
           break;
-        case LEFT:
-          roomCurrentId -= 1;
+        case WEST:
+          roomCurrentId += GO_WEST;
           break;
         default:
-          System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
+          logger.severe(RED + ">>>  Error: Unexpected direction value: " + direction + RESET); // ERROR
           return;
       }
 
-      System.out.println(">>> Room index: " + roomCurrentId + ", direction: " + direction); // DEBUG
+      logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction +
+        RESET); // DEBUG
+      this.draw.redraw(PART_ROOM);
 
-      this.draw.redraw("room");
       if (!rooms[roomCurrentId].isVisited()) {
         rooms[roomCurrentId].setVisited();
         // Story
               // if room has story before entering, then
-        System.out.println(">>> Story before: " + rooms[roomCurrentId].getStoryBefore()); // DEBUG
+        logger.info(WHITE + ">>> Story before: " + rooms[roomCurrentId].getStoryBefore() + RESET); // DEBUG
               // if room has story after interacting, then
-        System.out.println(">>> Story after: " + rooms[roomCurrentId].getStoryAfter()); // DEBUG
+        logger.info(WHITE + ">>> Story after: " + rooms[roomCurrentId].getStoryAfter() + RESET); // DEBUG
       }
     } else {
-      System.out.println(">>>  You can't go there."); // DEBUG
+      logger.warning(YELLOW + ">>>  You can't go there." + RESET); // DEBUG
     }
   }
 
@@ -102,27 +166,7 @@ public class Game implements Mode {
    * @author povolji2
    */
   public void keyLeft() {
-    switch (direction) {
-      case UP:
-        direction = Direction.LEFT;
-        break;
-      case RIGHT:
-        direction = Direction.UP;
-        break;
-      case DOWN:
-        direction = Direction.RIGHT;
-        break;
-      case LEFT:
-        direction = Direction.DOWN;
-        break;
-      default:
-        System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
-        return;
-    }
-
-    System.out.println(">>> Room index: " + roomCurrentId + ", direction: " + direction); // DEBUG
-
-    this.draw.redraw("room");
+    turnPlayer(TURN_LEFT);
   }
 
   /**
@@ -131,27 +175,7 @@ public class Game implements Mode {
    * @author povolji2
    */
   public void keyRight() {
-    switch (direction) {
-      case UP:
-        direction = Direction.RIGHT;
-        break;
-      case RIGHT:
-        direction = Direction.DOWN;
-        break;
-      case DOWN:
-        direction = Direction.LEFT;
-        break;
-      case LEFT:
-        direction = Direction.UP;
-        break;
-      default:
-        System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
-        return;
-    }
-
-    System.out.println(">>> Room index: " + roomCurrentId + ", direction: " + direction); // DEBUG
-
-    this.draw.redraw("room");
+    turnPlayer(TURN_RIGHT);
   }
 
   /**
@@ -170,23 +194,44 @@ public class Game implements Mode {
   // Boolean methods
 
   /**
+   * Returns whether there is a room in specified direction.
+   *
+   * @param directionChange - number representing which side newDirection will point to
+   * @return whether there is a room
+   */
+  public Boolean hasRoom(int directionChange) {
+    Direction newDirection = direction;
+    if (directionChange != 0) {
+      newDirection = changeDirection(directionChange);
+    }
+
+    try {
+      switch (Objects.requireNonNull(newDirection)) {
+        case NORTH:
+          return roomCurrentId > NORTHERN_BORDER && rooms[roomCurrentId + GO_NORTH] != null;
+        case EAST:
+          return roomCurrentId % MAP_WIDTH != EASTERN_BORDER && rooms[roomCurrentId + GO_EAST] !=
+            null;
+        case SOUTH:
+          return roomCurrentId < SOUTHERN_BORDER && rooms[roomCurrentId + GO_SOUTH] != null;
+        case WEST:
+          return roomCurrentId % MAP_WIDTH != WESTERN_BORDER && rooms[roomCurrentId + GO_WEST] !=
+            null;
+      }
+    } catch (Exception exception) {
+      logger.log(Level.SEVERE, RED + ">>>  Error: Unexpected direction value: " + newDirection +
+        RESET, exception); // ERROR
+      return null;
+    }
+    return null;
+  }
+
+  /**
    * @return whether there is a room to the left of the player
    * @author povolji2
    */
   public Boolean hasRoomLeft() {
-    switch (direction) {
-      case UP:
-        return roomCurrentId % 5 != 0 && rooms[roomCurrentId - 1] != null;
-      case RIGHT:
-        return roomCurrentId > 4 && rooms[roomCurrentId - 5] != null;
-      case DOWN:
-        return roomCurrentId % 5 != 4 && rooms[roomCurrentId + 1] != null;
-      case LEFT:
-        return roomCurrentId < 30 && rooms[roomCurrentId + 5] != null;
-      default:
-        System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
-        return false;
-    }
+    return hasRoom(TURN_LEFT);
   }
 
   /**
@@ -194,19 +239,7 @@ public class Game implements Mode {
    * @author povolji2
    */
   public Boolean hasRoomRight() {
-    switch (direction) {
-      case UP:
-        return roomCurrentId % 5 != 4 && rooms[roomCurrentId + 1] != null;
-      case RIGHT:
-        return roomCurrentId < 30 && rooms[roomCurrentId + 5] != null;
-      case DOWN:
-        return roomCurrentId % 5 != 0 && rooms[roomCurrentId - 1] != null;
-      case LEFT:
-        return roomCurrentId > 4 && rooms[roomCurrentId - 5] != null;
-      default:
-        System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
-        return false;
-    }
+    return hasRoom(TURN_RIGHT);
   }
 
   /**
@@ -214,19 +247,7 @@ public class Game implements Mode {
    * @author povolji2
    */
   public Boolean hasRoomFront() {
-    switch (direction) {
-      case UP:
-        return roomCurrentId > 4 && rooms[roomCurrentId - 5] != null;
-      case RIGHT:
-        return roomCurrentId % 5 != 4 && rooms[roomCurrentId + 1] != null;
-      case DOWN:
-        return roomCurrentId < 30 && rooms[roomCurrentId + 5] != null;
-      case LEFT:
-        return roomCurrentId % 5 != 0 && rooms[roomCurrentId - 1] != null;
-      default:
-        System.out.println(">>>  Error: Unexpected direction value: " + direction); // ERROR
-        return false;
-    }
+    return hasRoom(DONT_TURN);
   }
 
   // Loading files
@@ -246,58 +267,61 @@ public class Game implements Mode {
       BufferedReader saveReader = new BufferedReader(new FileReader(saveFile));
       while (saveReader.ready()) {
         String[] line = saveReader.readLine().split(" ");
+        Load load = Load.valueOf(line[0].toUpperCase());
 
-        switch (line[0]) {
+        switch (load) {
           // Room id where the dungeon starts and ends
-          case "start":
+          case START:
             roomStartId = Integer.parseInt(line[1]);
-            System.out.println(">>> roomStartId = " + roomStartId); // DEBUG
+            logger.info(WHITE + ">>> roomStartId = " + roomStartId + RESET); // DEBUG
             roomEndId = Integer.parseInt(line[2]);
-            System.out.println(">>> roomEndId = " + roomEndId); // DEBUG
+            logger.info(WHITE + ">>> roomEndId = " + roomEndId + RESET); // DEBUG
             break;
           // Player variables
-          case "player":
+          case PLAYER:
             player.setHp(Integer.parseInt(line[2]));
-            System.out.println(">>> player = " + player.getHp()); // DEBUG
+            logger.info(WHITE + ">>> player = " + player.getHp() + RESET); // DEBUG
             Loot weapon = new Loot(line[1], Integer.parseInt(line[3]));
             player.takeLoot(weapon);
-            System.out.println(">>> player.getDamage = " + player.getDamage()); // DEBUG
-            System.out.println(">>> player.getSprite = " + player.getSprite()); // DEBUG
+            logger.info(WHITE + ">>> player.getDamage = " + player.getDamage() + RESET); // DEBUG
+            logger.info(WHITE + ">>> player.getSprite = " + player.getSprite() + RESET); // DEBUG
             break;
           // Dungeon rooms
-          case "id":
+          case ID:
             roomCurrentId = Integer.parseInt(line[1]);
-            System.out.println(">>> roomCurrentId = " + roomCurrentId); // DEBUG
+            logger.info(WHITE + ">>> roomCurrentId = " + roomCurrentId + RESET); // DEBUG
             rooms[roomCurrentId] = new Room();
-            System.out.println(">>> isVisited = " + rooms[roomCurrentId].isVisited()); // DEBUG
+            logger.info(WHITE + ">>> isVisited = " + rooms[roomCurrentId].isVisited() + RESET); // DEBUG
             break;
           // Story of current room
-          case "story":
+          case STORY:
             rooms[roomCurrentId].setStoryBefore(line[1].replaceAll("_", " "));
-            System.out.println(">>> storyBefore = " + rooms[roomCurrentId].getStoryBefore()); // DEBUG
+            logger.info(WHITE + ">>> storyBefore = " + rooms[roomCurrentId].getStoryBefore() +
+              RESET); // DEBUG
             rooms[roomCurrentId].setStoryAfter(line[2].replaceAll("_", " "));
-            System.out.println(">>> storyAfter = " + rooms[roomCurrentId].getStoryAfter()); // DEBUG
+            logger.info(WHITE + ">>> storyAfter = " + rooms[roomCurrentId].getStoryAfter() +
+              RESET); // DEBUG
             break;
           // Monster in current room
-          case "monster":
+          case MONSTER:
             rooms[roomCurrentId].setMonster(line[1],
               Integer.parseInt(line[2]), Integer.parseInt(line[3]));
-            System.out.println(">>> room.getMonsterSprite = " +
-              rooms[roomCurrentId].getMonsterSprite()); // DEBUG
+            logger.info(WHITE + ">>> room.getMonsterSprite = " +
+              rooms[roomCurrentId].getMonsterSprite() + RESET); // DEBUG
             break;
           // Loot in current room
-          case "loot":
+          case LOOT:
             rooms[roomCurrentId].setLoot(line[1], Integer.parseInt(line[2]));
-            System.out.println(">>> room.getLootSprite = "
-              + rooms[roomCurrentId].getLoot().getSprite()); // DEBUG
+            logger.info(WHITE + ">>> room.getLootSprite = " +
+              rooms[roomCurrentId].getLoot().getSprite() + RESET); // DEBUG
             break;
           // Texture of current room
-          case "wall":
+          case WALL:
             rooms[roomCurrentId].setSprite(line[1]);
-            System.out.println(">>> room.sprite = " + rooms[roomCurrentId].getSprite()); // DEBUG
+            logger.info(WHITE + ">>> room.sprite = " + rooms[roomCurrentId].getSprite() + RESET); // DEBUG
             break;
           // Current room
-          case "end":
+          case END:
             roomCurrentId = roomStartId;
             break;
           // Wrong file format!
@@ -306,7 +330,7 @@ public class Game implements Mode {
         }
       }
     } catch (Exception exception) {
-      System.out.println(exception);
+      logger.log(Level.SEVERE, RED + "File could not be loaded." + RESET, exception);
       return false; // File could not be loaded
     }
     return true;
@@ -323,19 +347,13 @@ public class Game implements Mode {
     return roomCurrentId;
   }
 
+  /**
+   * Returns current direction converted to String.
+   *
+   * @return current direction converted to String
+   */
   public String getDirection() {
-    switch (direction) {
-      case UP:
-        return "up";
-      case RIGHT:
-        return "right";
-      case DOWN:
-        return "down";
-      case LEFT:
-        return "left";
-      default:
-        return "up"; // TEMPORARY
-    }
+    return direction.toString();
   }
 }
 

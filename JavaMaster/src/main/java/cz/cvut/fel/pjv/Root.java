@@ -3,6 +3,7 @@ package cz.cvut.fel.pjv;
 import cz.cvut.fel.pjv.modes.*;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
 import javafx.scene.canvas.*;
@@ -13,9 +14,11 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 
 public class Root extends Application {
+  private final String WHITE = "\u001B[37m", RESET = "\u001B[0m";
   private Stage stage;
   private Mode mode;
   private GraphicsContext gc;
+  private static final Logger logger = Logger.getLogger(Root.class.getName());
 
   /**
    * Opens file chooser to choose files.
@@ -53,38 +56,38 @@ public class Root extends Application {
    * @author profojak
    */
   private void keyPressHandler(KeyEvent e) {
-    System.out.println(e.getCode()); // DEBUG
+    logger.info(WHITE + e.getCode() + RESET); // DEBUG
     switch (e.getCode()) {
       case K: case W: // fall through
       case UP:
-        System.out.println("'-> up"); // DEBUG
+        logger.info(WHITE + "'-> up" + RESET); // DEBUG
         this.mode.keyUp();
         break;
       case J: case S: // fall through
       case DOWN:
-        System.out.println("'-> down"); // DEBUG
+        logger.info(WHITE + "'-> down" + RESET); // DEBUG
         this.mode.keyDown();
         break;
       case H: case A: // fall through
       case LEFT:
-        System.out.println("'-> left"); // DEBUG
+        logger.info(WHITE + "'-> left" + RESET); // DEBUG
         this.mode.keyLeft();
         break;
       case L: case D: // fall through
       case RIGHT:
-        System.out.println("'-> right"); // DEBUG
+        logger.info(WHITE + "'-> right" + RESET); // DEBUG
         this.mode.keyRight();
         break;
       case ESCAPE:
-        System.out.println("'-> escape"); // DEBUG
+        logger.info(WHITE + "'-> escape" + RESET); // DEBUG
         this.mode.keyEscape();
         break;
       case ENTER:
-        System.out.println("'-> enter"); // DEBUG
+        logger.info(WHITE + "'-> enter" + RESET); // DEBUG
         this.mode.keyEnter();
         break;
       case DELETE:
-        System.out.println("'-> delete"); // DEBUG
+        logger.info(WHITE + "'-> delete" + RESET); // DEBUG
         this.mode.keyDelete();
         break;
       default:
