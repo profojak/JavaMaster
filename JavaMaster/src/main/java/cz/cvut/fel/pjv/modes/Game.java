@@ -8,14 +8,12 @@ import cz.cvut.fel.pjv.room.Room;
 import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.menu.layouts.Layout;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 
 import javafx.scene.canvas.GraphicsContext;
 
-import javax.swing.text.LayoutQueue;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.logging.Level;
