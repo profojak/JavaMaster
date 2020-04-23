@@ -50,7 +50,7 @@ public class Game implements Mode {
     GO_WEST = -1, WESTERN_BORDER = 0, EASTERN_BORDER = MAP_WIDTH - 1,
     NORTHERN_BORDER = MAP_WIDTH - 1, SOUTHERN_BORDER = NUMBER_OF_ROOMS - MAP_WIDTH;
   private final String RED = "\u001B[31m", WHITE = "\u001B[37m", YELLOW = "\u001B[33m",
-    RESET = "\u001B[0m", PART_ROOM = "ROOM";
+    RESET = "\u001B[0m", PART_ROOM = "ROOM", PART_MONSTER = "MONSTER";
   private Root root;
   private Draw draw;
   private Player player;
@@ -144,11 +144,33 @@ public class Game implements Mode {
 
       if (!rooms[roomCurrentId].isVisited()) {
         rooms[roomCurrentId].setVisited();
-        // Story
-              // if room has story before entering, then
-        logger.info(WHITE + ">>> Story before: " + rooms[roomCurrentId].getStoryBefore() + RESET); // DEBUG
-              // if room has story after interacting, then
-        logger.info(WHITE + ">>> Story after: " + rooms[roomCurrentId].getStoryAfter() + RESET); // DEBUG
+        // Story and Monster
+        if (rooms[roomCurrentId].hasStoryBefore()) {
+          logger.info(WHITE + ">>> Story before: " + rooms[roomCurrentId].getStoryBefore() +
+            RESET); // DEBUG
+        }
+
+        // TODO Start fight
+        if (rooms[roomCurrentId].hasMonster()) {
+          this.draw.redraw(PART_MONSTER);
+
+        }
+
+        if (rooms[roomCurrentId].hasStoryAfter()) {
+          logger.info(WHITE + ">>> Story after: " + rooms[roomCurrentId].getStoryAfter() + RESET); // DEBUG
+        }
+
+        // TODO Better message
+        if (rooms[roomCurrentId].hasLoot()) {
+          Loot loot = rooms[roomCurrentId].getLoot();
+          logger.info(WHITE + ">>> You have found loot: " + loot.getCount() + " instance/s of " +
+            loot.getSprite() + RESET); // DEBUG
+          player.takeLoot(loot);
+        }
+      }
+
+      if (roomCurrentId.equals(roomEndId)) {
+        logger.info(WHITE + ">>> You have entered the End room on this floor" + RESET); // DEBUG
       }
     } else {
       logger.warning(YELLOW + ">>>  You can't go there." + RESET); // DEBUG

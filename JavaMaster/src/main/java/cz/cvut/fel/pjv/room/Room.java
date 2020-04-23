@@ -18,7 +18,7 @@ public class Room {
    * @return whether Room has Monster object assigned
    */
   public Boolean hasMonster() {
-    return true;
+    return monster != null;
   }
 
   /**
@@ -26,7 +26,8 @@ public class Room {
    *
    * @return whether Room has Loot object assigned
    */
-  public void hasLoot() {
+  public Boolean hasLoot() {
+    return loot != null;
   }
 
   /**
@@ -34,7 +35,8 @@ public class Room {
    *
    * @return whether Room has StoryBefore variable set
    */
-  public void hasStoryBefore() {
+  public Boolean hasStoryBefore() {
+    return storyBefore != null && !storyBefore.isBlank();
   }
 
   /**
@@ -42,7 +44,8 @@ public class Room {
    *
    * @return whether Room has StoryAfter variable set
    */
-  public void hasStoryAfter() {
+  public Boolean hasStoryAfter() {
+    return storyAfter != null && !storyAfter.isBlank();
   }
 
   /**

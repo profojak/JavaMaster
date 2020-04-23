@@ -38,6 +38,7 @@ public class Root extends Application {
    *
    * @param mode - mode to switch to, can be MainMenu, Game or Editor
    */
+  // TODO add About
   public void switchMode(String mode) {
     switch (mode) {
       case "MainMenu":

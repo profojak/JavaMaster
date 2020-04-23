@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.modes;
 
 import cz.cvut.fel.pjv.menu.layouts.Layout;
 
+// TODO add javadoc
 public interface Mode {
   // Key methods
   

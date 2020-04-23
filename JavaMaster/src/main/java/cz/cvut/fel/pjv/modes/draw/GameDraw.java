@@ -20,15 +20,15 @@ public class GameDraw extends Draw {
 
   private final int MAP_WIDTH = 5, MAP_LENGTH = 7;
   private final String MAP_VISITED_FALSE = "/sprites/map/visited_false.png",
-          MAP_VISITED_TRUE = "/sprites/map/visited_true.png", MAP_ARROW = "/sprites/map/arrow_",
-          PNG_EXTENSION = ".png", ROOM_BACKGROUND = "/sprites/room/default_bg.png",
-          ROOM_FRONT_WALL = "/sprites/room/default_front.png",
-          ROOM_LEFT_WALL = "/sprites/room/default_left.png",
-          ROOM_RIGHT_WALL = "/sprites/room/default_right.png",
-          INVENTORY_FRAME_ITEM = "/sprites/inventory/frame_item.png",
-          INVENTORY_FRAME_WEAPON = "/sprites/inventory/frame_weapon.png",
-          OVERLAY_GAME = "/sprites/overlay/game.png", PART_SET = "SET", RED = "\u001B[31m",
-          RESET = "\u001B[0m";;
+    MAP_VISITED_TRUE = "/sprites/map/visited_true.png", MAP_ARROW = "/sprites/map/arrow_",
+    PNG_EXTENSION = ".png", ROOM_BACKGROUND = "/sprites/room/default_bg.png",
+    ROOM_FRONT_WALL = "/sprites/room/default_front.png",
+    ROOM_LEFT_WALL = "/sprites/room/default_left.png",
+    ROOM_RIGHT_WALL = "/sprites/room/default_right.png",
+    INVENTORY_FRAME_ITEM = "/sprites/inventory/frame_item.png",
+    INVENTORY_FRAME_WEAPON = "/sprites/inventory/frame_weapon.png",
+    MONSTER_TEMP = "/sprites/monster/TEMP.png", OVERLAY_GAME = "/sprites/overlay/game.png",
+    PART_SET = "SET", RED = "\u001B[31m", RESET = "\u001B[0m";;
   private Game parent;
   private Integer roomId;
   private static final Logger logger = Logger.getLogger(GameDraw.class.getName());
@@ -37,7 +37,7 @@ public class GameDraw extends Draw {
 
   /**
    * @param gc - GraphicsContext to draw images to
-   * @param mode - Mode from which to get information to draw
+   * @param parent - Mode from which to get information to draw
    *
    */
   public GameDraw(GraphicsContext gc, Game parent) {
@@ -56,7 +56,7 @@ public class GameDraw extends Draw {
   /**
    * Redraws game.
    *
-   * @param part - which part of a window to redraw
+   * @param partString - which part of a window to redraw
    * @author profojak
    */
   @Override
@@ -139,10 +139,14 @@ public class GameDraw extends Draw {
         }
         break;
       /* Redraw inventory */
+      // TODO
       case INVENTORY:
         break;
       /* Redraw monster */
+      // TODO Check if OK
       case MONSTER:
+        image = new Image(MONSTER_TEMP);
+        gc.drawImage(image, 600, 150);
         break;
     }
     // Overlay

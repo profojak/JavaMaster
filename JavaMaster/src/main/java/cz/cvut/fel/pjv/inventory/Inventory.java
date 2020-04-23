@@ -1,16 +1,26 @@
 package cz.cvut.fel.pjv.inventory;
 
 import cz.cvut.fel.pjv.inventory.Loot;
+import cz.cvut.fel.pjv.modes.Game;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Inventory {
   enum Item {
-    BOMB, POTION, WEAPON
+    BOMB,
+    POTION,
+    WEAPON
   }
 
+  private final int NUMBER_OF_ITEMS = Item.values().length, NEXT_ITEM = 1,
+    PREVIOUS_ITEM = NUMBER_OF_ITEMS - 1;
+  private final String RED = "\u001B[31m", RESET = "\u001B[0m";
   private Integer numPotions = 0, numBombs = 0;
   private Integer weaponDamage;
   private Item activeItem = Item.WEAPON;
   private String weaponSprite;
+  private static final Logger logger = Logger.getLogger(Inventory.class.getName());
 
   // Pick ups
 
@@ -30,9 +40,10 @@ public class Inventory {
         break;
       // Bomb
       case "bomb":
-        addPotion(loot.getCount());
+        addBomb(loot.getCount());
         break;
       // Weapon
+      // TODO Check if player wants to get new weapon
       default:
         setWeapon(sprite, loot.getCount());
     }
@@ -83,38 +94,32 @@ public class Inventory {
 
   // Choosing item
 
+  private Item changeItem(int itemChange) {
+    Item newItem = null;
+    try {
+      int itemIndex = (activeItem.ordinal() + itemChange) % NUMBER_OF_ITEMS;
+      newItem = Item.values()[itemIndex];
+    } catch (Exception exception) {
+      logger.log(Level.SEVERE, RED + ">>>  Error: Unexpected item value: " + newItem + RESET,
+        exception); // ERROR
+      return null;
+    }
+
+    return newItem;
+  }
+
   /**
    * Selects next item.
    */
   public void itemNext() {
-    switch (activeItem) {
-      case WEAPON:
-        activeItem = Item.BOMB;
-        break;
-      case BOMB:
-        activeItem = Item.POTION;
-        break;
-      case POTION:
-        activeItem = Item.WEAPON;
-        break;
-    }
+    activeItem = changeItem(NEXT_ITEM);
   }
 
   /**
    * Selects previous item.
    */
   public void itemPrevious() {
-    switch (activeItem) {
-      case WEAPON:
-        activeItem = Item.POTION;
-        break;
-      case POTION:
-        activeItem = Item.BOMB;
-        break;
-      case BOMB:
-        activeItem = Item.WEAPON;
-        break;
-    }
+    activeItem = changeItem(PREVIOUS_ITEM);
   }
 
   // GUI
