@@ -56,6 +56,7 @@ public class GameDraw extends Draw {
    */
   @Deprecated
   public GameDraw() {
+    this.parent = null;
   }
 
   /**

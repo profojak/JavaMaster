@@ -23,7 +23,7 @@ public class Player extends Entity {
    *
    * @return damage of weapon
    */
-  public Integer getWeaponDamage() {
+  public Integer getDamage() {
     return inventory.getWeaponDamage();
   }
 
@@ -32,7 +32,7 @@ public class Player extends Entity {
    *
    * @return texture of weapon
    */
-  public String getWeaponSprite() {
+  public String getSprite() {
     return inventory.getWeaponSprite();
   }
 
