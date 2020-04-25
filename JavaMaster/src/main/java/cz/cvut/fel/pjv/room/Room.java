@@ -3,6 +3,12 @@ package cz.cvut.fel.pjv.room;
 import cz.cvut.fel.pjv.entities.Monster;
 import cz.cvut.fel.pjv.inventory.Loot;
 
+/**
+ * Implementation of Room: class that holds Monster and Loot objects.
+ *
+ * <p>Multiple instances of this class form a dungeon. Mode object changes current room and
+ * calls room methods to interact with room objects and variables.
+ */
 public class Room {
   private Boolean isVisited = false;
   private String storyBefore = "", storyAfter = "";

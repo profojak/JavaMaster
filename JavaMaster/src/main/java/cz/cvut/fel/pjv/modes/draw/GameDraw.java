@@ -9,7 +9,11 @@ import javafx.scene.image.Image;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** @see Draw */
+/**
+ * Implementation of GameDraw: Draw object that handles drawing of Game mode.
+ *
+ * @see Draw
+ */
 public class GameDraw extends Draw {
   public enum Part {
     SET,
@@ -29,9 +33,10 @@ public class GameDraw extends Draw {
     INVENTORY_FRAME_WEAPON = "/sprites/inventory/frame_weapon.png",
     MONSTER_TEMP = "/sprites/monster/TEMP.png", OVERLAY_GAME = "/sprites/overlay/game.png",
     PART_SET = "SET", RED = "\u001B[31m", RESET = "\u001B[0m";;
-  private Game parent;
-  private Integer roomId;
   private static final Logger logger = Logger.getLogger(GameDraw.class.getName());
+  private final Game parent;
+
+  private Integer roomId;
   private Part part;
 
 
@@ -59,6 +64,7 @@ public class GameDraw extends Draw {
    * @param partString - which part of a window to redraw
    * @author profojak
    */
+  // TODO
   @Override
   public void redraw(String partString) {
     Image image;
@@ -139,11 +145,9 @@ public class GameDraw extends Draw {
         }
         break;
       /* Redraw inventory */
-      // TODO
       case INVENTORY:
         break;
       /* Redraw monster */
-      // TODO Check if OK
       case MONSTER:
         image = new Image(MONSTER_TEMP);
         gc.drawImage(image, 600, 150);

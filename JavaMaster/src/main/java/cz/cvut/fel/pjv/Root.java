@@ -15,10 +15,11 @@ import javafx.stage.FileChooser;
 
 public class Root extends Application {
   private final String WHITE = "\u001B[37m", RESET = "\u001B[0m";
+  private static final Logger logger = Logger.getLogger(Root.class.getName());
+
   private Stage stage;
   private Mode mode;
   private GraphicsContext gc;
-  private static final Logger logger = Logger.getLogger(Root.class.getName());
 
   /**
    * Opens file chooser to choose files.

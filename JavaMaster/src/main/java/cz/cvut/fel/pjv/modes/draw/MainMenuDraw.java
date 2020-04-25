@@ -5,7 +5,12 @@ import cz.cvut.fel.pjv.modes.MainMenu;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-/** @see Draw */
+/**
+ * Implementation of MainMenuDraw: Draw object that handles drawing of MainMenu mode.
+ *
+ * @see Draw
+ */
+//TODO
 public class MainMenuDraw extends Draw {
   private MainMenu parent;
 

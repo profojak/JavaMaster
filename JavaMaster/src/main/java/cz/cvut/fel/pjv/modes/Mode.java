@@ -1,8 +1,11 @@
 package cz.cvut.fel.pjv.modes;
 
-import cz.cvut.fel.pjv.menu.layouts.Layout;
-
-// TODO add javadoc
+/**
+ * Interface of Mode, definening key press methods that need to be implemented in mode classes.
+ *
+ * <p>Mode is a class that handles key presses and controlls behavior of this applicatoin. Typical
+ * Mode class is Game: this class handles gameplay.
+ */
 public interface Mode {
   // Key methods
   

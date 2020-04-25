@@ -2,6 +2,9 @@ package cz.cvut.fel.pjv.menu.layouts;
 
 import cz.cvut.fel.pjv.menu.Button;
 
+/**
+ * Abstract class implementing menu functionality.
+ */
 public abstract class Layout {
   protected Button[] buttons = new Button[1];
   protected Integer active = 0;

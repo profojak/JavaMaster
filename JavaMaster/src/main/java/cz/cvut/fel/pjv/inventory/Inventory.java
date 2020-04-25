@@ -1,11 +1,13 @@
 package cz.cvut.fel.pjv.inventory;
 
-import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.modes.Game;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Inventory class holds number of potions and bombs and a weapon.
+ */
 public class Inventory {
   enum Item {
     BOMB,
@@ -13,14 +15,15 @@ public class Inventory {
     WEAPON
   }
 
-  private final int NUMBER_OF_ITEMS = Item.values().length, NEXT_ITEM = 1,
+  private final Integer NUMBER_OF_ITEMS = Item.values().length, NEXT_ITEM = 1,
     PREVIOUS_ITEM = NUMBER_OF_ITEMS - 1;
   private final String RED = "\u001B[31m", RESET = "\u001B[0m";
+  private static final Logger logger = Logger.getLogger(Inventory.class.getName());
+
   private Integer numPotions = 0, numBombs = 0;
   private Integer weaponDamage;
   private Item activeItem = Item.WEAPON;
   private String weaponSprite;
-  private static final Logger logger = Logger.getLogger(Inventory.class.getName());
 
   // Pick ups
 
@@ -80,6 +83,8 @@ public class Inventory {
 
   /**
    * Uses potion.
+   *
+   * @return whether potion was used
    */
   public Boolean usePotion() {
     return true;
@@ -87,6 +92,8 @@ public class Inventory {
 
   /**
    * Uses bomb.
+   *
+   * @return whether bomb was used
    */
   public Boolean useBomb() {
     return true;
@@ -94,10 +101,15 @@ public class Inventory {
 
   // Choosing item
 
-  private Item changeItem(int itemChange) {
+  /**
+   * Changes current item.
+   *
+   * @param itemChange - number to determine current item index
+   */
+  private Item changeItem(Integer itemChange) {
     Item newItem = null;
     try {
-      int itemIndex = (activeItem.ordinal() + itemChange) % NUMBER_OF_ITEMS;
+      Integer itemIndex = (activeItem.ordinal() + itemChange) % NUMBER_OF_ITEMS;
       newItem = Item.values()[itemIndex];
     } catch (Exception exception) {
       logger.log(Level.SEVERE, RED + ">>>  Error: Unexpected item value: " + newItem + RESET,
@@ -108,16 +120,12 @@ public class Inventory {
     return newItem;
   }
 
-  /**
-   * Selects next item.
-   */
+  /** Selects next item. */
   public void itemNext() {
     activeItem = changeItem(NEXT_ITEM);
   }
 
-  /**
-   * Selects previous item.
-   */
+  /** Selects previous item. */
   public void itemPrevious() {
     activeItem = changeItem(PREVIOUS_ITEM);
   }
@@ -147,7 +155,7 @@ public class Inventory {
    *
    * @return damage of weapon.
    */
-  public Integer getDamage() {
+  public Integer getWeaponDamage() {
     return this.weaponDamage;
   }
 
@@ -156,7 +164,7 @@ public class Inventory {
    *
    * @return texture of weapon.
    */
-  public String getSprite() {
+  public String getWeaponSprite() {
     return this.weaponSprite;
   }
 

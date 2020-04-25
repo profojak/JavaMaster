@@ -4,7 +4,11 @@ import cz.cvut.fel.pjv.entities.Entity;
 import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.inventory.Inventory;
 
-/** @see Entity */
+/**
+ * Implementation of Player: Entity controlled by user.
+ *
+ * @see Entity
+ */
 public class Player extends Entity {
   private Inventory inventory;
 
@@ -14,12 +18,22 @@ public class Player extends Entity {
 
   // Getters
 
-  public Integer getDamage() {
-    return inventory.getDamage();
+  /**
+   * Gets damage of weapon.
+   *
+   * @return damage of weapon
+   */
+  public Integer getWeaponDamage() {
+    return inventory.getWeaponDamage();
   }
 
-  public String getSprite() {
-    return inventory.getSprite();
+  /**
+   * Gets texture of weapon.
+   *
+   * @return texture of weapon
+   */
+  public String getWeaponSprite() {
+    return inventory.getWeaponSprite();
   }
 
   // Actions

@@ -1,24 +1,28 @@
 package cz.cvut.fel.pjv.modes;
 
 import cz.cvut.fel.pjv.Root;
-import cz.cvut.fel.pjv.modes.draw.Draw;
-import cz.cvut.fel.pjv.modes.draw.GameDraw;
+import cz.cvut.fel.pjv.modes.draw.*;
 import cz.cvut.fel.pjv.entities.Player;
 import cz.cvut.fel.pjv.room.Room;
 import cz.cvut.fel.pjv.inventory.Loot;
-import cz.cvut.fel.pjv.menu.layouts.Layout;
+import cz.cvut.fel.pjv.menu.layouts.*;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
-
-import javafx.scene.canvas.GraphicsContext;
-
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-/** @see Mode */
+import javafx.scene.canvas.GraphicsContext;
+
+/**
+ * Implementation of Game mode: this class handles user input and controlls the flow of the game.
+ *
+ * <p>This mode is loaded when user wants to play.
+ *
+ * @see Mode
+ */
 public class Game implements Mode {
   enum Item {
     BOMB,
@@ -45,19 +49,21 @@ public class Game implements Mode {
   }
 
   private final int NUMBER_OF_ROOMS = 35, MAP_WIDTH = 5,
-    NUMBER_OF_DIRECTIONS = Direction.values().length, DONT_TURN = 0, TURN_RIGHT = 1,
-    TURN_LEFT = NUMBER_OF_DIRECTIONS - 1, GO_NORTH = -MAP_WIDTH, GO_EAST = 1, GO_SOUTH = MAP_WIDTH,
-    GO_WEST = -1, WESTERN_BORDER = 0, EASTERN_BORDER = MAP_WIDTH - 1,
-    NORTHERN_BORDER = MAP_WIDTH - 1, SOUTHERN_BORDER = NUMBER_OF_ROOMS - MAP_WIDTH;
+    NUMBER_OF_DIRECTIONS = Direction.values().length,
+    DONT_TURN = 0, TURN_RIGHT = 1, TURN_LEFT = NUMBER_OF_DIRECTIONS - 1,
+    GO_NORTH = -MAP_WIDTH, GO_EAST = 1, GO_SOUTH = MAP_WIDTH, GO_WEST = -1,
+    WESTERN_BORDER = 0, EASTERN_BORDER = MAP_WIDTH - 1, NORTHERN_BORDER = MAP_WIDTH - 1,
+    SOUTHERN_BORDER = NUMBER_OF_ROOMS - MAP_WIDTH;
   private final String RED = "\u001B[31m", WHITE = "\u001B[37m", YELLOW = "\u001B[33m",
     RESET = "\u001B[0m", PART_ROOM = "ROOM", PART_MONSTER = "MONSTER";
-  private Root root;
-  private Draw draw;
-  private Player player;
+  private static final Logger logger = Logger.getLogger(Game.class.getName());
+  private final Root root;
+  private final Draw draw;
+  private final Player player;
+
   private Room[] rooms = new Room[NUMBER_OF_ROOMS];
   private Integer roomStartId, roomEndId, roomCurrentId;
   private Direction direction = Direction.NORTH;
-  private static final Logger logger = Logger.getLogger(Game.class.getName());
 
   /**
    * @param gc - GraphicsContext to draw images to
@@ -65,7 +71,7 @@ public class Game implements Mode {
    */
   public Game(GraphicsContext gc, Root root) {
     this.root = root;
-    player = new Player();
+    this.player = new Player();
     File saveFile = this.root.getFile();
     parseSaveFile(saveFile);
     this.draw = new GameDraw(gc, this);
@@ -76,6 +82,9 @@ public class Game implements Mode {
    */
   @Deprecated
   public Game() {
+    this.root = null;
+    this.player = null;
+    this.draw = null;
   }
 
   /**
@@ -218,6 +227,7 @@ public class Game implements Mode {
    *
    * @param directionChange - number representing which side newDirection will point to
    * @return whether there is a room
+   * @author povolji2
    */
   public Boolean hasRoom(int directionChange) {
     Direction newDirection = direction;
@@ -248,7 +258,6 @@ public class Game implements Mode {
 
   /**
    * @return whether there is a room to the left of the player
-   * @author povolji2
    */
   public Boolean hasRoomLeft() {
     return hasRoom(TURN_LEFT);
@@ -256,7 +265,6 @@ public class Game implements Mode {
 
   /**
    * @return whether there is a room to the right of the player
-   * @author povolji2
    */
   public Boolean hasRoomRight() {
     return hasRoom(TURN_RIGHT);
@@ -264,7 +272,6 @@ public class Game implements Mode {
 
   /**
    * @return whether there is a room in front of the player
-   * @author povolji2
    */
   public Boolean hasRoomFront() {
     return hasRoom(DONT_TURN);

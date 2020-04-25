@@ -5,6 +5,9 @@ import cz.cvut.fel.pjv.modes.Mode;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+/**
+ * Abstract class Draw implementing basic functionality of draw classes.
+ */
 public abstract class Draw {
   protected GraphicsContext gc;
 

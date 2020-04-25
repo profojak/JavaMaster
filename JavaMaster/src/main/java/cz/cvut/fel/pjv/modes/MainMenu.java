@@ -7,12 +7,18 @@ import cz.cvut.fel.pjv.menu.layouts.Menu;
 
 import javafx.scene.canvas.GraphicsContext;
 
-/** @see Mode */
+/**
+ * Implementation of MainMenu mode: this class handles user input and controlls main menu behavior.
+ *
+ * <p>This class is loaded when the game is launched. It is used for switching between other modes.
+ *
+ * @see Mode
+ */
 public class MainMenu implements Mode {
   private final String GAME = "Game", EXIT = "Exit";
-  private Root root;
-  private Draw draw;
-  private Menu menu;
+  private final Root root;
+  private final Draw draw;
+  private final Menu menu;
 
   /**
    * @param gc - GraphicsContext to draw images to
@@ -29,6 +35,9 @@ public class MainMenu implements Mode {
    */
   @Deprecated
   public MainMenu() {
+    this.root = null;
+    this.menu = null;
+    this.draw = null;
   }
 
   // Key methods
