@@ -5,7 +5,7 @@ import cz.cvut.fel.pjv.modes.draw.Draw;
 import cz.cvut.fel.pjv.modes.draw.MainMenuDraw;
 import cz.cvut.fel.pjv.menu.layouts.Menu;
 
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.StackPane;
 
 /**
  * Implementation of MainMenu mode: this class handles user input and controlls main menu behavior.
@@ -21,13 +21,13 @@ public class MainMenu implements Mode {
   private final Menu menu;
 
   /**
-   * @param gc - GraphicsContext to draw images to
+   * @param stack - StackPane to draw images to
    * @param root - parent object
    */
-  public MainMenu(GraphicsContext gc, Root root) {
+  public MainMenu(StackPane stack, Root root) {
     this.root = root;
     this.menu = new Menu();
-    this.draw = new MainMenuDraw(gc, this);
+    this.draw = new MainMenuDraw(stack, this);
   }
 
   /**
@@ -44,12 +44,12 @@ public class MainMenu implements Mode {
 
   public void keyUp() {
     this.menu.buttonPrevious();
-    this.draw.redraw(null);
+    this.draw.redraw(Draw.State.DEFAULT);
   }
 
   public void keyDown() {
     this.menu.buttonNext();
-    this.draw.redraw(null);
+    this.draw.redraw(Draw.State.DEFAULT);
   }
 
   public void keyLeft() {
@@ -63,6 +63,7 @@ public class MainMenu implements Mode {
 
   public void keyEnter() {
     if (this.menu.getAction(this.menu.getActive()).equals(GAME)) {
+      this.draw.close();
       this.root.switchMode(GAME);
     } else if (this.menu.getAction(this.menu.getActive()).equals(EXIT)) {
       System.exit(0);

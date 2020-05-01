@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.StackPane;
 
 /**
  * Implementation of Game mode: this class handles user input and controlls the flow of the game.
@@ -24,20 +24,20 @@ import javafx.scene.canvas.GraphicsContext;
  * @see Mode
  */
 public class Game implements Mode {
-  enum Item {
+  private enum Item {
     BOMB,
     POTION,
     WEAPON
   }
 
-  enum Direction {
+  private enum Direction {
     NORTH,
     EAST,
     SOUTH,
     WEST
   }
 
-  enum Load {
+  private enum Load {
     START,
     PLAYER,
     ID,
@@ -66,15 +66,15 @@ public class Game implements Mode {
   private Direction direction = Direction.NORTH;
 
   /**
-   * @param gc - GraphicsContext to draw images to
+   * @param stack - StackPane to draw images to
    * @param root - parent object
    */
-  public Game(GraphicsContext gc, Root root) {
+  public Game(StackPane stack, Root root) {
     this.root = root;
     this.player = new Player();
     File saveFile = this.root.getFile();
     parseSaveFile(saveFile);
-    this.draw = new GameDraw(gc, this);
+    this.draw = new GameDraw(stack, this);
   }
 
   /**
@@ -117,7 +117,7 @@ public class Game implements Mode {
   private void turnPlayer(int directionChange) {
     direction = changeDirection(directionChange);
     logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction + RESET); // DEBUG
-    this.draw.redraw(PART_ROOM);
+    this.draw.redraw(Draw.State.DEFAULT);
   }
 
   // Key methods
@@ -149,7 +149,7 @@ public class Game implements Mode {
 
       logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction +
         RESET); // DEBUG
-      this.draw.redraw(PART_ROOM);
+      this.draw.redraw(Draw.State.DEFAULT);
 
       if (!rooms[roomCurrentId].isVisited()) {
         rooms[roomCurrentId].setVisited();
@@ -161,7 +161,7 @@ public class Game implements Mode {
 
         // TODO Start fight
         if (rooms[roomCurrentId].hasMonster()) {
-          this.draw.redraw(PART_MONSTER);
+          this.draw.redraw(Draw.State.DEFAULT);
 
         }
 
@@ -211,7 +211,7 @@ public class Game implements Mode {
    * Exits the program.
    */
   public void keyEscape() {
-    System.exit(0);
+    this.root.switchMode("MainMenu");
   }
 
   public void keyEnter() {
@@ -372,6 +372,15 @@ public class Game implements Mode {
    */
   public Integer getRoomId() {
     return roomCurrentId;
+  }
+
+  /**
+   * Returns sprite of current room.
+   *
+   * @return current room sprite
+   */
+  public String getRoomSprite() {
+    return rooms[roomCurrentId].getSprite();
   }
 
   /**

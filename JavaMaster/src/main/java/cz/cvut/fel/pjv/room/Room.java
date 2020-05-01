@@ -12,9 +12,9 @@ import cz.cvut.fel.pjv.inventory.Loot;
 public class Room {
   private Boolean isVisited = false;
   private String storyBefore = "", storyAfter = "";
-  private String sprite;
-  private Monster monster;
-  private Loot loot;
+  private String sprite = null;
+  private Monster monster = null;
+  private Loot loot = null;
 
   // Boolean methods
 

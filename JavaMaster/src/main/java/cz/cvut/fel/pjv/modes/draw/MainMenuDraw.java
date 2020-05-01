@@ -2,7 +2,9 @@ package cz.cvut.fel.pjv.modes.draw;
 
 import cz.cvut.fel.pjv.modes.MainMenu;
 
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.StackPane;
+import javafx.scene.canvas.*;
+import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 
 /**
@@ -13,27 +15,38 @@ import javafx.scene.image.Image;
 //TODO
 public class MainMenuDraw extends Draw {
   private MainMenu parent;
+  private GraphicsContext gc;
+  private Thread logo;
 
   /**
-   * @param gc - GraphicsContext to draw images to
+   * @param stack - StackPane to draw images to
    * @param - Mode from which to get information to draw
    */
-  public MainMenuDraw(GraphicsContext gc, MainMenu parent) {
-    super(gc);
+  public MainMenuDraw(StackPane stack, MainMenu parent) {
+    super(stack);
     this.parent = parent;
-    redraw(null);
+
+    // GUI setup
+    this.stack.getChildren().clear();
+    Canvas canvas = new Canvas(1000, 525);
+    this.gc = canvas.getGraphicsContext2D();
+    this.stack.getChildren().add(canvas);
+
+    // Logo thread
+    this.logo = new Thread(new MainMenuRunnable(stack));
+    this.logo.start();
+    
+    redraw(Draw.State.DEFAULT);
   }
 
   /**
-   * Redraws main menu.
+   * @see Draw
+   * @author profojak
    */
-  @Override
-  public void redraw(String partString) {
-    gc.clearRect(0, 0, 1000, 525);
-    Image temp = new Image("/sprites/monster/TEMP.png");
-    gc.drawImage(temp, 600, 150);
-    gc.fillText("Hello Jadernak!", 600, 100);
-    // Menu
+  public void redraw(State state) {
+    gc.setFill(Color.web("#E0E0E0"));
+    gc.fillRect(0, 0, 375, 525);
+    gc.setFill(Color.web("#000000"));
     Integer active = this.parent.getMenuActive();
     for (int i = 0; i < this.parent.getMenuCount(); i++) {
       if (active == i) {
@@ -41,6 +54,11 @@ public class MainMenuDraw extends Draw {
       }
       gc.fillText(this.parent.getMenuAction(i), 40, 40 + i*40);
     }
+  }
+
+  /** @see Draw */
+  public void close() {
+    this.logo.stop();
   }
 }
 

@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import javafx.application.Application;
-import javafx.scene.canvas.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
@@ -18,8 +17,8 @@ public class Root extends Application {
   private static final Logger logger = Logger.getLogger(Root.class.getName());
 
   private Stage stage;
+  private StackPane stack;
   private Mode mode;
-  private GraphicsContext gc;
 
   /**
    * Opens file chooser to choose files.
@@ -41,12 +40,13 @@ public class Root extends Application {
    */
   // TODO add About
   public void switchMode(String mode) {
+    this.mode = null;
     switch (mode) {
       case "MainMenu":
-        this.mode = new MainMenu(this.gc, this);
+        this.mode = new MainMenu(this.stack, this);
         break;
       case "Game":
-        this.mode = new Game(this.gc, this);
+        this.mode = new Game(this.stack, this);
         break;
     }
   }
@@ -97,25 +97,33 @@ public class Root extends Application {
     }
   }
 
-  /** @see Application */
+  /**
+   * @see Application
+   * @author profojak
+   */
   @Override
   public void start(Stage stage) {
     // Window content
     this.stage = stage;
-    Canvas canvas = new Canvas(1000, 525); 
-    this.gc = canvas.getGraphicsContext2D();
-    StackPane stack = new StackPane();
-    stack.getChildren().add(canvas);
-    Scene scene = new Scene(stack);
+    this.stack = new StackPane();
+    Scene scene = new Scene(stack, 1000, 525);
 
-    scene.setOnKeyPressed(e -> { keyPressHandler(e); });
-    this.mode = new MainMenu(this.gc, this);
+    scene.setOnKeyPressed(e -> {
+      keyPressHandler(e);
+    });
+    switchMode("MainMenu");
 
     // Window
     stage.setScene(scene);
     stage.setResizable(false);
     stage.setTitle("Java Master: the Legend of Segfault");
     stage.show();
+  }
+
+  /** @see Application */
+  @Override
+  public void stop() {
+    System.exit(0);
   }
 
   /**

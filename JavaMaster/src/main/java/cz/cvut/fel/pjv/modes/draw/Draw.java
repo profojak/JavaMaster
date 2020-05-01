@@ -2,20 +2,28 @@ package cz.cvut.fel.pjv.modes.draw;
 
 import cz.cvut.fel.pjv.modes.Mode;
 
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.StackPane;
 import javafx.scene.image.Image;
 
 /**
  * Abstract class Draw implementing basic functionality of draw classes.
  */
 public abstract class Draw {
-  protected GraphicsContext gc;
+  public static enum State {
+    DEFAULT,
+    COMBAT,
+    LOOT,
+    DIALOG_FIRST,
+    DIALOG_SECOND
+  }
+
+  protected StackPane stack;
 
   /**
-   * @param gc - GraphicsContext to draw images to
+   * @param stack - StackPane to draw images to
    */
-  public Draw(GraphicsContext gc) {
-    this.gc = gc;
+  public Draw(StackPane stack) {
+    this.stack = stack;
   }
 
   /**
@@ -25,7 +33,18 @@ public abstract class Draw {
   public Draw() {
   }
 
-  /** Redraws window. */
-  public abstract void redraw(String partString);
+  /**
+   * Redraws screen.
+   *
+   * @param state - current state of Mode object to draw
+   */
+  abstract public void redraw(State state);
+
+  /**
+   * Properly closes Draw object.
+   *
+   * <p>This can be used for example to stop all running threads.
+   */
+  abstract public void close();
 }
 
