@@ -31,7 +31,7 @@ public class MainMenuRunnable implements Runnable {
     this.logo.setCache(true);
     this.logo.setSmooth(false);
     this.stack.getChildren().add(logo);
-    this.stack.setMargin(logo, new Insets(0, 0, 0, 385));
+    this.stack.setMargin(logo, new Insets(0, 0, 0, 340));
   }
 
   /** @author profojak */

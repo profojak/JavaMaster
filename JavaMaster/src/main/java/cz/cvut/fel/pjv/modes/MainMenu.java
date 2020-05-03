@@ -44,12 +44,12 @@ public class MainMenu implements Mode {
 
   public void keyUp() {
     this.menu.buttonPrevious();
-    this.draw.redraw(Draw.State.DEFAULT);
+    this.draw.redraw(Draw.State.MENU);
   }
 
   public void keyDown() {
     this.menu.buttonNext();
-    this.draw.redraw(Draw.State.DEFAULT);
+    this.draw.redraw(Draw.State.MENU);
   }
 
   public void keyLeft() {
@@ -79,17 +79,17 @@ public class MainMenu implements Mode {
    * Following methods are connecting Menu with MainMenuDraw object.
    */
 
-  /** @see Menu */
+  /** @see Layout */
   public String getMenuAction(Integer index) {
     return this.menu.getAction(index);
   }
 
-  /** @see Menu */
+  /** @see Layout */
   public Integer getMenuActive() {
     return this.menu.getActive();
   }  
 
-  /** @see Menu */
+  /** @see Layout */
   public Integer getMenuCount() {
     return this.menu.getCount();
   }

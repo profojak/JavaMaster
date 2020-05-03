@@ -29,7 +29,6 @@ public class GameDraw extends Draw {
   private final Game parent;
 
   private Integer roomId;
-  private GraphicsContext gc;
 
 
   /**
@@ -46,6 +45,7 @@ public class GameDraw extends Draw {
     Canvas canvas = new Canvas(1000, 525);
     this.gc = canvas.getGraphicsContext2D();
     this.stack.getChildren().add(canvas);
+    setGC();
 
     // Undiscovered map
     this.roomId = parent.getRoomId();
@@ -133,6 +133,22 @@ public class GameDraw extends Draw {
         // Weapon frame
         image = new Image(INVENTORY_FRAME_WEAPON);
         gc.drawImage(image, 910, 235);
+        break;
+      case MENU:
+        this.gc.setFill(Color.web("#FBF1C7"));
+        image = new Image("/sprites/menu/frame.png");
+        Integer active = this.parent.getMenuActive();
+        for (int i = 0; i < this.parent.getMenuCount(); i++) {
+          this.gc.drawImage(image, 500 - 5, 180 + i * BUTTON_HEIGHT - 5);
+          this.gc.drawImage(BUTTON, 500, 180 + i * BUTTON_HEIGHT);
+          this.gc.strokeText(this.parent.getMenuAction(i), 500 + TEXT_X_OFFSET,
+            180 + i * BUTTON_HEIGHT + TEXT_Y_OFFSET);
+          this.gc.fillText(this.parent.getMenuAction(i), 500 + TEXT_X_OFFSET,
+            180 + i * BUTTON_HEIGHT + TEXT_Y_OFFSET);
+          if (i == active) {
+            this.gc.drawImage(BUTTON_ACTIVE, 500, 180 + i * BUTTON_HEIGHT);
+          }
+        }
         break;
       /*case ROOM:
         // Map

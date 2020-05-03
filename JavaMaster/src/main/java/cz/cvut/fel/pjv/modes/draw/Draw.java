@@ -3,6 +3,10 @@ package cz.cvut.fel.pjv.modes.draw;
 import cz.cvut.fel.pjv.modes.Mode;
 
 import javafx.scene.layout.StackPane;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.image.Image;
 
 /**
@@ -14,10 +18,18 @@ public abstract class Draw {
     COMBAT,
     LOOT,
     DIALOG_FIRST,
-    DIALOG_SECOND
+    DIALOG_SECOND,
+    MENU
   }
 
+  private final String FONT = "/silkscreen.ttf", STROKE_COLOR = "#282828";
+
+  protected final Image BUTTON = new Image("/sprites/menu/bg.png"),
+    BUTTON_ACTIVE = new Image("/sprites/menu/active.png");
+  protected final Integer TEXT_X_OFFSET = 138, TEXT_Y_OFFSET = 55, BUTTON_HEIGHT = 85;
+
   protected StackPane stack;
+  protected GraphicsContext gc;
 
   /**
    * @param stack - StackPane to draw images to
@@ -39,6 +51,19 @@ public abstract class Draw {
    * @param state - current state of Mode object to draw
    */
   abstract public void redraw(State state);
+
+  /**
+   * Sets font to draw with.
+   *
+   * @author profojak
+   */
+  protected void setGC() {
+    this.gc.setFont(Font.loadFont(getClass().getResourceAsStream(FONT), 50));
+    this.gc.setStroke(Color.web(STROKE_COLOR));
+    this.gc.setFontSmoothingType(null);
+    this.gc.setLineWidth(10);
+    this.gc.setTextAlign(TextAlignment.CENTER);
+  }
 
   /**
    * Properly closes Draw object.

@@ -5,7 +5,7 @@ import cz.cvut.fel.pjv.modes.draw.*;
 import cz.cvut.fel.pjv.entities.Player;
 import cz.cvut.fel.pjv.room.Room;
 import cz.cvut.fel.pjv.inventory.Loot;
-import cz.cvut.fel.pjv.menu.layouts.*;
+import cz.cvut.fel.pjv.menu.layouts.Exit;
 
 import java.io.File;
 import java.io.FileReader;
@@ -64,6 +64,8 @@ public class Game implements Mode {
   private Room[] rooms = new Room[NUMBER_OF_ROOMS];
   private Integer roomStartId, roomEndId, roomCurrentId;
   private Direction direction = Direction.NORTH;
+  private Exit menu;
+  private Draw.State state = Draw.State.DEFAULT;
 
   /**
    * @param stack - StackPane to draw images to
@@ -117,7 +119,6 @@ public class Game implements Mode {
   private void turnPlayer(int directionChange) {
     direction = changeDirection(directionChange);
     logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction + RESET); // DEBUG
-    this.draw.redraw(Draw.State.DEFAULT);
   }
 
   // Key methods
@@ -128,65 +129,78 @@ public class Game implements Mode {
    * @author povolji2
    */
   public void keyUp() {
-    if (hasRoomFront()) {
-      switch (direction) {
-        case NORTH:
-          roomCurrentId += GO_NORTH;
-          break;
-        case EAST:
-          roomCurrentId += GO_EAST;
-          break;
-        case SOUTH:
-          roomCurrentId += GO_SOUTH;
-          break;
-        case WEST:
-          roomCurrentId += GO_WEST;
-          break;
-        default:
-          logger.severe(RED + ">>>  Error: Unexpected direction value: " + direction + RESET); // ERROR
-          return;
-      }
+    switch (state) {
+      case DEFAULT:
+        if (hasRoomFront()) {
+          switch (direction) {
+            case NORTH:
+              roomCurrentId += GO_NORTH;
+              break;
+            case EAST:
+              roomCurrentId += GO_EAST;
+              break;
+            case SOUTH:
+              roomCurrentId += GO_SOUTH;
+              break;
+            case WEST:
+              roomCurrentId += GO_WEST;
+              break;
+            default:
+              logger.severe(RED + ">>>  Error: Unexpected direction value: " + direction + RESET); // ERROR
+              return;
+          }
 
-      logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction +
-        RESET); // DEBUG
-      this.draw.redraw(Draw.State.DEFAULT);
-
-      if (!rooms[roomCurrentId].isVisited()) {
-        rooms[roomCurrentId].setVisited();
-        // Story and Monster
-        if (rooms[roomCurrentId].hasStoryBefore()) {
-          logger.info(WHITE + ">>> Story before: " + rooms[roomCurrentId].getStoryBefore() +
+          logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction +
             RESET); // DEBUG
+          this.draw.redraw(state);
+
+          if (!rooms[roomCurrentId].isVisited()) {
+            rooms[roomCurrentId].setVisited();
+            // Story and Monster
+            if (rooms[roomCurrentId].hasStoryBefore()) {
+              logger.info(WHITE + ">>> Story before: " + rooms[roomCurrentId].getStoryBefore() +
+                RESET); // DEBUG
+            }
+
+            // TODO Start fight
+            /*if (rooms[roomCurrentId].hasMonster()) {
+              this.draw.redraw(Draw.State.DEFAULT);
+
+            }*/
+
+            if (rooms[roomCurrentId].hasStoryAfter()) {
+              logger.info(WHITE + ">>> Story after: " + rooms[roomCurrentId].getStoryAfter() + RESET); // DEBUG
+            }
+
+            // TODO Better message
+            /*if (rooms[roomCurrentId].hasLoot()) {
+              Loot loot = rooms[roomCurrentId].getLoot();
+              logger.info(WHITE + ">>> You have found loot: " + loot.getCount() + " instance/s of " +
+                loot.getSprite() + RESET); // DEBUG
+              player.takeLoot(loot);
+            }*/
+          }
+
+          if (roomCurrentId.equals(roomEndId)) {
+            logger.info(WHITE + ">>> You have entered the End room on this floor" + RESET); // DEBUG
+          }
+        } else {
+          logger.warning(YELLOW + ">>>  You can't go there." + RESET); // DEBUG
         }
-
-        // TODO Start fight
-        if (rooms[roomCurrentId].hasMonster()) {
-          this.draw.redraw(Draw.State.DEFAULT);
-
-        }
-
-        if (rooms[roomCurrentId].hasStoryAfter()) {
-          logger.info(WHITE + ">>> Story after: " + rooms[roomCurrentId].getStoryAfter() + RESET); // DEBUG
-        }
-
-        // TODO Better message
-        if (rooms[roomCurrentId].hasLoot()) {
-          Loot loot = rooms[roomCurrentId].getLoot();
-          logger.info(WHITE + ">>> You have found loot: " + loot.getCount() + " instance/s of " +
-            loot.getSprite() + RESET); // DEBUG
-          player.takeLoot(loot);
-        }
-      }
-
-      if (roomCurrentId.equals(roomEndId)) {
-        logger.info(WHITE + ">>> You have entered the End room on this floor" + RESET); // DEBUG
-      }
-    } else {
-      logger.warning(YELLOW + ">>>  You can't go there." + RESET); // DEBUG
+        break;
+      case MENU:
+        this.menu.buttonPrevious();
     }
+    this.draw.redraw(state);
   }
 
   public void keyDown() {
+    switch (state) {
+      case MENU:
+        this.menu.buttonNext();
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   /**
@@ -195,7 +209,12 @@ public class Game implements Mode {
    * @author povolji2
    */
   public void keyLeft() {
-    turnPlayer(TURN_LEFT);
+    switch (state) {
+      case DEFAULT:
+        turnPlayer(TURN_LEFT);
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   /**
@@ -204,17 +223,44 @@ public class Game implements Mode {
    * @author povolji2
    */
   public void keyRight() {
-    turnPlayer(TURN_RIGHT);
+    switch (state) {
+      case DEFAULT:
+        turnPlayer(TURN_RIGHT);
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   /**
    * Exits the program.
    */
   public void keyEscape() {
-    this.root.switchMode("MainMenu");
+    switch (state) {
+      case MENU:
+        this.menu = null;
+        state = Draw.State.DEFAULT;
+        break;
+      case DEFAULT:
+        this.menu = new Exit();
+        state = Draw.State.MENU;
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   public void keyEnter() {
+    switch (state) {
+      case MENU:
+        if (this.menu.getAction(this.menu.getActive()).equals("Cancel")) {
+          this.menu = null;
+          state = Draw.State.DEFAULT;
+        } else if (this.menu.getAction(this.menu.getActive()).equals("Exit")) {
+          this.draw.close();
+          this.root.switchMode("MainMenu");
+        }
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   public void keyDelete() {
@@ -390,6 +436,25 @@ public class Game implements Mode {
    */
   public String getDirection() {
     return direction.toString();
+  }
+
+  /**
+   * Following methods are connecting Exit menu with GameDraw object.
+   */
+
+  /** @see Layout */
+  public String getMenuAction(Integer index) {
+    return this.menu.getAction(index);
+  }
+
+  /** @see Layout */
+  public Integer getMenuActive() {
+    return this.menu.getActive();
+  }
+
+  /** @see Layout */
+  public Integer getMenuCount() {
+    return this.menu.getCount();
   }
 }
 
