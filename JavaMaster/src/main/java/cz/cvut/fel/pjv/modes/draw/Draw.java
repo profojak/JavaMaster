@@ -17,16 +17,16 @@ public abstract class Draw {
     DEFAULT,
     COMBAT,
     LOOT,
-    DIALOG_FIRST,
-    DIALOG_SECOND,
+    STORY_BEFORE,
+    STORY_AFTER,
     MENU
   }
 
   private final String FONT = "/silkscreen.ttf", STROKE_COLOR = "#282828";
 
-  protected final Image BUTTON = new Image("/sprites/menu/bg.png"),
+  protected final Image BUTTON = new Image("/sprites/menu/button.png"),
     BUTTON_ACTIVE = new Image("/sprites/menu/active.png");
-  protected final Integer TEXT_X_OFFSET = 138, TEXT_Y_OFFSET = 55, BUTTON_HEIGHT = 85;
+  protected final Integer TEXT_X_OFFSET = 138, TEXT_Y_OFFSET = 60, BUTTON_HEIGHT = 95;
 
   protected StackPane stack;
   protected GraphicsContext gc;

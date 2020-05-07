@@ -15,7 +15,7 @@ import javafx.scene.text.Font;
  */
 //TODO
 public class MainMenuDraw extends Draw {
-  private final Integer WIDTH = 1000, HEIGHT = 525;
+  private final Integer WIDTH = 1000, HEIGHT = 525, MENU_X = 60, MENU_Y = 125;
   private final String BG_COLOR = "#928374", FILL_COLOR = "#FBF1C7",
     OVERLAY = "/sprites/overlay/mainmenu.png";
 
@@ -58,13 +58,13 @@ public class MainMenuDraw extends Draw {
     this.gc.setFill(Color.web(FILL_COLOR));
     Integer active = this.parent.getMenuActive();
     for (int i = 0; i < this.parent.getMenuCount(); i++) {
-      this.gc.drawImage(BUTTON, 60, 135 + i * BUTTON_HEIGHT);
-      this.gc.strokeText(this.parent.getMenuAction(i), 60 + TEXT_X_OFFSET,
-        135 + i * BUTTON_HEIGHT + TEXT_Y_OFFSET);
-      this.gc.fillText(this.parent.getMenuAction(i), 60 + TEXT_X_OFFSET,
-        135 + i * BUTTON_HEIGHT + TEXT_Y_OFFSET);
+      this.gc.drawImage(BUTTON, MENU_X, MENU_Y + i * BUTTON_HEIGHT);
+      this.gc.strokeText(this.parent.getMenuAction(i), MENU_X + TEXT_X_OFFSET,
+        MENU_Y + i * BUTTON_HEIGHT + TEXT_Y_OFFSET);
+      this.gc.fillText(this.parent.getMenuAction(i), MENU_X + TEXT_X_OFFSET,
+        MENU_Y + i * BUTTON_HEIGHT + TEXT_Y_OFFSET);
       if (i == active) {
-        this.gc.drawImage(BUTTON_ACTIVE, 60, 135 + i * BUTTON_HEIGHT);
+        this.gc.drawImage(BUTTON_ACTIVE, MENU_X, MENU_Y + i * BUTTON_HEIGHT);
       }
     }
   }

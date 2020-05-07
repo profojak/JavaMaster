@@ -118,19 +118,20 @@ public class Game implements Mode {
    */
   private void turnPlayer(int directionChange) {
     direction = changeDirection(directionChange);
-    logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction + RESET); // DEBUG
+    logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction
+      + RESET); // DEBUG
   }
 
   // Key methods
 
   /**
-   * Moves the player forward if possible.
+   * Handles up key event.
    *
    * @author povolji2
    */
   public void keyUp() {
     switch (state) {
-      case DEFAULT:
+      case DEFAULT: // Goes to the next room.
         if (hasRoomFront()) {
           switch (direction) {
             case NORTH:
@@ -146,30 +147,32 @@ public class Game implements Mode {
               roomCurrentId += GO_WEST;
               break;
             default:
-              logger.severe(RED + ">>>  Error: Unexpected direction value: " + direction + RESET); // ERROR
+              logger.severe(RED + ">>>  Error: Unexpected direction value: " + direction
+                + RESET); // ERROR
               return;
           }
 
           logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction +
             RESET); // DEBUG
-          this.draw.redraw(state);
 
+          // Story and Monster
           if (!rooms[roomCurrentId].isVisited()) {
             rooms[roomCurrentId].setVisited();
-            // Story and Monster
             if (rooms[roomCurrentId].hasStoryBefore()) {
               logger.info(WHITE + ">>> Story before: " + rooms[roomCurrentId].getStoryBefore() +
                 RESET); // DEBUG
+              state = Draw.State.STORY_BEFORE;
             }
 
             // TODO Start fight
             /*if (rooms[roomCurrentId].hasMonster()) {
-              this.draw.redraw(Draw.State.DEFAULT);
-
+              state = Draw.State.COMBAT;
             }*/
 
             if (rooms[roomCurrentId].hasStoryAfter()) {
-              logger.info(WHITE + ">>> Story after: " + rooms[roomCurrentId].getStoryAfter() + RESET); // DEBUG
+              logger.info(WHITE + ">>> Story after: " + rooms[roomCurrentId].getStoryAfter()
+                + RESET); // DEBUG
+              state = Draw.State.STORY_AFTER;
             }
 
             // TODO Better message
@@ -182,21 +185,25 @@ public class Game implements Mode {
           }
 
           if (roomCurrentId.equals(roomEndId)) {
-            logger.info(WHITE + ">>> You have entered the End room on this floor" + RESET); // DEBUG
+            logger.info(WHITE + ">>> You have entered the End room on this floor"
+              + RESET); // DEBUG
           }
         } else {
           logger.warning(YELLOW + ">>>  You can't go there." + RESET); // DEBUG
         }
         break;
-      case MENU:
+      case MENU: // Selects previous menu option.
         this.menu.buttonPrevious();
     }
     this.draw.redraw(state);
   }
 
+  /**
+   * Handles down key event.
+   */
   public void keyDown() {
     switch (state) {
-      case MENU:
+      case MENU: // Selects next menu option.
         this.menu.buttonNext();
         break;
     }
@@ -204,43 +211,45 @@ public class Game implements Mode {
   }
 
   /**
-   * Turns the player to the left.
-   *
-   * @author povolji2
+   * Handles left key event.
    */
   public void keyLeft() {
     switch (state) {
-      case DEFAULT:
+      case DEFAULT: // Turns the player to the left.
         turnPlayer(TURN_LEFT);
+        break;
+      case MENU: // Selects previous menu option.
+        this.menu.buttonPrevious();
         break;
     }
     this.draw.redraw(state);
   }
 
   /**
-   * Turns the player to the right.
-   *
-   * @author povolji2
+   * Handles right key event.
    */
   public void keyRight() {
     switch (state) {
-      case DEFAULT:
+      case DEFAULT: // Turns the player to the right.
         turnPlayer(TURN_RIGHT);
+        break;
+      case MENU: // Selects next menu option.
+        this.menu.buttonNext();
         break;
     }
     this.draw.redraw(state);
   }
 
   /**
-   * Exits the program.
+   * Handles escape key event.
    */
   public void keyEscape() {
     switch (state) {
-      case MENU:
+      case MENU: // Closes menu.
         this.menu = null;
         state = Draw.State.DEFAULT;
         break;
-      case DEFAULT:
+      case DEFAULT: // Opens menu.
         this.menu = new Exit();
         state = Draw.State.MENU;
         break;
@@ -248,9 +257,12 @@ public class Game implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * Handles enter key event.
+   */
   public void keyEnter() {
     switch (state) {
-      case MENU:
+      case MENU: // Selects currently active menu option.
         if (this.menu.getAction(this.menu.getActive()).equals("Cancel")) {
           this.menu = null;
           state = Draw.State.DEFAULT;
@@ -263,6 +275,9 @@ public class Game implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * Handles delete key event.
+   */
   public void keyDelete() {
   }
 
@@ -364,7 +379,8 @@ public class Game implements Mode {
             roomCurrentId = Integer.parseInt(line[1]);
             logger.info(WHITE + ">>> roomCurrentId = " + roomCurrentId + RESET); // DEBUG
             rooms[roomCurrentId] = new Room();
-            logger.info(WHITE + ">>> isVisited = " + rooms[roomCurrentId].isVisited() + RESET); // DEBUG
+            logger.info(WHITE + ">>> isVisited = " + rooms[roomCurrentId].isVisited()
+              + RESET); // DEBUG
             break;
           // Story of current room
           case STORY:
@@ -403,7 +419,7 @@ public class Game implements Mode {
         }
       }
     } catch (Exception exception) {
-      logger.log(Level.SEVERE, RED + "File could not be loaded." + RESET, exception);
+      logger.log(Level.SEVERE, RED + "File could not be loaded." + RESET, exception); // ERROR
       return false; // File could not be loaded
     }
     return true;

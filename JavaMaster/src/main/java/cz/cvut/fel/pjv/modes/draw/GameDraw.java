@@ -16,15 +16,22 @@ import java.util.logging.Logger;
  * @see Draw
  */
 public class GameDraw extends Draw {
-  private final int MAP_WIDTH = 5, MAP_LENGTH = 7;
+  private final int MAP_WIDTH = 5, MAP_LENGTH = 7, MAP_OFFSET = 75, MENU_X = 500, MENU_Y = 170;
   private final String MAP_VISITED_FALSE = "/sprites/map/visited_false.png",
     MAP_VISITED_TRUE = "/sprites/map/visited_true.png", MAP_ARROW = "/sprites/map/arrow_",
+
     INVENTORY_FRAME_ITEM = "/sprites/inventory/frame_item.png",
     INVENTORY_FRAME_WEAPON = "/sprites/inventory/frame_weapon.png",
-    MONSTER = "/sprites/monster/", OVERLAY = "/sprites/overlay/game.png",
-    PNG_EXTENSION = ".png", ROOM_RIGHT = "/sprites/room/right.png",
-    ROOM_BG = "/sprites/room/bg.png", ROOM_LEFT = "/sprites/room/left.png",
-    ROOM_FRONT = "/sprites/room/front/", RED = "\u001B[31m", RESET = "\u001B[0m";
+    OVERLAY = "/sprites/overlay/game.png", PNG_EXTENSION = ".png",
+
+    MONSTER = "/sprites/monster/",
+
+    ROOM_RIGHT = "/sprites/room/right.png", ROOM_BG = "/sprites/room/bg.png",
+    ROOM_LEFT = "/sprites/room/left.png", ROOM_FRONT = "/sprites/room/front/",
+    ROOM_DEFAULT = "default.png",
+
+    COLOR_TEXT = "#FBF1C7", COLOR_INVENTORY = "#665C54", COLOR_BAR = "#504945",
+    RED = "\u001B[31m", RESET = "\u001B[0m";
   private static final Logger logger = Logger.getLogger(GameDraw.class.getName());
   private final Game parent;
 
@@ -87,15 +94,15 @@ public class GameDraw extends Draw {
         /* Map */
         // Tile player was in before
         image = new Image(MAP_VISITED_TRUE);
-        gc.drawImage(image, (roomId % 5) * 75, (roomId / 5) * 75);
+        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
         // Current tile
         roomId = parent.getRoomId();
-        gc.drawImage(image, (roomId % 5) * 75, (roomId / 5) * 75);
+        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
         image = new Image(MAP_ARROW + parent.getDirection() + PNG_EXTENSION);
-        gc.drawImage(image, (roomId % 5) * 75, (roomId / 5) * 75);
+        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
 
         /* HP bars */
-        gc.setFill(Color.web("#504945"));
+        gc.setFill(Color.web(COLOR_BAR));
         gc.fillRect(375, 10, 525, 35);
         gc.fillRect(375, 480, 525, 35);
 
@@ -106,9 +113,9 @@ public class GameDraw extends Draw {
         // Front wall
         if (!parent.hasRoomFront()) {
           if (parent.getRoomSprite() != null) {
-            image = new Image(ROOM_FRONT);
+            image = new Image(ROOM_FRONT + parent.getRoomSprite());
           } else {
-            image = new Image(ROOM_FRONT + "default.png");
+            image = new Image(ROOM_FRONT + ROOM_DEFAULT);
           }
           gc.drawImage(image, 450, 50);
         }
@@ -124,7 +131,7 @@ public class GameDraw extends Draw {
         }
 
         /* Inventory */
-        gc.setFill(Color.web("#665C54"));
+        gc.setFill(Color.web(COLOR_INVENTORY));
         gc.fillRect(905, 10, 85, 505);
         // Item frame
         image = new Image(INVENTORY_FRAME_ITEM);
@@ -135,18 +142,16 @@ public class GameDraw extends Draw {
         gc.drawImage(image, 910, 235);
         break;
       case MENU:
-        this.gc.setFill(Color.web("#FBF1C7"));
-        image = new Image("/sprites/menu/frame.png");
+        this.gc.setFill(Color.web(COLOR_TEXT));
         Integer active = this.parent.getMenuActive();
         for (int i = 0; i < this.parent.getMenuCount(); i++) {
-          this.gc.drawImage(image, 500 - 5, 180 + i * BUTTON_HEIGHT - 5);
-          this.gc.drawImage(BUTTON, 500, 180 + i * BUTTON_HEIGHT);
-          this.gc.strokeText(this.parent.getMenuAction(i), 500 + TEXT_X_OFFSET,
-            180 + i * BUTTON_HEIGHT + TEXT_Y_OFFSET);
-          this.gc.fillText(this.parent.getMenuAction(i), 500 + TEXT_X_OFFSET,
-            180 + i * BUTTON_HEIGHT + TEXT_Y_OFFSET);
+          this.gc.drawImage(BUTTON, MENU_X, MENU_Y + i * BUTTON_HEIGHT);
+          this.gc.strokeText(this.parent.getMenuAction(i), MENU_X + TEXT_X_OFFSET,
+            MENU_Y + i * BUTTON_HEIGHT + TEXT_Y_OFFSET);
+          this.gc.fillText(this.parent.getMenuAction(i), MENU_X + TEXT_X_OFFSET,
+            MENU_Y + i * BUTTON_HEIGHT + TEXT_Y_OFFSET);
           if (i == active) {
-            this.gc.drawImage(BUTTON_ACTIVE, 500, 180 + i * BUTTON_HEIGHT);
+            this.gc.drawImage(BUTTON_ACTIVE, MENU_X, MENU_Y + i * BUTTON_HEIGHT);
           }
         }
         break;
