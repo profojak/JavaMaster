@@ -93,12 +93,12 @@ public class Room {
   }
 
   /**
-   * Gets monster texture.
+   * Gets monster.
    *
-   * @return texture of monster
+   * @return instance of monster
    */
-  public String getMonsterSprite() {
-    return monster.getSprite();
+  public Monster getMonster() {
+    return monster;
   }
 
   /**

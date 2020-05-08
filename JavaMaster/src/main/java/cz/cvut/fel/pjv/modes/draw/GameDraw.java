@@ -1,11 +1,14 @@
 package cz.cvut.fel.pjv.modes.draw;
 
 import cz.cvut.fel.pjv.modes.Game;
+import cz.cvut.fel.pjv.entities.Monster;
 
+import javafx.geometry.Insets;
 import javafx.scene.layout.StackPane;
 import javafx.scene.canvas.*;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,11 +35,13 @@ public class GameDraw extends Draw {
 
     COLOR_TEXT = "#FBF1C7", COLOR_INVENTORY = "#665C54", COLOR_BAR = "#504945",
     RED = "\u001B[31m", RESET = "\u001B[0m";
+  private final ImageView effect = new ImageView(new Image("/sprites/overlay/effect.png"));
   private static final Logger logger = Logger.getLogger(GameDraw.class.getName());
   private final Game parent;
 
+  private Thread thread;
   private Integer roomId;
-
+  private ImageView monster;
 
   /**
    * @param stack - StackPane to draw images to
@@ -54,7 +59,7 @@ public class GameDraw extends Draw {
     this.stack.getChildren().add(canvas);
     setGC();
 
-    // Undiscovered map
+    /* Undiscovered map */
     this.roomId = parent.getRoomId();
     Image image = new Image(MAP_VISITED_FALSE);
     for (int i = 0; i < MAP_WIDTH; i++) {
@@ -62,6 +67,17 @@ public class GameDraw extends Draw {
         gc.drawImage(image, i*75, j*75);
       }
     }
+
+    /* Inventory */
+    gc.setFill(Color.web(COLOR_INVENTORY));
+    gc.fillRect(905, 10, 85, 505);
+    // Item frame
+    image = new Image(INVENTORY_FRAME_ITEM);
+    gc.drawImage(image, 910, 15);
+    gc.drawImage(image, 910, 125);
+    // Weapon frame
+    image = new Image(INVENTORY_FRAME_WEAPON);
+    gc.drawImage(image, 910, 235);
 
     redraw(State.DEFAULT);
   }
@@ -78,7 +94,6 @@ public class GameDraw extends Draw {
    * @see Draw
    * @author profojak
    */
-  // TODO
   public void redraw(State state) {
     Image image;
     /*try {
@@ -129,17 +144,82 @@ public class GameDraw extends Draw {
           image = new Image(ROOM_RIGHT);
           gc.drawImage(image, 825, 50);
         }
+        break;
+      case MONSTER:
+        /* Room */
+        // Background
+        image = new Image(ROOM_BG);
+        gc.drawImage(image, 375, 50);
+        // Front wall
+        if (!parent.hasRoomFront()) {
+          if (parent.getRoomSprite() != null) {
+            image = new Image(ROOM_FRONT + parent.getRoomSprite());
+          } else {
+            image = new Image(ROOM_FRONT + ROOM_DEFAULT);
+          }
+          gc.drawImage(image, 450, 50);
+        }
+        // Left wall
+        if (!parent.hasRoomLeft()) {
+          image = new Image(ROOM_LEFT);
+          gc.drawImage(image, 375, 50);
+        }
+        // Right wall
+        if (!parent.hasRoomRight()) {
+          image = new Image(ROOM_RIGHT);
+          gc.drawImage(image, 825, 50);
+        }
+        // Front wall
+        if (!parent.hasRoomFront()) {
+          if (parent.getRoomSprite() != null) {
+            image = new Image(ROOM_FRONT + parent.getRoomSprite());
+          } else {
+            image = new Image(ROOM_FRONT + ROOM_DEFAULT);
+          }
+          gc.drawImage(image, 450, 50);
+        }
 
-        /* Inventory */
-        gc.setFill(Color.web(COLOR_INVENTORY));
-        gc.fillRect(905, 10, 85, 505);
-        // Item frame
-        image = new Image(INVENTORY_FRAME_ITEM);
-        gc.drawImage(image, 910, 15);
-        gc.drawImage(image, 910, 125);
-        // Weapon frame
-        image = new Image(INVENTORY_FRAME_WEAPON);
-        gc.drawImage(image, 910, 235);
+        /* Combat */
+        // Monster
+        this.monster = new ImageView(new Image(MONSTER + parent.getMonster().getSprite()));
+        this.monster.setPreserveRatio(true);
+        this.monster.setCache(true);
+        this.monster.setSmooth(false);
+        this.stack.getChildren().add(monster);
+        this.stack.setMargin(monster, new Insets(0, 0, 0, 275));
+
+        // Effect
+        this.effect.setPreserveRatio(true);
+        this.effect.setCache(true);
+        this.effect.setSmooth(false);
+        this.effect.setOpacity(0);
+        this.stack.getChildren().add(effect);
+        this.stack.setMargin(effect, new Insets(0, 0, 0, 275));
+        break;
+      case COMBAT:
+        /* Combat */
+        if (thread.isAlive()) {
+          thread.stop();
+          this.effect.setOpacity(0);
+          this.monster.setFitWidth(525);
+        }
+        thread = new Thread(new GameDrawCombatRunnable(monster, effect));
+        thread.start();
+        break;
+      case STORY_BEFORE:
+        /* Map */
+        // Tile player was in before
+        image = new Image(MAP_VISITED_TRUE);
+        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
+        // Current tile
+        roomId = parent.getRoomId();
+        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
+        image = new Image(MAP_ARROW + parent.getDirection() + PNG_EXTENSION);
+        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
+
+        /* Story dialog */
+        thread = new Thread(new GameDrawStoryRunnable(gc, parent.getStoryBefore()));
+        thread.start();
         break;
       case MENU:
         this.gc.setFill(Color.web(COLOR_TEXT));
@@ -155,37 +235,6 @@ public class GameDraw extends Draw {
           }
         }
         break;
-      /*case ROOM:
-        // Map
-        Integer roomIdOld = roomId;
-        roomId = parent.getRoomId();
-        image = new Image(MAP_VISITED_TRUE);
-        gc.drawImage(image, (roomId % 5) * 75, (roomId / 5) * 75);
-        gc.drawImage(image, (roomIdOld % 5) * 75, (roomIdOld / 5) * 75);
-        image = new Image(MAP_ARROW + parent.getDirection() + PNG_EXTENSION);
-        gc.drawImage(image, (roomId % 5) * 75, (roomId / 5) * 75);
-        // Room
-        image = new Image(ROOM_BACKGROUND);
-        gc.drawImage(image, 375, 50);
-        if (!parent.hasRoomFront()) {
-          image = new Image(ROOM_FRONT_WALL);
-          gc.drawImage(image, 450, 50);
-        }
-        if (!parent.hasRoomLeft()) {
-          image = new Image(ROOM_LEFT_WALL);
-          gc.drawImage(image, 375, 50);
-        }
-        if (!parent.hasRoomRight()) {
-          image = new Image(ROOM_RIGHT_WALL);
-          gc.drawImage(image, 825, 50);
-        }
-        break;
-      case INVENTORY:
-        break;
-      case MONSTER:
-        image = new Image(MONSTER_TEMP);
-        gc.drawImage(image, 600, 150);
-        break;*/
     }
     // Overlay
     image = new Image(OVERLAY);
@@ -194,6 +243,7 @@ public class GameDraw extends Draw {
 
   /** @see Draw */
   public void close() {
+    this.thread.stop();
   }
 }
 

@@ -4,17 +4,11 @@ import javafx.geometry.Insets;
 import javafx.scene.layout.StackPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.geometry.Rectangle2D;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Implementation of MainMenuRunnable: thread that draws pulsing logo.
  */
 public class MainMenuRunnable implements Runnable {
-  private final String YELLOW = "\u001B[33m", RESET = "\u001B[0m";
-  private static final Logger logger = Logger.getLogger(GameDraw.class.getName());
   private final ImageView logo;
 
   private StackPane stack;

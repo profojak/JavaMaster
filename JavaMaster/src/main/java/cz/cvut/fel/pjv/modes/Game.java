@@ -2,7 +2,7 @@ package cz.cvut.fel.pjv.modes;
 
 import cz.cvut.fel.pjv.Root;
 import cz.cvut.fel.pjv.modes.draw.*;
-import cz.cvut.fel.pjv.entities.Player;
+import cz.cvut.fel.pjv.entities.*;
 import cz.cvut.fel.pjv.room.Room;
 import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.menu.layouts.Exit;
@@ -159,20 +159,20 @@ public class Game implements Mode {
           if (!rooms[roomCurrentId].isVisited()) {
             rooms[roomCurrentId].setVisited();
             if (rooms[roomCurrentId].hasStoryBefore()) {
-              logger.info(WHITE + ">>> Story before: " + rooms[roomCurrentId].getStoryBefore() +
-                RESET); // DEBUG
+              logger.info(WHITE + ">>> Story before: " + getStoryBefore() + RESET); // DEBUG
               state = Draw.State.STORY_BEFORE;
+              break;
             }
 
-            // TODO Start fight
-            /*if (rooms[roomCurrentId].hasMonster()) {
+            if (rooms[roomCurrentId].hasMonster()) {
               state = Draw.State.COMBAT;
-            }*/
+              break;
+            }
 
             if (rooms[roomCurrentId].hasStoryAfter()) {
-              logger.info(WHITE + ">>> Story after: " + rooms[roomCurrentId].getStoryAfter()
-                + RESET); // DEBUG
+              logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
               state = Draw.State.STORY_AFTER;
+              break;
             }
 
             // TODO Better message
@@ -192,8 +192,26 @@ public class Game implements Mode {
           logger.warning(YELLOW + ">>>  You can't go there." + RESET); // DEBUG
         }
         break;
+      case STORY_BEFORE:
+        draw.close();
+
+        if (rooms[roomCurrentId].hasMonster()) {
+          state = Draw.State.COMBAT;
+          this.draw.redraw(Draw.State.MONSTER);
+          return;
+        }
+
+        if (rooms[roomCurrentId].hasStoryAfter()) {
+          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
+          state = Draw.State.STORY_AFTER;
+          break;
+        }
+
+        state = Draw.State.DEFAULT;
+        break;
       case MENU: // Selects previous menu option.
         this.menu.buttonPrevious();
+        break;
     }
     this.draw.redraw(state);
   }
@@ -203,6 +221,23 @@ public class Game implements Mode {
    */
   public void keyDown() {
     switch (state) {
+      case STORY_BEFORE:
+        draw.close();
+
+        if (rooms[roomCurrentId].hasMonster()) {
+          state = Draw.State.COMBAT;
+          this.draw.redraw(Draw.State.MONSTER);
+          return;
+        }
+
+        if (rooms[roomCurrentId].hasStoryAfter()) {
+          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
+          state = Draw.State.STORY_AFTER;
+          break;
+        }
+
+        state = Draw.State.DEFAULT;
+        break;
       case MENU: // Selects next menu option.
         this.menu.buttonNext();
         break;
@@ -217,6 +252,23 @@ public class Game implements Mode {
     switch (state) {
       case DEFAULT: // Turns the player to the left.
         turnPlayer(TURN_LEFT);
+        break;
+      case STORY_BEFORE:
+        draw.close();
+
+        if (rooms[roomCurrentId].hasMonster()) {
+          state = Draw.State.COMBAT;
+          this.draw.redraw(Draw.State.MONSTER);
+          return;
+        }
+
+        if (rooms[roomCurrentId].hasStoryAfter()) {
+          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
+          state = Draw.State.STORY_AFTER;
+          break;
+        }
+
+        state = Draw.State.DEFAULT;
         break;
       case MENU: // Selects previous menu option.
         this.menu.buttonPrevious();
@@ -233,6 +285,23 @@ public class Game implements Mode {
       case DEFAULT: // Turns the player to the right.
         turnPlayer(TURN_RIGHT);
         break;
+      case STORY_BEFORE:
+        draw.close();
+
+        if (rooms[roomCurrentId].hasMonster()) {
+          state = Draw.State.COMBAT;
+          this.draw.redraw(Draw.State.MONSTER);
+          return;
+        }
+
+        if (rooms[roomCurrentId].hasStoryAfter()) {
+          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
+          state = Draw.State.STORY_AFTER;
+          break;
+        }
+
+        state = Draw.State.DEFAULT;
+        break;
       case MENU: // Selects next menu option.
         this.menu.buttonNext();
         break;
@@ -245,13 +314,30 @@ public class Game implements Mode {
    */
   public void keyEscape() {
     switch (state) {
-      case MENU: // Closes menu.
-        this.menu = null;
-        state = Draw.State.DEFAULT;
-        break;
       case DEFAULT: // Opens menu.
         this.menu = new Exit();
         state = Draw.State.MENU;
+        break;
+      case STORY_BEFORE:
+        draw.close();
+
+        if (rooms[roomCurrentId].hasMonster()) {
+          state = Draw.State.COMBAT;
+          this.draw.redraw(Draw.State.MONSTER);
+          return;
+        }
+
+        if (rooms[roomCurrentId].hasStoryAfter()) {
+          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
+          state = Draw.State.STORY_AFTER;
+          break;
+        }
+
+        state = Draw.State.DEFAULT;
+        break;
+      case MENU: // Closes menu.
+        this.menu = null;
+        state = Draw.State.DEFAULT;
         break;
     }
     this.draw.redraw(state);
@@ -262,6 +348,23 @@ public class Game implements Mode {
    */
   public void keyEnter() {
     switch (state) {
+      case STORY_BEFORE:
+        draw.close();
+
+        if (rooms[roomCurrentId].hasMonster()) {
+          state = Draw.State.COMBAT;
+          this.draw.redraw(Draw.State.MONSTER);
+          return;
+        }
+
+        if (rooms[roomCurrentId].hasStoryAfter()) {
+          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
+          state = Draw.State.STORY_AFTER;
+          break;
+        }
+
+        state = Draw.State.DEFAULT;
+        break;
       case MENU: // Selects currently active menu option.
         if (this.menu.getAction(this.menu.getActive()).equals("Cancel")) {
           this.menu = null;
@@ -279,6 +382,26 @@ public class Game implements Mode {
    * Handles delete key event.
    */
   public void keyDelete() {
+    switch (state) {
+      case STORY_BEFORE:
+        draw.close();
+
+        if (rooms[roomCurrentId].hasMonster()) {
+          state = Draw.State.COMBAT;
+          this.draw.redraw(Draw.State.MONSTER);
+          return;
+        }
+
+        if (rooms[roomCurrentId].hasStoryAfter()) {
+          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
+          state = Draw.State.STORY_AFTER;
+          break;
+        }
+
+        state = Draw.State.DEFAULT;
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   // Boolean methods
@@ -368,7 +491,7 @@ public class Game implements Mode {
           // Player variables
           case PLAYER:
             player.setHp(Integer.parseInt(line[2]));
-            logger.info(WHITE + ">>> player = " + player.getHp() + RESET); // DEBUG
+            logger.info(WHITE + ">>> player = " + player.getHP() + RESET); // DEBUG
             Loot weapon = new Loot(line[1], Integer.parseInt(line[3]));
             player.takeLoot(weapon);
             logger.info(WHITE + ">>> player.getDamage = " + player.getDamage() + RESET); // DEBUG
@@ -395,8 +518,8 @@ public class Game implements Mode {
           case MONSTER:
             rooms[roomCurrentId].setMonster(line[1],
               Integer.parseInt(line[2]), Integer.parseInt(line[3]));
-            logger.info(WHITE + ">>> room.getMonsterSprite = " +
-              rooms[roomCurrentId].getMonsterSprite() + RESET); // DEBUG
+            logger.info(WHITE + ">>> room.getMonster = " +
+              rooms[roomCurrentId].getMonster() + RESET); // DEBUG
             break;
           // Loot in current room
           case LOOT:
@@ -446,6 +569,33 @@ public class Game implements Mode {
   }
 
   /**
+   * Gets story before entering a room.
+   *
+   * @return story string
+   */
+  public String getStoryBefore() {
+    return rooms[roomCurrentId].getStoryBefore();
+  }
+
+  /**
+   * Gets story after killing a monster.
+   *
+   * @return story string
+   */
+  public String getStoryAfter() {
+    return rooms[roomCurrentId].getStoryAfter();
+  }
+
+  /**
+   * Gets monster instance.
+   *
+   * @return monster instance
+   */
+  public Monster getMonster() {
+    return rooms[roomCurrentId].getMonster();
+  }
+
+  /**
    * Returns current direction converted to String.
    *
    * @return current direction converted to String
@@ -471,6 +621,25 @@ public class Game implements Mode {
   /** @see Layout */
   public Integer getMenuCount() {
     return this.menu.getCount();
+  }
+
+  /**
+   * Following methods are described in Player class.
+   */
+
+  /** @see Player */
+  public Integer getPlayerHP() {
+    return player.getHP();
+  }
+
+  /** @see Player */
+  public Integer getPlayerDamage() {
+    return player.getDamage();
+  }
+
+  /** @see Player */
+  public String getPlayerSprite() {
+    return player.getSprite();
   }
 }
 

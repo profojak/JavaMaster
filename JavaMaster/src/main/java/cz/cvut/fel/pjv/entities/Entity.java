@@ -43,7 +43,7 @@ abstract class Entity {
    *
    * @return current HP of entity
    */
-  public Integer getHp() {
+  public Integer getHP() {
     return hp;
   }
 }

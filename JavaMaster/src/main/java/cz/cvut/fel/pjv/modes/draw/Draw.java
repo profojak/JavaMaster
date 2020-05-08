@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 public abstract class Draw {
   public static enum State {
     DEFAULT,
+    MONSTER,
     COMBAT,
     LOOT,
     STORY_BEFORE,
