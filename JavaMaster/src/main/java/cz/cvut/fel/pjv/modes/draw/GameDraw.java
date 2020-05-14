@@ -21,8 +21,8 @@ import java.util.logging.Logger;
 public class GameDraw extends Draw {
   private final Integer MAP_WIDTH = 5, MAP_LENGTH = 7, MAP_OFFSET = 75, MENU_X = 500, MENU_Y = 170,
     BAR_WIDTH = 525, BAR_HEIGHT = 35;
-  private final String MAP_VISITED_FALSE = "/sprites/map/visited_false.png",
-    MAP_VISITED_TRUE = "/sprites/map/visited_true.png", MAP_ARROW = "/sprites/map/arrow_",
+  private final String MAP_TILE = "/sprites/map/tile.png",
+    MAP_ARROW = "/sprites/map/arrow_", MAP_WALL = "/sprites/map/wall_",
 
     INVENTORY_FRAME_ITEM = "/sprites/inventory/frame_item.png",
     INVENTORY_FRAME_ITEM_ACTIVE = "/sprites/inventory/active_item.png",
@@ -67,7 +67,7 @@ public class GameDraw extends Draw {
 
     /* Undiscovered map */
     this.roomId = parent.getRoomId();
-    Image image = new Image(MAP_VISITED_FALSE);
+    Image image = new Image(MAP_TILE);
     for (int i = 0; i < MAP_WIDTH; i++) {
       for (int j = 0; j < MAP_LENGTH; j++) {
         gc.drawImage(image, i*75, j*75);
@@ -117,18 +117,35 @@ public class GameDraw extends Draw {
         exception); // ERROR
       return;
     }*/
+    Integer row = parent.getRoomId() % MAP_WIDTH, col = parent.getRoomId() / MAP_WIDTH;
     switch (state) {
       /* Draw when GameDraw is created */
       case DEFAULT:
         /* Map */
         // Tile player was in before
-        image = new Image(MAP_VISITED_TRUE);
-        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
-        // Current tile
-        roomId = parent.getRoomId();
-        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
+        gc.setFill(Color.web(COLOR_BAR));
+        gc.fillRect((roomId % MAP_WIDTH) * MAP_OFFSET + 10,
+          (roomId / MAP_WIDTH) * MAP_OFFSET + 10, 55, 55);
+        // Current tile if not visited
+        if (!parent.isRoomVisited(parent.getRoomId())) {
+          gc.fillRect(row * MAP_OFFSET, col * MAP_OFFSET, 75, 75);
+          // Walls
+          if (!parent.hasRoomFront()) {
+            image = new Image(MAP_WALL + parent.getDirection() + PNG_EXTENSION);
+            gc.drawImage(image, (row) * MAP_OFFSET, (col) * MAP_OFFSET);
+          }
+          if (!parent.hasRoomLeft()) {
+            image = new Image(MAP_WALL + parent.getLeftDirection() + PNG_EXTENSION);
+            gc.drawImage(image, (row) * MAP_OFFSET, (col) * MAP_OFFSET);
+          }
+          if (!parent.hasRoomRight()) {
+            image = new Image(MAP_WALL + parent.getRightDirection() + PNG_EXTENSION);
+            gc.drawImage(image, (row) * MAP_OFFSET, (col) * MAP_OFFSET);
+          }
+        }
+        gc.fillRect(row * MAP_OFFSET + 10, col * MAP_OFFSET + 10, 55, 55);
         image = new Image(MAP_ARROW + parent.getDirection() + PNG_EXTENSION);
-        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
+        gc.drawImage(image, row * MAP_OFFSET, col * MAP_OFFSET);
 
         /* Room */
         // Background
@@ -155,6 +172,32 @@ public class GameDraw extends Draw {
         }
         break;
       case MONSTER:
+        /* Map */
+        // Tile player was in before
+        gc.setFill(Color.web(COLOR_BAR));
+        gc.fillRect((roomId % MAP_WIDTH) * MAP_OFFSET + 10,
+          (roomId / MAP_WIDTH) * MAP_OFFSET + 10, 55, 55);
+        // Current tile if not visited
+        if (!parent.isRoomVisited(parent.getRoomId())) {
+          gc.fillRect(row * MAP_OFFSET, col * MAP_OFFSET, 75, 75);
+          // Walls
+          if (!parent.hasRoomFront()) {
+            image = new Image(MAP_WALL + parent.getDirection() + PNG_EXTENSION);
+            gc.drawImage(image, (row) * MAP_OFFSET, (col) * MAP_OFFSET);
+          }
+          if (!parent.hasRoomLeft()) {
+            image = new Image(MAP_WALL + parent.getLeftDirection() + PNG_EXTENSION);
+            gc.drawImage(image, (row) * MAP_OFFSET, (col) * MAP_OFFSET);
+          }
+          if (!parent.hasRoomRight()) {
+            image = new Image(MAP_WALL + parent.getRightDirection() + PNG_EXTENSION);
+            gc.drawImage(image, (row) * MAP_OFFSET, (col) * MAP_OFFSET);
+          }
+        }
+        gc.fillRect(row * MAP_OFFSET + 10, col * MAP_OFFSET + 10, 55, 55);
+        image = new Image(MAP_ARROW + parent.getDirection() + PNG_EXTENSION);
+        gc.drawImage(image, row * MAP_OFFSET, col * MAP_OFFSET);
+
         /* Room */
         // Background
         image = new Image(ROOM_BG);
@@ -198,6 +241,18 @@ public class GameDraw extends Draw {
         gc.setFill(Color.web(COLOR_BAR_PLAYER_FG));
         gc.fillRect(380, 485, BAR_WIDTH - 10, BAR_HEIGHT - 10);
 
+        /* Inventory */
+        // TODO
+        image = new Image(BOMB);
+        gc.drawImage(image, 910, 15);
+        image = new Image(POTION);
+        gc.drawImage(image, 910, 125);
+        image = new Image(INVENTORY_FRAME_ITEM_ACTIVE);
+        gc.drawImage(image, 910, 15);
+        gc.drawImage(image, 910, 125);
+        image = new Image(INVENTORY_FRAME_WEAPON_ACTIVE);
+        gc.drawImage(image, 910, 235);
+
         /* Combat */
         // Monster
         this.monster = new ImageView(new Image(MONSTER + parent.getMonster().getSprite()));
@@ -228,13 +283,29 @@ public class GameDraw extends Draw {
       case STORY_BEFORE:
         /* Map */
         // Tile player was in before
-        image = new Image(MAP_VISITED_TRUE);
-        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
-        // Current tile
-        roomId = parent.getRoomId();
-        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
+        gc.setFill(Color.web(COLOR_BAR));
+        gc.fillRect((roomId % MAP_WIDTH) * MAP_OFFSET + 10,
+          (roomId / MAP_WIDTH) * MAP_OFFSET + 10, 55, 55);
+        // Current tile if not visited
+        if (!parent.isRoomVisited(parent.getRoomId())) {
+          gc.fillRect(row * MAP_OFFSET, col * MAP_OFFSET, 75, 75);
+          // Walls
+          if (!parent.hasRoomFront()) {
+            image = new Image(MAP_WALL + parent.getDirection() + PNG_EXTENSION);
+            gc.drawImage(image, (row) * MAP_OFFSET, (col) * MAP_OFFSET);
+          }
+          if (!parent.hasRoomLeft()) {
+            image = new Image(MAP_WALL + parent.getLeftDirection() + PNG_EXTENSION);
+            gc.drawImage(image, (row) * MAP_OFFSET, (col) * MAP_OFFSET);
+          }
+          if (!parent.hasRoomRight()) {
+            image = new Image(MAP_WALL + parent.getRightDirection() + PNG_EXTENSION);
+            gc.drawImage(image, (row) * MAP_OFFSET, (col) * MAP_OFFSET);
+          }
+        }
+        gc.fillRect(row * MAP_OFFSET + 10, col * MAP_OFFSET + 10, 55, 55);
         image = new Image(MAP_ARROW + parent.getDirection() + PNG_EXTENSION);
-        gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
+        gc.drawImage(image, row * MAP_OFFSET, col * MAP_OFFSET);
 
         /* Story dialog */
         thread = new Thread(new GameDrawStoryRunnable(gc, parent.getStoryBefore()));
@@ -258,11 +329,15 @@ public class GameDraw extends Draw {
     // Overlay
     image = new Image(OVERLAY);
     gc.drawImage(image, 0, 0);
+    // Current room
+    roomId = parent.getRoomId();
   }
 
   /** @see Draw */
   public void close() {
-    this.thread.interrupt();
+    if (this.thread != null && this.thread.isAlive()) {
+      this.thread.interrupt();
+    }
   }
 }
 

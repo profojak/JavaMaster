@@ -156,7 +156,8 @@ public class Game implements Mode {
             RESET); // DEBUG
 
           // Story and Monster
-          if (!rooms[roomCurrentId].isVisited()) {
+          if (!isRoomVisited(roomCurrentId)) {
+            this.draw.redraw(Draw.State.DEFAULT);
             rooms[roomCurrentId].setVisited();
             if (rooms[roomCurrentId].hasStoryBefore()) {
               logger.info(WHITE + ">>> Story before: " + getStoryBefore() + RESET); // DEBUG
@@ -502,7 +503,7 @@ public class Game implements Mode {
             roomCurrentId = Integer.parseInt(line[1]);
             logger.info(WHITE + ">>> roomCurrentId = " + roomCurrentId + RESET); // DEBUG
             rooms[roomCurrentId] = new Room();
-            logger.info(WHITE + ">>> isVisited = " + rooms[roomCurrentId].isVisited()
+            logger.info(WHITE + ">>> isVisited = " + isRoomVisited(roomCurrentId)
               + RESET); // DEBUG
             break;
           // Story of current room
@@ -549,6 +550,16 @@ public class Game implements Mode {
   }
 
   // GUI
+
+  /**
+   * Returns whether room specified by index is visited.
+   *
+   * @param index - index of room to check
+   * @return whther room specified by index is visited
+   */
+  public Boolean isRoomVisited(Integer index) {
+    return rooms[index].isVisited();
+  }
 
   /**
    * Returns index of current room.
@@ -602,6 +613,24 @@ public class Game implements Mode {
    */
   public String getDirection() {
     return direction.toString();
+  }
+
+  /**
+   * Returns left direction relative to current direction converted to String.
+   *
+   * @return left direction relative to current direction converted to String
+   */
+  public String getLeftDirection() {
+    return changeDirection(TURN_LEFT).toString();
+  }
+
+  /**
+   * Returns right direction relative to current direction converted to String.
+   *
+   * @return right direction relative to current direction converted to String
+   */
+  public String getRightDirection() {
+    return changeDirection(TURN_RIGHT).toString();
   }
 
   /**
