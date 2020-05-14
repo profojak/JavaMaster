@@ -6,7 +6,6 @@ import cz.cvut.fel.pjv.menu.layouts.Layout;
 import cz.cvut.fel.pjv.modes.draw.*;
 import cz.cvut.fel.pjv.entities.*;
 import cz.cvut.fel.pjv.room.Room;
-import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.menu.layouts.Exit;
 
 import java.io.File;

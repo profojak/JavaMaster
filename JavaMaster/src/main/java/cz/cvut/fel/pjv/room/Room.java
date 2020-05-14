@@ -1,7 +1,6 @@
 package cz.cvut.fel.pjv.room;
 
 import cz.cvut.fel.pjv.entities.Monster;
-import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.inventory.items.Bomb;
 import cz.cvut.fel.pjv.inventory.items.Item;
 import cz.cvut.fel.pjv.inventory.items.Potion;

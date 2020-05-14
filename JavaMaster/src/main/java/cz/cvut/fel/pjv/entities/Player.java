@@ -1,7 +1,6 @@
 package cz.cvut.fel.pjv.entities;
 
 import cz.cvut.fel.pjv.entities.Entity;
-import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.inventory.Inventory;
 import cz.cvut.fel.pjv.inventory.items.Item;
 
