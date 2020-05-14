@@ -1,6 +1,8 @@
 package cz.cvut.fel.pjv.modes;
 
 import cz.cvut.fel.pjv.Root;
+import cz.cvut.fel.pjv.inventory.items.Weapon;
+import cz.cvut.fel.pjv.menu.layouts.Layout;
 import cz.cvut.fel.pjv.modes.draw.*;
 import cz.cvut.fel.pjv.entities.*;
 import cz.cvut.fel.pjv.room.Room;
@@ -493,7 +495,7 @@ public class Game implements Mode {
           case PLAYER:
             player.setHp(Integer.parseInt(line[2]));
             logger.info(WHITE + ">>> player = " + player.getHP() + RESET); // DEBUG
-            Loot weapon = new Loot(line[1], Integer.parseInt(line[3]));
+            Weapon weapon = new Weapon(line[1], line[1].substring(0, line[1].lastIndexOf('.')), Integer.parseInt(line[3]));
             player.takeLoot(weapon);
             logger.info(WHITE + ">>> player.getDamage = " + player.getDamage() + RESET); // DEBUG
             logger.info(WHITE + ">>> player.getSprite = " + player.getSprite() + RESET); // DEBUG
@@ -524,7 +526,7 @@ public class Game implements Mode {
             break;
           // Loot in current room
           case LOOT:
-            rooms[roomCurrentId].setLoot(line[1], Integer.parseInt(line[2]));
+            rooms[roomCurrentId].setLoot(line[1], Integer.parseInt(line[2]), player.getHP());
             logger.info(WHITE + ">>> room.getLootSprite = " +
               rooms[roomCurrentId].getLoot().getSprite() + RESET); // DEBUG
             break;

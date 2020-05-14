@@ -3,6 +3,7 @@ package cz.cvut.fel.pjv.entities;
 import cz.cvut.fel.pjv.entities.Entity;
 import cz.cvut.fel.pjv.inventory.Loot;
 import cz.cvut.fel.pjv.inventory.Inventory;
+import cz.cvut.fel.pjv.inventory.items.Item;
 
 /**
  * Implementation of Player: Entity controlled by user.
@@ -55,7 +56,7 @@ public class Player extends Entity {
    *
    * @param loot - loot instance
    */
-  public void takeLoot(Loot loot) {
+  public void takeLoot(Item loot) {
     inventory.addLoot(loot);
   }
 }

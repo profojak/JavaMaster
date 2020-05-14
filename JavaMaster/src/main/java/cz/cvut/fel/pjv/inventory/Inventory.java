@@ -1,5 +1,9 @@
 package cz.cvut.fel.pjv.inventory;
 
+import cz.cvut.fel.pjv.inventory.items.Bomb;
+import cz.cvut.fel.pjv.inventory.items.Item;
+import cz.cvut.fel.pjv.inventory.items.Potion;
+import cz.cvut.fel.pjv.inventory.items.Weapon;
 import cz.cvut.fel.pjv.modes.Game;
 
 import java.util.logging.Level;
@@ -9,21 +13,23 @@ import java.util.logging.Logger;
  * Inventory class holds number of potions and bombs and a weapon.
  */
 public class Inventory {
-  enum Item {
+  /*enum Item {
     BOMB,
     POTION,
     WEAPON
-  }
+  }*/
 
   private final Integer NUMBER_OF_ITEMS = Item.values().length, NEXT_ITEM = 1,
     PREVIOUS_ITEM = NUMBER_OF_ITEMS - 1;
   private final String RED = "\u001B[31m", RESET = "\u001B[0m";
   private static final Logger logger = Logger.getLogger(Inventory.class.getName());
 
-  private Integer numPotions = 0, numBombs = 0;
   private Integer weaponDamage;
   private Item activeItem = Item.WEAPON;
   private String weaponSprite;
+  private Weapon weapon = null;
+  private Potion potion = null;
+  private Bomb bomb = null;
 
   // Pick ups
 
@@ -34,40 +40,28 @@ public class Inventory {
    *
    * @param loot - loot instance
    */
-  public void addLoot(Loot loot) {
-    String sprite = loot.getSprite();
-    switch (sprite) {
+  public void addLoot(Item loot) {
+    switch (loot.getClass()) {
       // Potion
-      case "potion":
-        addPotion(loot.getCount());
+      case Potion.class:
+        if (potion.equals(null)) {
+          potion = (Potion) loot;
+        }
+        potion.updatePotionCount(((Potion) loot).getPotionCount());
         break;
       // Bomb
-      case "bomb":
-        addBomb(loot.getCount());
+      case Bomb.class:
+        if (bomb.equals(null)) {
+          bomb = (Bomb) loot;
+        }
+        bomb.updateBombCount(((Bomb) loot).getBombCount());
         break;
       // Weapon
       // TODO Check if player wants to get new weapon
       default:
+        
         setWeapon(sprite, loot.getCount());
     }
-  }
-
-  /**
-   * Adds potion to inventory.
-   *
-   * @param count - how many potions to add
-   */
-  public void addPotion(Integer count) {
-    numPotions += count;
-  }
-
-  /**
-   * Adds bomb to inventory.
-   *
-   * @param count - how many bombs to add
-   */
-  public void addBomb(Integer count) {
-    numBombs += count;
   }
 
   /**
@@ -138,7 +132,10 @@ public class Inventory {
    * @return number of potions
    */
   public Integer getPotionCount() {
-    return 0;
+    if (potion.equals(null)) {
+      return 0;
+    }
+    return potion.getPotionCount();
   }
 
   /**
@@ -147,7 +144,10 @@ public class Inventory {
    * @return number of bombs
    */
   public Integer getBombCount() {
-    return 0;
+    if (bomb.equals(null)) {
+      return 0;
+    }
+    return bomb.getBombCount();
   }
 
   /**

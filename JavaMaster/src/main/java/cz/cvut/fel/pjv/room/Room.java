@@ -2,6 +2,10 @@ package cz.cvut.fel.pjv.room;
 
 import cz.cvut.fel.pjv.entities.Monster;
 import cz.cvut.fel.pjv.inventory.Loot;
+import cz.cvut.fel.pjv.inventory.items.Bomb;
+import cz.cvut.fel.pjv.inventory.items.Item;
+import cz.cvut.fel.pjv.inventory.items.Potion;
+import cz.cvut.fel.pjv.inventory.items.Weapon;
 
 /**
  * Implementation of Room: class that holds Monster and Loot objects.
@@ -10,11 +14,13 @@ import cz.cvut.fel.pjv.inventory.Loot;
  * calls room methods to interact with room objects and variables.
  */
 public class Room {
+  private final String PNG_EXTENSION = ".png";
+  private final Integer HEALING_DIVIDER = 2, BOMBING_DIVIDER = 2;
   private Boolean isVisited = false;
   private String storyBefore = "", storyAfter = "";
   private String sprite = null;
   private Monster monster = null;
-  private Loot loot = null;
+  private Item loot = null;
 
   // Boolean methods
 
@@ -106,7 +112,7 @@ public class Room {
    *
    * @return loot
    */
-  public Loot getLoot() {
+  public Item getLoot() {
     return loot;
   }
 
@@ -160,11 +166,19 @@ public class Room {
   /**
    * Sets loot.
    *
-   * @param sprite - loot type/texture
-   * @param count - loot count/damage
+   * @param name - loot name/type/texture
+   * @param number - loot count/damage
+   * @param playerHP - max HP of player
    */
-  public void setLoot(String sprite, Integer count) {
-    loot = new Loot(sprite, count);
+  public void setLoot(String name, Integer number, Integer playerHP) {
+    switch(name) {
+      case "potion":
+        loot = new Potion(name + PNG_EXTENSION, name, playerHP/HEALING_DIVIDER, number);
+      case "bomb":
+        loot = new Bomb(name + PNG_EXTENSION, name, playerHP/BOMBING_DIVIDER, number);
+      default:
+        loot = new Weapon(name, name.substring(0, name.lastIndexOf('.')), number);
+    }
   }
 }
 

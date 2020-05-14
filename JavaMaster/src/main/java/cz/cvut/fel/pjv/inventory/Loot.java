@@ -14,7 +14,7 @@ public class Loot {
    * @param sprite - loot type when "potion" or "bomb", weapon texture otherwise
    * @param count - loot count when type is "potion" or "bomb", weapon damage otherwise
    */
-  public Loot(String sprite, Integer count) {
+  public Loot(String sprite, Integer count) { 
     this.sprite = sprite;
     this.count = count;
   }
