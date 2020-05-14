@@ -31,7 +31,7 @@ public class MainMenuRunnable implements Runnable {
   /** @author profojak */
   @Override
   public void run() {
-    while (true) {
+    while (!Thread.currentThread().isInterrupted()) {
       try {
         this.logo.setRotate(8 * Math.sin(System.currentTimeMillis() * 0.0004));
         this.logo.setFitWidth(500 + 30 * Math.sin(System.currentTimeMillis() * 0.0012));

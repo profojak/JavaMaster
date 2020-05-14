@@ -22,14 +22,16 @@ public class GameDrawCombatRunnable implements Runnable {
   public void run() {
     this.monster.setFitWidth(650);
     for (int i = 0; i <= 20; i++) {
-      try {
-        this.effect.setOpacity(1 - i * 0.05);
-        if (i == 2) {
-          this.monster.setFitWidth(525);
+      if (!Thread.currentThread().isInterrupted()) {
+        try {
+          this.effect.setOpacity(1 - i * 0.05);
+          if (i == 2) {
+            this.monster.setFitWidth(525);
+          }
+          Thread.sleep(60);
+        } catch (Exception e) {
+          return;
         }
-        Thread.sleep(60);
-      } catch (Exception e) {
-        Thread.currentThread().stop();
       }
     }
   }

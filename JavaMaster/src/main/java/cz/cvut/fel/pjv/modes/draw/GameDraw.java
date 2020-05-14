@@ -19,21 +19,27 @@ import java.util.logging.Logger;
  * @see Draw
  */
 public class GameDraw extends Draw {
-  private final int MAP_WIDTH = 5, MAP_LENGTH = 7, MAP_OFFSET = 75, MENU_X = 500, MENU_Y = 170;
+  private final Integer MAP_WIDTH = 5, MAP_LENGTH = 7, MAP_OFFSET = 75, MENU_X = 500, MENU_Y = 170,
+    BAR_WIDTH = 525, BAR_HEIGHT = 35;
   private final String MAP_VISITED_FALSE = "/sprites/map/visited_false.png",
     MAP_VISITED_TRUE = "/sprites/map/visited_true.png", MAP_ARROW = "/sprites/map/arrow_",
 
     INVENTORY_FRAME_ITEM = "/sprites/inventory/frame_item.png",
+    INVENTORY_FRAME_ITEM_ACTIVE = "/sprites/inventory/active_item.png",
     INVENTORY_FRAME_WEAPON = "/sprites/inventory/frame_weapon.png",
+    INVENTORY_FRAME_WEAPON_ACTIVE = "/sprites/inventory/active_weapon.png",
     OVERLAY = "/sprites/overlay/game.png", PNG_EXTENSION = ".png",
 
     MONSTER = "/sprites/monster/",
+    BOMB = "/sprites/inventory/bomb.png", POTION = "/sprites/inventory/potion.png",
 
     ROOM_RIGHT = "/sprites/room/right.png", ROOM_BG = "/sprites/room/bg.png",
     ROOM_LEFT = "/sprites/room/left.png", ROOM_FRONT = "/sprites/room/front/",
     ROOM_DEFAULT = "default.png",
 
-    COLOR_TEXT = "#FBF1C7", COLOR_INVENTORY = "#665C54", COLOR_BAR = "#504945",
+    COLOR_TEXT = "#FBF1C7", COLOR_INVENTORY = "#665C54",
+    COLOR_BAR = "#504945", COLOR_BAR_PLAYER_BG = "#9D0006", COLOR_BAR_PLAYER_FG = "#CC241D",
+    COLOR_BAR_MONSTER_BG = "#427B58", COLOR_BAR_MONSTER_FG = "#689D6A",
     RED = "\u001B[31m", RESET = "\u001B[0m";
   private final ImageView effect = new ImageView(new Image("/sprites/overlay/effect.png"));
   private static final Logger logger = Logger.getLogger(GameDraw.class.getName());
@@ -79,6 +85,14 @@ public class GameDraw extends Draw {
     image = new Image(INVENTORY_FRAME_WEAPON);
     gc.drawImage(image, 910, 235);
 
+    /* HP bars */
+    gc.setFill(Color.web(COLOR_BAR));
+    gc.fillRect(375, 10, BAR_WIDTH + 10, BAR_HEIGHT + 10);
+    gc.setFill(Color.web(COLOR_BAR_PLAYER_BG));
+    gc.fillRect(375, 480, BAR_WIDTH, BAR_HEIGHT);
+    gc.setFill(Color.web(COLOR_BAR_PLAYER_FG));
+    gc.fillRect(380, 485, BAR_WIDTH - 10, BAR_HEIGHT - 10);
+
     redraw(State.DEFAULT);
   }
 
@@ -115,11 +129,6 @@ public class GameDraw extends Draw {
         gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
         image = new Image(MAP_ARROW + parent.getDirection() + PNG_EXTENSION);
         gc.drawImage(image, (roomId % MAP_WIDTH) * MAP_OFFSET, (roomId / MAP_WIDTH) * MAP_OFFSET);
-
-        /* HP bars */
-        gc.setFill(Color.web(COLOR_BAR));
-        gc.fillRect(375, 10, 525, 35);
-        gc.fillRect(375, 480, 525, 35);
 
         /* Room */
         // Background
@@ -179,6 +188,16 @@ public class GameDraw extends Draw {
           gc.drawImage(image, 450, 50);
         }
 
+        /* Bars */
+        gc.setFill(Color.web(COLOR_BAR_MONSTER_BG));
+        gc.fillRect(375, 10, BAR_WIDTH, BAR_HEIGHT);
+        gc.setFill(Color.web(COLOR_BAR_MONSTER_FG));
+        gc.fillRect(380, 15, BAR_WIDTH - 10, BAR_HEIGHT - 10);
+        gc.setFill(Color.web(COLOR_BAR_PLAYER_BG));
+        gc.fillRect(375, 480, BAR_WIDTH, BAR_HEIGHT);
+        gc.setFill(Color.web(COLOR_BAR_PLAYER_FG));
+        gc.fillRect(380, 485, BAR_WIDTH - 10, BAR_HEIGHT - 10);
+
         /* Combat */
         // Monster
         this.monster = new ImageView(new Image(MONSTER + parent.getMonster().getSprite()));
@@ -199,7 +218,7 @@ public class GameDraw extends Draw {
       case COMBAT:
         /* Combat */
         if (thread.isAlive()) {
-          thread.stop();
+          thread.interrupt();
           this.effect.setOpacity(0);
           this.monster.setFitWidth(525);
         }
@@ -243,7 +262,7 @@ public class GameDraw extends Draw {
 
   /** @see Draw */
   public void close() {
-    this.thread.stop();
+    this.thread.interrupt();
   }
 }
 

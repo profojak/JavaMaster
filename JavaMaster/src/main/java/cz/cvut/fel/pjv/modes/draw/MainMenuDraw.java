@@ -71,7 +71,7 @@ public class MainMenuDraw extends Draw {
 
   /** @see Draw */
   public void close() {
-    this.logo.stop();
+    this.logo.interrupt();
   }
 }
 

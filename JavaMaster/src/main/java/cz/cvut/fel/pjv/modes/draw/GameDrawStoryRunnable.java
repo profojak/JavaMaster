@@ -35,25 +35,26 @@ public class GameDrawStoryRunnable implements Runnable {
         
       // Printing letters
       this.gc.setFill(Color.web(COLOR_TEXT));
-      while (print_letters && i < 9) {
-        while (print_letters && j < 14) {
-          Thread.sleep(30);
+      while (!Thread.currentThread().isInterrupted()) {
+        while (print_letters && i < 9) {
+          while (print_letters && j < 14) {
+            Thread.sleep(30);
 
-          this.gc.strokeText("" + story.charAt(i * 14 + j), 408 + j * 35,
-            98 + i * 45 + even_offset + row_offset);
-          this.gc.fillText("" + story.charAt(i * 14 + j), 408 + j * 35,
-            98 + i * 45 + even_offset + row_offset);
-          j++;
+            this.gc.strokeText("" + story.charAt(i * 14 + j), 408 + j * 35,
+              98 + i * 45 + even_offset + row_offset);
+            this.gc.fillText("" + story.charAt(i * 14 + j), 408 + j * 35,
+              98 + i * 45 + even_offset + row_offset);
+            j++;
 
-          if (i * 14 + j == length) {
-            print_letters = false;
+            if (i * 14 + j == length) {
+              print_letters = false;
+            }
           }
+          j = 0;
+          i++;
         }
-        j = 0;
-        i++;
       }
     } catch (Exception e) {
-      Thread.currentThread().stop();
       return;
     }
   }

@@ -46,5 +46,14 @@ abstract class Entity {
   public Integer getHP() {
     return hp;
   }
+
+  /**
+   * Gets max HP of entity.
+   *
+   * @return max HP of entity
+   */
+  public Integer getMaxHP() {
+    return hpMax;
+  }
 }
 

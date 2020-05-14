@@ -624,12 +624,17 @@ public class Game implements Mode {
   }
 
   /**
-   * Following methods are described in Player class.
+   * Following methods are described in Entity, Player and Monster classes.
    */
 
-  /** @see Player */
+  /** @see Entity */
   public Integer getPlayerHP() {
     return player.getHP();
+  }
+
+  /** @see Entity */
+  public Integer getPlayerMaxHP() {
+    return player.getMaxHP();
   }
 
   /** @see Player */
@@ -640,6 +645,26 @@ public class Game implements Mode {
   /** @see Player */
   public String getPlayerSprite() {
     return player.getSprite();
+  }
+
+  /** @see Entity */
+  public Integer getMonsterHP() {
+    return getMonster().getHP();
+  }
+
+  /** @see Entity */
+  public Integer getMonsterMaxHP() {
+    return getMonster().getMaxHP();
+  }
+
+  /** @see Monster */
+  public Integer getMonsterDamage() {
+    return getMonster().getDamage();
+  }
+
+  /** @see Monster */
+  public String getMonsterSprite() {
+    return getMonster().getSprite();
   }
 }
 
