@@ -13,7 +13,6 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 
 public class Root extends Application {
-  private final String WHITE = "\u001B[37m", RESET = "\u001B[0m";
   private static final Logger logger = Logger.getLogger(Root.class.getName());
 
   private Stage stage;
@@ -42,10 +41,10 @@ public class Root extends Application {
   public void switchMode(String mode) {
     this.mode = null;
     switch (mode) {
-      case "MainMenu":
+      case Const.MENU_MAINMENU:
         this.mode = new MainMenu(this.stack, this);
         break;
-      case "Game":
+      case Const.MENU_GAME:
         this.mode = new Game(this.stack, this);
         break;
     }
@@ -58,38 +57,38 @@ public class Root extends Application {
    * @author profojak
    */
   private void keyPressHandler(KeyEvent e) {
-    logger.info(WHITE + e.getCode() + RESET); // DEBUG
+    logger.info(Const.LOG_WHITE + e.getCode() + Const.LOG_RESET); // DEBUG
     switch (e.getCode()) {
       case K: case W: // fall through
       case UP:
-        logger.info(WHITE + "'-> up" + RESET); // DEBUG
+        logger.info(Const.LOG_WHITE + "'-> up" + Const.LOG_RESET); // DEBUG
         this.mode.keyUp();
         break;
       case J: case S: // fall through
       case DOWN:
-        logger.info(WHITE + "'-> down" + RESET); // DEBUG
+        logger.info(Const.LOG_WHITE + "'-> down" + Const.LOG_RESET); // DEBUG
         this.mode.keyDown();
         break;
       case H: case A: // fall through
       case LEFT:
-        logger.info(WHITE + "'-> left" + RESET); // DEBUG
+        logger.info(Const.LOG_WHITE + "'-> left" + Const.LOG_RESET); // DEBUG
         this.mode.keyLeft();
         break;
       case L: case D: // fall through
       case RIGHT:
-        logger.info(WHITE + "'-> right" + RESET); // DEBUG
+        logger.info(Const.LOG_WHITE + "'-> right" + Const.LOG_RESET); // DEBUG
         this.mode.keyRight();
         break;
       case ESCAPE:
-        logger.info(WHITE + "'-> escape" + RESET); // DEBUG
+        logger.info(Const.LOG_WHITE + "'-> escape" + Const.LOG_RESET); // DEBUG
         this.mode.keyEscape();
         break;
       case ENTER:
-        logger.info(WHITE + "'-> enter" + RESET); // DEBUG
+        logger.info(Const.LOG_WHITE + "'-> enter" + Const.LOG_RESET); // DEBUG
         this.mode.keyEnter();
         break;
       case DELETE:
-        logger.info(WHITE + "'-> delete" + RESET); // DEBUG
+        logger.info(Const.LOG_WHITE + "'-> delete" + Const.LOG_RESET); // DEBUG
         this.mode.keyDelete();
         break;
       default:
@@ -111,7 +110,7 @@ public class Root extends Application {
     scene.setOnKeyPressed(e -> {
       keyPressHandler(e);
     });
-    switchMode("MainMenu");
+    switchMode(Const.MENU_MAINMENU);
 
     // Window
     stage.setScene(scene);

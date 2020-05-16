@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.modes;
 
+import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.Root;
 import cz.cvut.fel.pjv.modes.draw.Draw;
 import cz.cvut.fel.pjv.modes.draw.MainMenuDraw;
@@ -15,7 +16,6 @@ import javafx.scene.layout.StackPane;
  * @see Mode
  */
 public class MainMenu implements Mode {
-  private final String GAME = "Game", EXIT = "Exit";
   private final Root root;
   private final Draw draw;
   private final Menu menu;
@@ -44,12 +44,12 @@ public class MainMenu implements Mode {
 
   public void keyUp() {
     this.menu.buttonPrevious();
-    this.draw.redraw(Draw.State.MENU);
+    this.draw.redraw(Const.State.MENU);
   }
 
   public void keyDown() {
     this.menu.buttonNext();
-    this.draw.redraw(Draw.State.MENU);
+    this.draw.redraw(Const.State.MENU);
   }
 
   public void keyLeft() {
@@ -62,10 +62,12 @@ public class MainMenu implements Mode {
   }
 
   public void keyEnter() {
-    if (this.menu.getAction(this.menu.getActive()).equals(GAME)) {
+    // Game
+    if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_GAME)) {
       this.draw.close();
-      this.root.switchMode(GAME);
-    } else if (this.menu.getAction(this.menu.getActive()).equals(EXIT)) {
+      this.root.switchMode(Const.MENU_GAME);
+    // Exit
+    } else if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_EXIT)) {
       System.exit(0);
     }
   }

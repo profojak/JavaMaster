@@ -1,10 +1,14 @@
 package cz.cvut.fel.pjv.modes.draw;
 
+import cz.cvut.fel.pjv.Const;
+
 import javafx.scene.layout.StackPane;
 import javafx.scene.image.ImageView;
 
 /**
  * Implementation of DrawGameCombatRunnable: thread that draws combat.
+ *
+ * @author profojak
  */
 public class GameDrawCombatRunnable implements Runnable {
   private final ImageView monster, effect;
@@ -20,13 +24,16 @@ public class GameDrawCombatRunnable implements Runnable {
 
   @Override
   public void run() {
-    this.monster.setFitWidth(650);
+    // Draw monster bigger
+    this.monster.setFitWidth(Const.WINDOW_HEIGHT + 125);
     for (int i = 0; i <= 20; i++) {
       if (!Thread.currentThread().isInterrupted()) {
         try {
+          // Effect fade away
           this.effect.setOpacity(1 - i * 0.05);
-          if (i == 2) {
-            this.monster.setFitWidth(525);
+          if (i == 4) {
+            // Draw monster in normal size
+            this.monster.setFitWidth(Const.WINDOW_HEIGHT);
           }
           Thread.sleep(60);
         } catch (Exception e) {

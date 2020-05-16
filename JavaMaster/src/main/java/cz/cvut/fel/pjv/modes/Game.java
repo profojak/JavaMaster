@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.modes;
 
+import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.Root;
 import cz.cvut.fel.pjv.inventory.items.Weapon;
 import cz.cvut.fel.pjv.menu.layouts.Layout;
@@ -25,48 +26,16 @@ import javafx.scene.layout.StackPane;
  * @see Mode
  */
 public class Game implements Mode {
-  private enum Item {
-    BOMB,
-    POTION,
-    WEAPON
-  }
-
-  private enum Direction {
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST
-  }
-
-  private enum Load {
-    START,
-    PLAYER,
-    ID,
-    STORY,
-    MONSTER,
-    LOOT,
-    WALL,
-    END
-  }
-
-  private final int NUMBER_OF_ROOMS = 35, MAP_WIDTH = 5,
-    NUMBER_OF_DIRECTIONS = Direction.values().length,
-    DONT_TURN = 0, TURN_RIGHT = 1, TURN_LEFT = NUMBER_OF_DIRECTIONS - 1,
-    GO_NORTH = -MAP_WIDTH, GO_EAST = 1, GO_SOUTH = MAP_WIDTH, GO_WEST = -1,
-    WESTERN_BORDER = 0, EASTERN_BORDER = MAP_WIDTH - 1, NORTHERN_BORDER = MAP_WIDTH - 1,
-    SOUTHERN_BORDER = NUMBER_OF_ROOMS - MAP_WIDTH;
-  private final String RED = "\u001B[31m", WHITE = "\u001B[37m", YELLOW = "\u001B[33m",
-    RESET = "\u001B[0m", PART_ROOM = "ROOM", PART_MONSTER = "MONSTER";
   private static final Logger logger = Logger.getLogger(Game.class.getName());
   private final Root root;
   private final Draw draw;
   private final Player player;
 
-  private Room[] rooms = new Room[NUMBER_OF_ROOMS];
+  private Room[] rooms = new Room[Const.NUMBER_OF_ROOMS];
   private Integer roomStartId, roomEndId, roomCurrentId;
-  private Direction direction = Direction.NORTH;
+  private Const.Direction direction = Const.Direction.NORTH;
   private Exit menu;
-  private Draw.State state = Draw.State.DEFAULT;
+  private Const.State state = Const.State.DEFAULT;
 
   /**
    * @param stack - StackPane to draw images to
@@ -97,14 +66,14 @@ public class Game implements Mode {
    * @return changed direction
    * @author povolji2
    */
-  private Direction changeDirection(int directionChange) {
-    Direction newDirection = null;
+  private Const.Direction changeDirection(int directionChange) {
+    Const.Direction newDirection = null;
     try {
-      int directionIndex = (direction.ordinal() + directionChange) % NUMBER_OF_DIRECTIONS;
-      newDirection = Direction.values()[directionIndex];
+      int directionIndex = (direction.ordinal() + directionChange) % Const.NUMBER_OF_DIRECTIONS;
+      newDirection = Const.Direction.values()[directionIndex];
     } catch (Exception exception) {
-      logger.log(Level.SEVERE, RED + ">>>  Error: Unexpected direction value: " + newDirection +
-        RESET, exception); // ERROR
+      logger.log(Level.SEVERE, Const.LOG_RED + ">>>  Error: Unexpected direction value: "
+        + newDirection + Const.LOG_RESET, exception); // ERROR
       return null;
     }
 
@@ -119,8 +88,8 @@ public class Game implements Mode {
    */
   private void turnPlayer(int directionChange) {
     direction = changeDirection(directionChange);
-    logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction
-      + RESET); // DEBUG
+    logger.info(Const.LOG_WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction
+      + Const.LOG_RESET); // DEBUG
   }
 
   // Key methods
@@ -132,48 +101,48 @@ public class Game implements Mode {
    */
   public void keyUp() {
     switch (state) {
-      case DEFAULT: // Goes to the next room.
+      case DEFAULT:
+        // Go to the next room
         if (hasRoomFront()) {
           switch (direction) {
             case NORTH:
-              roomCurrentId += GO_NORTH;
+              roomCurrentId += Const.GO_NORTH;
               break;
             case EAST:
-              roomCurrentId += GO_EAST;
+              roomCurrentId += Const.GO_EAST;
               break;
             case SOUTH:
-              roomCurrentId += GO_SOUTH;
+              roomCurrentId += Const.GO_SOUTH;
               break;
             case WEST:
-              roomCurrentId += GO_WEST;
+              roomCurrentId += Const.GO_WEST;
               break;
             default:
-              logger.severe(RED + ">>>  Error: Unexpected direction value: " + direction
-                + RESET); // ERROR
+              logger.severe(Const.LOG_RED + ">>>  Error: Unexpected direction value: " + direction
+                + Const.LOG_RESET); // ERROR
               return;
           }
 
-          logger.info(WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction +
-            RESET); // DEBUG
+          logger.info(Const.LOG_WHITE + ">>> Room index: " + roomCurrentId + ", direction: "
+            + direction + Const.LOG_RESET); // DEBUG
 
           // Story and Monster
           if (!isRoomVisited(roomCurrentId)) {
-            this.draw.redraw(Draw.State.DEFAULT);
+            this.draw.redraw(Const.State.DEFAULT);
             rooms[roomCurrentId].setVisited();
+            // Story before
             if (rooms[roomCurrentId].hasStoryBefore()) {
-              logger.info(WHITE + ">>> Story before: " + getStoryBefore() + RESET); // DEBUG
-              state = Draw.State.STORY_BEFORE;
+              logger.info(Const.LOG_WHITE + ">>> Story before: " + getStoryBefore()
+                + Const.LOG_RESET); // DEBUG
+              state = Const.State.STORY_BEFORE;
               break;
             }
 
-            if (rooms[roomCurrentId].hasMonster()) {
-              state = Draw.State.COMBAT;
-              break;
+            if (checkForMonster()) {
+              return;
             }
 
-            if (rooms[roomCurrentId].hasStoryAfter()) {
-              logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
-              state = Draw.State.STORY_AFTER;
+            if (checkForStoryAfter()) {
               break;
             }
 
@@ -186,32 +155,29 @@ public class Game implements Mode {
             }*/
           }
 
+          // Last room
           if (roomCurrentId.equals(roomEndId)) {
-            logger.info(WHITE + ">>> You have entered the End room on this floor"
-              + RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> You have entered the End room on this floor"
+              + Const.LOG_RESET); // DEBUG
           }
         } else {
-          logger.warning(YELLOW + ">>>  You can't go there." + RESET); // DEBUG
+          logger.warning(Const.LOG_YELLOW + ">>>  You can't go there." + Const.LOG_RESET); // DEBUG
         }
         break;
       case STORY_BEFORE:
         draw.close();
 
-        if (rooms[roomCurrentId].hasMonster()) {
-          state = Draw.State.COMBAT;
-          this.draw.redraw(Draw.State.MONSTER);
+        if (checkForMonster()) {
           return;
         }
 
-        if (rooms[roomCurrentId].hasStoryAfter()) {
-          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
-          state = Draw.State.STORY_AFTER;
+        if (checkForStoryAfter()) {
           break;
         }
 
-        state = Draw.State.DEFAULT;
+        state = Const.State.DEFAULT;
         break;
-      case MENU: // Selects previous menu option.
+      case MENU:
         this.menu.buttonPrevious();
         break;
     }
@@ -226,21 +192,17 @@ public class Game implements Mode {
       case STORY_BEFORE:
         draw.close();
 
-        if (rooms[roomCurrentId].hasMonster()) {
-          state = Draw.State.COMBAT;
-          this.draw.redraw(Draw.State.MONSTER);
+        if (checkForMonster()) {
           return;
         }
 
-        if (rooms[roomCurrentId].hasStoryAfter()) {
-          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
-          state = Draw.State.STORY_AFTER;
+        if (checkForStoryAfter()) {
           break;
         }
 
-        state = Draw.State.DEFAULT;
+        state = Const.State.DEFAULT;
         break;
-      case MENU: // Selects next menu option.
+      case MENU:
         this.menu.buttonNext();
         break;
     }
@@ -252,27 +214,24 @@ public class Game implements Mode {
    */
   public void keyLeft() {
     switch (state) {
-      case DEFAULT: // Turns the player to the left.
-        turnPlayer(TURN_LEFT);
+      case DEFAULT:
+        // Turns player to the left
+        turnPlayer(Const.TURN_LEFT);
         break;
       case STORY_BEFORE:
         draw.close();
 
-        if (rooms[roomCurrentId].hasMonster()) {
-          state = Draw.State.COMBAT;
-          this.draw.redraw(Draw.State.MONSTER);
+        if (checkForMonster()) {
           return;
         }
 
-        if (rooms[roomCurrentId].hasStoryAfter()) {
-          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
-          state = Draw.State.STORY_AFTER;
+        if (checkForStoryAfter()) {
           break;
         }
 
-        state = Draw.State.DEFAULT;
+        state = Const.State.DEFAULT;
         break;
-      case MENU: // Selects previous menu option.
+      case MENU:
         this.menu.buttonPrevious();
         break;
     }
@@ -284,27 +243,24 @@ public class Game implements Mode {
    */
   public void keyRight() {
     switch (state) {
-      case DEFAULT: // Turns the player to the right.
-        turnPlayer(TURN_RIGHT);
+      case DEFAULT:
+        // Turns player to the right
+        turnPlayer(Const.TURN_RIGHT);
         break;
       case STORY_BEFORE:
         draw.close();
 
-        if (rooms[roomCurrentId].hasMonster()) {
-          state = Draw.State.COMBAT;
-          this.draw.redraw(Draw.State.MONSTER);
+        if (checkForMonster()) {
           return;
         }
 
-        if (rooms[roomCurrentId].hasStoryAfter()) {
-          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
-          state = Draw.State.STORY_AFTER;
+        if (checkForStoryAfter()) {
           break;
         }
 
-        state = Draw.State.DEFAULT;
+        state = Const.State.DEFAULT;
         break;
-      case MENU: // Selects next menu option.
+      case MENU:
         this.menu.buttonNext();
         break;
     }
@@ -316,30 +272,28 @@ public class Game implements Mode {
    */
   public void keyEscape() {
     switch (state) {
-      case DEFAULT: // Opens menu.
+      case DEFAULT:
+        // Opens menu
         this.menu = new Exit();
-        state = Draw.State.MENU;
+        state = Const.State.MENU;
         break;
       case STORY_BEFORE:
         draw.close();
 
-        if (rooms[roomCurrentId].hasMonster()) {
-          state = Draw.State.COMBAT;
-          this.draw.redraw(Draw.State.MONSTER);
+        if (checkForMonster()) {
           return;
         }
 
-        if (rooms[roomCurrentId].hasStoryAfter()) {
-          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
-          state = Draw.State.STORY_AFTER;
+        if (checkForStoryAfter()) {
           break;
         }
 
-        state = Draw.State.DEFAULT;
+        state = Const.State.DEFAULT;
         break;
-      case MENU: // Closes menu.
+      case MENU:
+        // Closes menu
         this.menu = null;
-        state = Draw.State.DEFAULT;
+        state = Const.State.DEFAULT;
         break;
     }
     this.draw.redraw(state);
@@ -353,27 +307,25 @@ public class Game implements Mode {
       case STORY_BEFORE:
         draw.close();
 
-        if (rooms[roomCurrentId].hasMonster()) {
-          state = Draw.State.COMBAT;
-          this.draw.redraw(Draw.State.MONSTER);
+        if (checkForMonster()) {
           return;
         }
 
-        if (rooms[roomCurrentId].hasStoryAfter()) {
-          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
-          state = Draw.State.STORY_AFTER;
+        if (checkForStoryAfter()) {
           break;
         }
 
-        state = Draw.State.DEFAULT;
+        state = Const.State.DEFAULT;
         break;
-      case MENU: // Selects currently active menu option.
-        if (this.menu.getAction(this.menu.getActive()).equals("Cancel")) {
+      case MENU:
+        // Cancel
+        if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_CANCEL)) {
           this.menu = null;
-          state = Draw.State.DEFAULT;
-        } else if (this.menu.getAction(this.menu.getActive()).equals("Exit")) {
+          state = Const.State.DEFAULT;
+        // Exit
+        } else if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_EXIT)) {
           this.draw.close();
-          this.root.switchMode("MainMenu");
+          this.root.switchMode(Const.MENU_MAINMENU);
         }
         break;
     }
@@ -388,25 +340,65 @@ public class Game implements Mode {
       case STORY_BEFORE:
         draw.close();
 
-        if (rooms[roomCurrentId].hasMonster()) {
-          state = Draw.State.COMBAT;
-          this.draw.redraw(Draw.State.MONSTER);
+        if (checkForMonster()) {
           return;
         }
 
-        if (rooms[roomCurrentId].hasStoryAfter()) {
-          logger.info(WHITE + ">>> Story after: " + getStoryAfter() + RESET); // DEBUG
-          state = Draw.State.STORY_AFTER;
+        if (checkForStoryAfter()) {
           break;
         }
 
-        state = Draw.State.DEFAULT;
+        state = Const.State.DEFAULT;
         break;
     }
     this.draw.redraw(state);
   }
 
   // Boolean methods
+
+  /**
+   * Sets state if room has monster.
+   *
+   * @return whether room has monster
+   */
+  private Boolean checkForMonster() {
+    if (rooms[roomCurrentId].hasMonster()) {
+      state = Const.State.COMBAT;
+      this.draw.redraw(Const.State.MONSTER);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Sets state if room has story before monster combat.
+   *
+   * @return whether room has story before monster combat
+   */
+  private Boolean checkForStoryBefore() {
+    if (rooms[roomCurrentId].hasStoryBefore()) {
+      logger.info(Const.LOG_WHITE + ">>> Story before: " + getStoryBefore()
+        + Const.LOG_RESET); // DEBUG
+      state = Const.State.STORY_BEFORE;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Sets state if room has story after monster combat.
+   *
+   * @return whether room has story after monster combat
+   */
+  private Boolean checkForStoryAfter() {
+    if (rooms[roomCurrentId].hasStoryAfter()) {
+      logger.info(Const.LOG_WHITE + ">>> Story after: " + getStoryAfter()
+        + Const.LOG_RESET); // DEBUG
+      state = Const.State.STORY_AFTER;
+      return true;
+    }
+    return false;
+  }
 
   /**
    * Returns whether there is a room in specified direction.
@@ -416,7 +408,7 @@ public class Game implements Mode {
    * @author povolji2
    */
   public Boolean hasRoom(int directionChange) {
-    Direction newDirection = direction;
+    Const.Direction newDirection = direction;
     if (directionChange != 0) {
       newDirection = changeDirection(directionChange);
     }
@@ -424,19 +416,21 @@ public class Game implements Mode {
     try {
       switch (Objects.requireNonNull(newDirection)) {
         case NORTH:
-          return roomCurrentId > NORTHERN_BORDER && rooms[roomCurrentId + GO_NORTH] != null;
+          return roomCurrentId > Const.NORTHERN_BORDER &&
+            rooms[roomCurrentId + Const.GO_NORTH] != null;
         case EAST:
-          return roomCurrentId % MAP_WIDTH != EASTERN_BORDER && rooms[roomCurrentId + GO_EAST] !=
-            null;
+          return roomCurrentId % Const.MAP_WIDTH != Const.EASTERN_BORDER &&
+            rooms[roomCurrentId + Const.GO_EAST] != null;
         case SOUTH:
-          return roomCurrentId < SOUTHERN_BORDER && rooms[roomCurrentId + GO_SOUTH] != null;
+          return roomCurrentId < Const.SOUTHERN_BORDER &&
+            rooms[roomCurrentId + Const.GO_SOUTH] != null;
         case WEST:
-          return roomCurrentId % MAP_WIDTH != WESTERN_BORDER && rooms[roomCurrentId + GO_WEST] !=
-            null;
+          return roomCurrentId % Const.MAP_WIDTH != Const.WESTERN_BORDER &&
+            rooms[roomCurrentId + Const.GO_WEST] != null;
       }
     } catch (Exception exception) {
-      logger.log(Level.SEVERE, RED + ">>>  Error: Unexpected direction value: " + newDirection +
-        RESET, exception); // ERROR
+      logger.log(Level.SEVERE, Const.LOG_RED + ">>>  Error: Unexpected direction value: "
+        + newDirection + Const.LOG_RESET, exception); // ERROR
       return null;
     }
     return null;
@@ -446,21 +440,21 @@ public class Game implements Mode {
    * @return whether there is a room to the left of the player
    */
   public Boolean hasRoomLeft() {
-    return hasRoom(TURN_LEFT);
+    return hasRoom(Const.TURN_LEFT);
   }
 
   /**
    * @return whether there is a room to the right of the player
    */
   public Boolean hasRoomRight() {
-    return hasRoom(TURN_RIGHT);
+    return hasRoom(Const.TURN_RIGHT);
   }
 
   /**
    * @return whether there is a room in front of the player
    */
   public Boolean hasRoomFront() {
-    return hasRoom(DONT_TURN);
+    return hasRoom(Const.DONT_TURN);
   }
 
   // Loading files
@@ -480,59 +474,64 @@ public class Game implements Mode {
       BufferedReader saveReader = new BufferedReader(new FileReader(saveFile));
       while (saveReader.ready()) {
         String[] line = saveReader.readLine().split(" ");
-        Load load = Load.valueOf(line[0].toUpperCase());
+        Const.LoadPart load = Const.LoadPart.valueOf(line[0].toUpperCase());
 
         switch (load) {
           // Room id where the dungeon starts and ends
           case START:
             roomStartId = Integer.parseInt(line[1]);
-            logger.info(WHITE + ">>> roomStartId = " + roomStartId + RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> roomStartId = " + roomStartId
+              + Const.LOG_RESET); // DEBUG
             roomEndId = Integer.parseInt(line[2]);
-            logger.info(WHITE + ">>> roomEndId = " + roomEndId + RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> roomEndId = " + roomEndId
+              + Const.LOG_RESET); // DEBUG
             break;
           // Player variables
           case PLAYER:
             player.setHp(Integer.parseInt(line[2]));
-            logger.info(WHITE + ">>> player = " + player.getHP() + RESET); // DEBUG
-            Weapon weapon = new Weapon(line[1], line[1].substring(0, line[1].lastIndexOf('.')), Integer.parseInt(line[3]));
-            player.takeLoot(weapon);
-            logger.info(WHITE + ">>> player.getDamage = " + player.getDamage() + RESET); // DEBUG
-            logger.info(WHITE + ">>> player.getSprite = " + player.getSprite() + RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> player = " + player.getHP()
+              + Const.LOG_RESET); // DEBUG
+            //Weapon weapon = new Weapon(line[1], line[1].substring(0, line[1].lastIndexOf('.')), Integer.parseInt(line[3]));
+            //player.takeLoot(weapon);
+            //logger.info(Const.LOG_WHITE + ">>> player.getDamage = " + player.getDamage() + Const.LOG_RESET); // DEBUG
+            //logger.info(Const.LOG_WHITE + ">>> player.getSprite = " + player.getSprite() + Const.LOG_RESET); // DEBUG
             break;
           // Dungeon rooms
           case ID:
             roomCurrentId = Integer.parseInt(line[1]);
-            logger.info(WHITE + ">>> roomCurrentId = " + roomCurrentId + RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> roomCurrentId = " + roomCurrentId
+              + Const.LOG_RESET); // DEBUG
             rooms[roomCurrentId] = new Room();
-            logger.info(WHITE + ">>> isVisited = " + isRoomVisited(roomCurrentId)
-              + RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> isVisited = " + isRoomVisited(roomCurrentId)
+              + Const.LOG_RESET); // DEBUG
             break;
           // Story of current room
           case STORY:
             rooms[roomCurrentId].setStoryBefore(line[1].replaceAll("_", " "));
-            logger.info(WHITE + ">>> storyBefore = " + rooms[roomCurrentId].getStoryBefore() +
-              RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> storyBefore = "
+              + rooms[roomCurrentId].getStoryBefore() + Const.LOG_RESET); // DEBUG
             rooms[roomCurrentId].setStoryAfter(line[2].replaceAll("_", " "));
-            logger.info(WHITE + ">>> storyAfter = " + rooms[roomCurrentId].getStoryAfter() +
-              RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> storyAfter = "
+              + rooms[roomCurrentId].getStoryAfter() + Const.LOG_RESET); // DEBUG
             break;
           // Monster in current room
           case MONSTER:
             rooms[roomCurrentId].setMonster(line[1],
               Integer.parseInt(line[2]), Integer.parseInt(line[3]));
-            logger.info(WHITE + ">>> room.getMonster = " +
-              rooms[roomCurrentId].getMonster() + RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> room.getMonster = " +
+              rooms[roomCurrentId].getMonster() + Const.LOG_RESET); // DEBUG
             break;
           // Loot in current room
           case LOOT:
-            rooms[roomCurrentId].setLoot(line[1], Integer.parseInt(line[2]), player.getHP());
-            logger.info(WHITE + ">>> room.getLootSprite = " +
-              rooms[roomCurrentId].getLoot().getSprite() + RESET); // DEBUG
+            //rooms[roomCurrentId].setLoot(line[1], Integer.parseInt(line[2]), player.getHP());
+            //logger.info(Const.LOG_WHITE + ">>> room.getLootSprite = " +
+              //rooms[roomCurrentId].getLoot().getSprite() + Const.LOG_RESET); // DEBUG
             break;
           // Texture of current room
           case WALL:
             rooms[roomCurrentId].setSprite(line[1]);
-            logger.info(WHITE + ">>> room.sprite = " + rooms[roomCurrentId].getSprite() + RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> room.sprite = " + rooms[roomCurrentId].getSprite()
+              + Const.LOG_RESET); // DEBUG
             break;
           // Current room
           case END:
@@ -544,7 +543,8 @@ public class Game implements Mode {
         }
       }
     } catch (Exception exception) {
-      logger.log(Level.SEVERE, RED + "File could not be loaded." + RESET, exception); // ERROR
+      logger.log(Level.SEVERE, Const.LOG_RED + "File could not be loaded."
+        + Const.LOG_RESET, exception); // ERROR
       return false; // File could not be loaded
     }
     return true;
@@ -622,7 +622,7 @@ public class Game implements Mode {
    * @return left direction relative to current direction converted to String
    */
   public String getLeftDirection() {
-    return changeDirection(TURN_LEFT).toString();
+    return changeDirection(Const.TURN_LEFT).toString();
   }
 
   /**
@@ -631,7 +631,7 @@ public class Game implements Mode {
    * @return right direction relative to current direction converted to String
    */
   public String getRightDirection() {
-    return changeDirection(TURN_RIGHT).toString();
+    return changeDirection(Const.TURN_RIGHT).toString();
   }
 
   /**

@@ -1,14 +1,16 @@
 package cz.cvut.fel.pjv.modes.draw;
 
+import cz.cvut.fel.pjv.Const;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
  * Implementation of DrawGameStoryRunnable: thread that prints letters of story dialogs.
+ *
+ * @author profojak
  */
 public class GameDrawStoryRunnable implements Runnable {
-  private final String COLOR_TEXT = "#FBF1C7";
-
   private String story;
   private GraphicsContext gc;
   private Integer length, rows, even_offset, row_offset;
@@ -22,8 +24,11 @@ public class GameDrawStoryRunnable implements Runnable {
     this.story = story;
 
     length = story.length();
+    // How meny rows should the text occupy on screen
     rows = (length % 14) == 0 ? length / 14 : length / 14 + 1;
+    // If rows is even number, set variable to center the text on screen
     even_offset = ((rows & 1) == 0) ? 22 : 0;
+    // Which row to start with: 1st row is the top of the screen, 9th is the bottom
     row_offset = ((9 - rows) / 2) * 45;
   }
 
@@ -34,9 +39,11 @@ public class GameDrawStoryRunnable implements Runnable {
       Integer i = 0, j = 0;
         
       // Printing letters
-      this.gc.setFill(Color.web(COLOR_TEXT));
+      this.gc.setFill(Color.web(Const.COLOR_FILL));
       while (!Thread.currentThread().isInterrupted()) {
+        // Rows
         while (print_letters && i < 9) {
+          // Letters in a row
           while (print_letters && j < 14) {
             Thread.sleep(30);
 
@@ -46,6 +53,7 @@ public class GameDrawStoryRunnable implements Runnable {
               98 + i * 45 + even_offset + row_offset);
             j++;
 
+            // All letters are printed
             if (i * 14 + j == length) {
               print_letters = false;
             }

@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.menu.layouts;
 
+import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.menu.Button;
 
 /**
@@ -10,9 +11,9 @@ import cz.cvut.fel.pjv.menu.Button;
 public class Menu extends Layout {
   public Menu() {
     this.buttons = new Button[3];
-    this.buttons[0] = new Button("Game");
-    this.buttons[1] = new Button("About");
-    this.buttons[2] = new Button("Exit");
+    this.buttons[0] = new Button(Const.MENU_GAME);
+    this.buttons[1] = new Button(Const.MENU_ABOUT);
+    this.buttons[2] = new Button(Const.MENU_EXIT);
   }
 }
 

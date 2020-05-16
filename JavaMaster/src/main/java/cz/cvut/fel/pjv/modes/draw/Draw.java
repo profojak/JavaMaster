@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.modes.draw;
 
+import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.modes.Mode;
 
 import javafx.scene.layout.StackPane;
@@ -13,21 +14,8 @@ import javafx.scene.image.Image;
  * Abstract class Draw implementing basic functionality of draw classes.
  */
 public abstract class Draw {
-  public static enum State {
-    DEFAULT,
-    MONSTER,
-    COMBAT,
-    LOOT,
-    STORY_BEFORE,
-    STORY_AFTER,
-    MENU
-  }
-
-  private final String FONT = "/silkscreen.ttf", STROKE_COLOR = "#282828";
-
-  protected final Image BUTTON = new Image("/sprites/menu/button.png"),
-    BUTTON_ACTIVE = new Image("/sprites/menu/active.png");
-  protected final Integer TEXT_X_OFFSET = 138, TEXT_Y_OFFSET = 60, BUTTON_HEIGHT = 95;
+  protected final Image IMAGE_BUTTON = new Image(Const.BUTTON),
+    IMAGE_BUTTON_ACTIVE = new Image(Const.BUTTON_ACTIVE);
 
   protected StackPane stack;
   protected GraphicsContext gc;
@@ -51,16 +39,16 @@ public abstract class Draw {
    *
    * @param state - current state of Mode object to draw
    */
-  abstract public void redraw(State state);
+  abstract public void redraw(Const.State state);
 
   /**
-   * Sets font to draw with.
+   * Sets font to draw with in GraphicsContext.
    *
    * @author profojak
    */
   protected void setGC() {
-    this.gc.setFont(Font.loadFont(getClass().getResourceAsStream(FONT), 50));
-    this.gc.setStroke(Color.web(STROKE_COLOR));
+    this.gc.setFont(Font.loadFont(getClass().getResourceAsStream(Const.FONT), 50));
+    this.gc.setStroke(Color.web(Const.COLOR_STROKE));
     this.gc.setFontSmoothingType(null);
     this.gc.setLineWidth(10);
     this.gc.setTextAlign(TextAlignment.CENTER);

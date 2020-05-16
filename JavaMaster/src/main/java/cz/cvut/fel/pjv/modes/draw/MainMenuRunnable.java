@@ -7,6 +7,8 @@ import javafx.scene.image.ImageView;
 
 /**
  * Implementation of MainMenuRunnable: thread that draws pulsing logo.
+ *
+ * @author profojak
  */
 public class MainMenuRunnable implements Runnable {
   private final ImageView logo;
@@ -28,7 +30,6 @@ public class MainMenuRunnable implements Runnable {
     this.stack.setMargin(logo, new Insets(0, 0, 0, 340));
   }
 
-  /** @author profojak */
   @Override
   public void run() {
     while (!Thread.currentThread().isInterrupted()) {
@@ -36,9 +37,7 @@ public class MainMenuRunnable implements Runnable {
         this.logo.setRotate(8 * Math.sin(System.currentTimeMillis() * 0.0004));
         this.logo.setFitWidth(500 + 30 * Math.sin(System.currentTimeMillis() * 0.0012));
         Thread.sleep(50);
-      // Stop thread when app is closed
       } catch (Exception e) {
-        Thread.currentThread().stop();
         return;
       }
     }

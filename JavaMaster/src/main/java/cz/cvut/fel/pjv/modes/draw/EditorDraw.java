@@ -6,5 +6,5 @@ package cz.cvut.fel.pjv.modes.draw;
  * @see GameDraw
  */
 // TODO
-public class EditorDraw extends GameDraw {
+public class EditorDraw {
 }
