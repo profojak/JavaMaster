@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.entities;
 
+import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.entities.Entity;
 import cz.cvut.fel.pjv.inventory.Inventory;
 import cz.cvut.fel.pjv.inventory.items.Item;
@@ -34,6 +35,33 @@ public class Player extends Entity {
    */
   public String getSprite() {
     return inventory.getWeaponSprite();
+  }
+
+  /**
+   * Gets bomb count.
+   *
+   * @return bomb count
+   */
+  public Integer getBombCount() {
+    return inventory.getBombCount();
+  }
+
+  /**
+   * Gets potion count.
+   *
+   * @return potion count
+   */
+  public Integer getPotionCount() {
+    return inventory.getPotionCount();
+  }
+
+  /**
+   * Gets active item.
+   *
+   * @return active item, can be weapon, potion or bomb
+   */
+  public Const.ItemType getActiveItem() {
+    return inventory.getActiveItem();
   }
 
   // Actions

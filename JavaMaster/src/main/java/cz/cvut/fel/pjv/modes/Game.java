@@ -668,12 +668,22 @@ public class Game implements Mode {
   }
 
   /** @see Player */
-  public Integer getPlayerDamage() {
+  public Integer getWeaponDamage() {
     return player.getDamage();
   }
 
   /** @see Player */
-  public String getPlayerSprite() {
+  public Integer getBombCount() {
+    return player.getBombCount();
+  }
+
+  /** @see Player */
+  public Integer getPotionCount() {
+    return player.getPotionCount();
+  }
+
+  /** @see Player */
+  public String getWeaponSprite() {
     return player.getSprite();
   }
 

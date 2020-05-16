@@ -27,6 +27,7 @@ public class GameDraw extends Draw {
     MAP_ARROW = "/sprites/map/arrow_", MAP_WALL = "/sprites/map/wall_",
 
     // Inventory
+    INVENTORY = "/sprites/inventory/",
     INVENTORY_FRAME_ITEM = "/sprites/inventory/frame_item.png",
     INVENTORY_FRAME_ITEM_ACTIVE = "/sprites/inventory/active_item.png",
     INVENTORY_FRAME_WEAPON = "/sprites/inventory/frame_weapon.png",
@@ -74,16 +75,7 @@ public class GameDraw extends Draw {
       }
     }
 
-    /* Inventory */
-    gc.setFill(Color.web(Const.COLOR_INVENTORY));
-    gc.fillRect(905, 10, 85, 505);
-    // Item frame
-    image = new Image(INVENTORY_FRAME_ITEM);
-    gc.drawImage(image, 910, 15);
-    gc.drawImage(image, 910, 125);
-    // Weapon frame
-    image = new Image(INVENTORY_FRAME_WEAPON);
-    gc.drawImage(image, 910, 235);
+    drawInventory(Const.State.DEFAULT);
 
     /* HP bars */
     gc.setFill(Color.web(Const.COLOR_BAR));
@@ -107,7 +99,7 @@ public class GameDraw extends Draw {
   /**
    * Updates map.
    */
-  public void drawMap() {
+  private void drawMap() {
     Image image;
     Integer row = parent.getRoomId() % Const.MAP_WIDTH, col = parent.getRoomId() / Const.MAP_WIDTH;
     /* Map */
@@ -138,6 +130,48 @@ public class GameDraw extends Draw {
       Const.MAP_OFFSET - 20, Const.MAP_OFFSET - 20);
     image = new Image(MAP_ARROW + parent.getDirection() + PNG_EXTENSION);
     gc.drawImage(image, row * Const.MAP_OFFSET, col * Const.MAP_OFFSET);
+  }
+
+  /**
+   * Updates inventory.
+   *
+   * @param state - state Game is currently in
+   */
+  private void drawInventory(Const.State state) {
+    /* Inventory */
+    gc.setFill(Color.web(Const.COLOR_INVENTORY));
+    gc.fillRect(905, 10, 85, 505);
+    // Item frame
+    Image image = new Image(INVENTORY_FRAME_ITEM);
+    gc.drawImage(image, 910, 15);
+    gc.drawImage(image, 910, 125);
+    // Weapon frame
+    image = new Image(INVENTORY_FRAME_WEAPON);
+    gc.drawImage(image, 910, 235);
+    // Items
+    image = new Image(BOMB);
+    gc.drawImage(image, 910, 15);
+    image = new Image(POTION);
+    gc.drawImage(image, 910, 125);
+    //TODO
+    //image = new Image(INVENTORY + parent.getWeaponSprite());
+    //gc.drawImage(image, 910, 235);
+    // If in combat, show selected item
+    if (state == Const.State.COMBAT) {
+      image = new Image(INVENTORY_FRAME_ITEM_ACTIVE);
+      gc.drawImage(image, 910, 15);
+      gc.drawImage(image, 910, 125);
+      image = new Image(INVENTORY_FRAME_WEAPON_ACTIVE);
+      gc.drawImage(image, 910, 235);
+    }
+    // Text
+    gc.setFill(Color.web(Const.COLOR_FILL));
+    gc.strokeText("90", 948, 125);
+    gc.fillText("90", 948, 125);
+    gc.strokeText("2", 948, 235);
+    gc.fillText("2", 948, 235);
+    gc.strokeText("5", 948, 505);
+    gc.fillText("5", 948, 505);  
   }
 
   /**
@@ -183,6 +217,7 @@ public class GameDraw extends Draw {
         break;
       case MONSTER:
         drawMap();
+        drawInventory(Const.State.COMBAT);
 
         /* Room */
         // Background
@@ -227,18 +262,6 @@ public class GameDraw extends Draw {
         gc.setFill(Color.web(Const.COLOR_BAR_PLAYER_FG));
         gc.fillRect(380, 485, BAR_WIDTH - 10, BAR_HEIGHT - 10);
 
-        /* Inventory */
-        // TODO
-        image = new Image(BOMB);
-        gc.drawImage(image, 910, 15);
-        image = new Image(POTION);
-        gc.drawImage(image, 910, 125);
-        image = new Image(INVENTORY_FRAME_ITEM_ACTIVE);
-        gc.drawImage(image, 910, 15);
-        gc.drawImage(image, 910, 125);
-        image = new Image(INVENTORY_FRAME_WEAPON_ACTIVE);
-        gc.drawImage(image, 910, 235);
-
         /* Combat */
         // Monster
         this.monster = new ImageView(new Image(MONSTER + parent.getMonster().getSprite()));
@@ -257,6 +280,8 @@ public class GameDraw extends Draw {
         this.stack.setMargin(effect, new Insets(0, 0, 0, 275));
         break;
       case COMBAT:
+        drawInventory(state);
+
         /* Combat */
         if (thread.isAlive()) {
           thread.interrupt();

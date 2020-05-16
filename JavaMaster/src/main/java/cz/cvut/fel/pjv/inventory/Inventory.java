@@ -155,7 +155,7 @@ public class Inventory {
   /**
    * Gets active item.
    *
-   * @return active item, can be weapon, potion or bomb.
+   * @return active item, can be weapon, potion or bomb
    */
   public Const.ItemType getActiveItem() {
     return activeItem;
