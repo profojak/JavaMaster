@@ -96,8 +96,6 @@ public class Game implements Mode {
 
   /**
    * Handles up key event.
-   *
-   * @author povolji2
    */
   public void keyUp() {
     switch (state) {
@@ -164,6 +162,10 @@ public class Game implements Mode {
           logger.warning(Const.LOG_YELLOW + ">>>  You can't go there." + Const.LOG_RESET); // DEBUG
         }
         break;
+      case COMBAT:
+        itemPrevious();
+        this.draw.redraw(Const.State.INVENTORY);
+        return;
       case STORY_BEFORE:
         draw.close();
 
@@ -202,6 +204,10 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      case COMBAT:
+        itemNext();
+        this.draw.redraw(Const.State.INVENTORY);
+        return;
       case MENU:
         this.menu.buttonNext();
         break;
@@ -231,6 +237,10 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      case COMBAT:
+        itemPrevious();
+        this.draw.redraw(Const.State.INVENTORY);
+        return;
       case MENU:
         this.menu.buttonPrevious();
         break;
@@ -260,6 +270,10 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      case COMBAT:
+        itemNext();
+        this.draw.redraw(Const.State.INVENTORY);
+        return;
       case MENU:
         this.menu.buttonNext();
         break;
@@ -656,6 +670,21 @@ public class Game implements Mode {
   /**
    * Following methods are described in Entity, Player and Monster classes.
    */
+
+  /** @see Player */
+  public Const.ItemType getActiveItem() {
+    return player.getActiveItem();
+  }
+
+  /** @see Player */
+  public void itemNext() {
+    player.itemNext();
+  }
+
+  /** @see Player */
+  public void itemPrevious() {
+    player.itemPrevious();
+  }
 
   /** @see Entity */
   public Integer getPlayerHP() {

@@ -66,6 +66,16 @@ public class Player extends Entity {
 
   // Actions
 
+  /** Selects next item. */
+  public void itemNext() {
+    inventory.itemNext();
+  }
+
+  /** Selects previous item. */
+  public void itemPrevious() {
+    inventory.itemPrevious();
+  }
+
   /**
    * Heals player.
    *

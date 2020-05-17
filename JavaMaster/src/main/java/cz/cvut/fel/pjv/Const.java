@@ -19,6 +19,7 @@ public class Const {
 
   public static enum State {
     DEFAULT,
+    INVENTORY,
     MONSTER,
     COMBAT,
     LOOT,

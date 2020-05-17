@@ -157,21 +157,30 @@ public class GameDraw extends Draw {
     //image = new Image(INVENTORY + parent.getWeaponSprite());
     //gc.drawImage(image, 910, 235);
     // If in combat, show selected item
-    if (state == Const.State.COMBAT) {
-      image = new Image(INVENTORY_FRAME_ITEM_ACTIVE);
-      gc.drawImage(image, 910, 15);
-      gc.drawImage(image, 910, 125);
-      image = new Image(INVENTORY_FRAME_WEAPON_ACTIVE);
-      gc.drawImage(image, 910, 235);
+    if (state == Const.State.INVENTORY) {
+      switch (parent.getActiveItem()) {
+        case BOMB:
+          image = new Image(INVENTORY_FRAME_ITEM_ACTIVE);
+          gc.drawImage(image, 910, 15);
+          break;
+        case POTION:
+          image = new Image(INVENTORY_FRAME_ITEM_ACTIVE);
+          gc.drawImage(image, 910, 125);
+          break;
+        case WEAPON:
+          image = new Image(INVENTORY_FRAME_WEAPON_ACTIVE);
+          gc.drawImage(image, 910, 235);
+          break;
+      }
     }
     // Text
     gc.setFill(Color.web(Const.COLOR_FILL));
-    gc.strokeText("90", 948, 125);
-    gc.fillText("90", 948, 125);
-    gc.strokeText("2", 948, 235);
-    gc.fillText("2", 948, 235);
-    gc.strokeText("5", 948, 505);
-    gc.fillText("5", 948, 505);  
+    //gc.strokeText(String.valueOf(parent.getBombCount()), 948, 125);
+    //gc.fillText(String.valueOf(parent.getBombCount()), 948, 125);
+    //gc.strokeText(String.valueOf(parent.getPotionCount()), 948, 235);
+    //gc.fillText(String.valueOf(parent.getPotionCount()), 948, 235);
+    //gc.strokeText(parent.getWeaponDamage(), 948, 505);
+    //gc.fillText(parent.getWeaponDamage(), 948, 505);  
   }
 
   /**
@@ -215,9 +224,12 @@ public class GameDraw extends Draw {
           gc.drawImage(image, 825, 50);
         }
         break;
+      case INVENTORY:
+        drawInventory(state);
+        break;
       case MONSTER:
         drawMap();
-        drawInventory(Const.State.COMBAT);
+        drawInventory(Const.State.INVENTORY);
 
         /* Room */
         // Background
@@ -280,7 +292,7 @@ public class GameDraw extends Draw {
         this.stack.setMargin(effect, new Insets(0, 0, 0, 275));
         break;
       case COMBAT:
-        drawInventory(state);
+        drawInventory(Const.State.INVENTORY);
 
         /* Combat */
         if (thread.isAlive()) {
