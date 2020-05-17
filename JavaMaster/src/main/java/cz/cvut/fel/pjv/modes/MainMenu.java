@@ -53,22 +53,30 @@ public class MainMenu implements Mode {
   }
 
   public void keyLeft() {
+    this.menu.buttonPrevious();
+    this.draw.redraw(Const.State.MENU);
   }
 
   public void keyRight() {
+    this.menu.buttonNext();
+    this.draw.redraw(Const.State.MENU);
   }
 
   public void keyEscape() {
   }
 
   public void keyEnter() {
-    // Game
-    if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_GAME)) {
-      this.draw.close();
-      this.root.switchMode(Const.MENU_GAME);
-    // Exit
-    } else if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_EXIT)) {
-      System.exit(0);
+    switch (this.menu.getAction(this.menu.getActive())) {
+      case Const.MENU_GAME:
+        this.draw.close();
+        this.root.switchMode(Const.MENU_GAME);
+        break;
+      case Const.MENU_ABOUT:
+        this.draw.redraw(Const.State.DEFAULT);
+        break;
+      case Const.MENU_EXIT:
+        System.exit(0);
+        break;
     }
   }
 
