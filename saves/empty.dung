@@ -2,8 +2,11 @@ start 0 34
 player sword.png 10 2
 id 0
 id 1
+loot potion 5
 id 2
+loot bomb 1
 id 3
+loot sword.png 5
 id 6
 id 8
 id 9

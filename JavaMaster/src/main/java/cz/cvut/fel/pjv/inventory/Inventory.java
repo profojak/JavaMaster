@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 public class Inventory {
   private static final Logger logger = Logger.getLogger(Inventory.class.getName());
 
-  private Weapon weapon = null;
+  private Weapon weapon = null, tempWeapon = null;
   private Potion potion = null;
   private Bomb bomb = null;
   private Const.ItemType activeItem = Const.ItemType.WEAPON;
@@ -29,26 +29,39 @@ public class Inventory {
    *
    * @param loot - loot instance
    */
-  public void addLoot(Item loot) {
+  public Integer addLoot(Item loot) {
     // Potion
     if (loot instanceof Potion) {
-      if (potion.equals(null)) {
+      if (potion == null) {
         potion = (Potion) loot;
+      } else {
+        potion.updatePotionCount(((Potion) loot).getPotionCount());
       }
-      potion.updatePotionCount(((Potion) loot).getPotionCount());
     // Bomb
     } else if (loot instanceof Bomb) {
-      if (bomb.equals(null)) {
+      if (bomb == null) {
         bomb = (Bomb) loot;
+      } else {
+        bomb.updateBombCount(((Bomb) loot).getBombCount());
       }
-      bomb.updateBombCount(((Bomb) loot).getBombCount());
     // Weapon
     } else if (loot instanceof Weapon) {
-      if (weapon.equals(null)) {
+      if (weapon == null) {
         weapon = (Weapon) loot;
+      } else {
+        tempWeapon = (Weapon) loot;
+        return 1;
       }
       // TODO Check if player wants to get new weapon
     }
+    return 0;
+  }
+
+  public void changeWeapon(Boolean choice) {
+    if (choice) {
+      weapon = tempWeapon;
+    }
+    tempWeapon = null;
   }
 
   /**
@@ -57,7 +70,7 @@ public class Inventory {
    * @return whether potion was used
    */
   public Boolean usePotion() {
-    if (!potion.equals(null) && potion.getPotionCount() > 0) {
+    if (potion != null && potion.getPotionCount() > 0) {
       potion.updatePotionCount(Const.USE_ITEM);
       return true;
     }
@@ -70,7 +83,7 @@ public class Inventory {
    * @return whether bomb was used
    */
   public Boolean useBomb() {
-    if (!bomb.equals(null) && bomb.getBombCount() > 0) {
+    if (bomb != null && bomb.getBombCount() > 0) {
       bomb.updateBombCount(Const.USE_ITEM);
       return true;
     }
@@ -116,10 +129,22 @@ public class Inventory {
    * @return number of potions
    */
   public Integer getPotionCount() {
-    if (potion.equals(null)) {
+    if (potion == null) {
       return 0;
     }
     return potion.getPotionCount();
+  }
+
+  /**
+   * Gets heal value of potion.
+   *
+   * @return heal value of potion
+   */
+  public Integer getPotionHeal() {
+    if (potion == null) {
+      return 0;
+    }
+    return potion.getPotionHeal();
   }
 
   /**
@@ -128,16 +153,28 @@ public class Inventory {
    * @return number of bombs
    */
   public Integer getBombCount() {
-    if (bomb.equals(null)) {
+    if (bomb == null) {
       return 0;
     }
     return bomb.getBombCount();
   }
 
   /**
+   * Gets bomb damage.
+   *
+   * @return damage of bomb
+   */
+  public Integer getBombDamage() {
+    if (bomb == null) {
+      return 0;
+    }
+    return bomb.getBombDamage();
+  }
+
+  /**
    * Gets weapon damage.
    *
-   * @return damage of weapon.
+   * @return damage of weapon
    */
   public Integer getWeaponDamage() {
     return weapon.getWeaponDamage();
@@ -146,7 +183,7 @@ public class Inventory {
   /**
    * Gets weapon texture.
    *
-   * @return texture of weapon.
+   * @return texture of weapon
    */
   public String getWeaponSprite() {
     return weapon.getSprite();

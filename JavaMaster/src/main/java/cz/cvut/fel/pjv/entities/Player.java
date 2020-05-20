@@ -47,12 +47,30 @@ public class Player extends Entity {
   }
 
   /**
+   * Gets bomb damage.
+   *
+   * @return bomb damage
+   */
+  public Integer getBombDamage() {
+    return inventory.getBombDamage();
+  }
+
+  /**
    * Gets potion count.
    *
    * @return potion count
    */
   public Integer getPotionCount() {
     return inventory.getPotionCount();
+  }
+
+  /**
+   * Gets heal value of potion.
+   *
+   * @return heal value of potion
+   */
+  public Integer getPotionHeal() {
+    return inventory.getPotionHeal();
   }
 
   /**
@@ -76,6 +94,20 @@ public class Player extends Entity {
     inventory.itemPrevious();
   }
 
+  public void usePotion() {
+    if(inventory.usePotion()) {
+      heal(inventory.getPotionHeal());
+    }
+  }
+
+  public Integer useBomb() {
+    if(inventory.useBomb()) {
+      return inventory.getBombDamage();
+    } else {
+      return 0;
+    }
+  }
+
   /**
    * Heals player.
    *
@@ -92,9 +124,14 @@ public class Player extends Entity {
    * Adds loot to player inventory.
    *
    * @param loot - loot instance
+   *
    */
-  public void takeLoot(Item loot) {
-    inventory.addLoot(loot);
+  public Integer takeLoot(Item loot) {
+    return inventory.addLoot(loot);
+  }
+
+  public void changeWeapon(Boolean choice) {
+    inventory.changeWeapon(choice);
   }
 }
 

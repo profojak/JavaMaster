@@ -153,9 +153,8 @@ public class GameDraw extends Draw {
     gc.drawImage(image, 910, 15);
     image = new Image(POTION);
     gc.drawImage(image, 910, 125);
-    //TODO
-    //image = new Image(INVENTORY + parent.getWeaponSprite());
-    //gc.drawImage(image, 910, 235);
+    image = new Image(INVENTORY + parent.getWeaponSprite());
+    gc.drawImage(image, 910, 235);
     // If in combat, show selected item
     if (state == Const.State.INVENTORY) {
       switch (parent.getActiveItem()) {
@@ -175,12 +174,12 @@ public class GameDraw extends Draw {
     }
     // Text
     gc.setFill(Color.web(Const.COLOR_FILL));
-    //gc.strokeText(String.valueOf(parent.getBombCount()), 948, 125);
-    //gc.fillText(String.valueOf(parent.getBombCount()), 948, 125);
-    //gc.strokeText(String.valueOf(parent.getPotionCount()), 948, 235);
-    //gc.fillText(String.valueOf(parent.getPotionCount()), 948, 235);
-    //gc.strokeText(parent.getWeaponDamage(), 948, 505);
-    //gc.fillText(parent.getWeaponDamage(), 948, 505);  
+    gc.strokeText(String.valueOf(parent.getBombCount()), 948, 125);
+    gc.fillText(String.valueOf(parent.getBombCount()), 948, 125);
+    gc.strokeText(String.valueOf(parent.getPotionCount()), 948, 235);
+    gc.fillText(String.valueOf(parent.getPotionCount()), 948, 235);
+    gc.strokeText(String.valueOf(parent.getWeaponDamage()), 948, 505);
+    gc.fillText(String.valueOf(parent.getWeaponDamage()), 948, 505);
   }
 
   /**
@@ -320,6 +319,20 @@ public class GameDraw extends Draw {
           this.gc.fillText(this.parent.getMenuAction(i), MENU_X + Const.TEXT_X_OFFSET,
             MENU_Y + i * Const.BUTTON_HEIGHT + Const.TEXT_Y_OFFSET);
           if (i == active) {
+            this.gc.drawImage(IMAGE_BUTTON_ACTIVE, MENU_X, MENU_Y + i * Const.BUTTON_HEIGHT);
+          }
+        }
+        break;
+      case LOOT:
+        this.gc.setFill(Color.web(Const.COLOR_FILL));
+        Integer weaponActive = this.parent.getWeaponMenuActive();
+        for (int i = 0; i < this.parent.getWeaponMenuCount(); i++) {
+          this.gc.drawImage(IMAGE_BUTTON, MENU_X, MENU_Y + i * Const.BUTTON_HEIGHT);
+          this.gc.strokeText(this.parent.getWeaponMenuAction(i), MENU_X + Const.TEXT_X_OFFSET,
+                  MENU_Y + i * Const.BUTTON_HEIGHT + Const.TEXT_Y_OFFSET);
+          this.gc.fillText(this.parent.getWeaponMenuAction(i), MENU_X + Const.TEXT_X_OFFSET,
+                  MENU_Y + i * Const.BUTTON_HEIGHT + Const.TEXT_Y_OFFSET);
+          if (i == weaponActive) {
             this.gc.drawImage(IMAGE_BUTTON_ACTIVE, MENU_X, MENU_Y + i * Const.BUTTON_HEIGHT);
           }
         }

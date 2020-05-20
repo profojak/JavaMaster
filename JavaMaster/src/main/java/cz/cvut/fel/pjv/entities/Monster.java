@@ -18,7 +18,7 @@ public class Monster extends Entity {
    */
   public Monster(String sprite, Integer hp, Integer damage) {
     this.sprite = sprite;
-    this.hp = hp;
+    this.setHp(hp);
     this.damage = damage;
   }
 

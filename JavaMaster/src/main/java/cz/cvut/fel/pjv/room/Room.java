@@ -173,8 +173,10 @@ public class Room {
     switch(name) {
       case "potion":
         loot = new Potion(name + PNG_EXTENSION, name, playerHP/HEALING_DIVIDER, number);
+        break;
       case "bomb":
         loot = new Bomb(name + PNG_EXTENSION, name, playerHP/BOMBING_DIVIDER, number);
+        break;
       default:
         loot = new Weapon(name, name.substring(0, name.lastIndexOf('.')), number);
     }

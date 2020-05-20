@@ -4,7 +4,7 @@ import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.menu.Button;
 
 /**
- * Implementation of Menu: menu layout used in main menu.
+ * Implementation of Menu: menu layout used in game menu.
  *
  * @see Layout
  */

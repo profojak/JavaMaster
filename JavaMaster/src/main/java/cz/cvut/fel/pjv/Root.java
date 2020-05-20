@@ -26,6 +26,18 @@ public class Root extends Application {
    */
   public File getFile() {
     FileChooser fileChooser = new FileChooser();
+
+    FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("DUNG files (*.dung)", "*.dung");
+    fileChooser.getExtensionFilters().add(extensionFilter);
+
+    // TODO doesn't work for povolji2
+    /*
+    File saveDirectory = new File(System.getProperty("user.home"));
+
+    System.out.println(saveDirectory.canRead());
+
+    fileChooser.setInitialDirectory(saveDirectory.exists() ? saveDirectory : null);
+    */
     fileChooser.setTitle("Choose dungeon file");
     return fileChooser.showOpenDialog(this.stage);
   }

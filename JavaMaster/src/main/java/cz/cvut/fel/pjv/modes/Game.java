@@ -2,8 +2,10 @@ package cz.cvut.fel.pjv.modes;
 
 import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.Root;
+import cz.cvut.fel.pjv.inventory.items.Item;
 import cz.cvut.fel.pjv.inventory.items.Weapon;
 import cz.cvut.fel.pjv.menu.layouts.Layout;
+import cz.cvut.fel.pjv.menu.layouts.NewWeapon;
 import cz.cvut.fel.pjv.modes.draw.*;
 import cz.cvut.fel.pjv.entities.*;
 import cz.cvut.fel.pjv.room.Room;
@@ -35,6 +37,7 @@ public class Game implements Mode {
   private Integer roomStartId, roomEndId, roomCurrentId;
   private Const.Direction direction = Const.Direction.NORTH;
   private Exit menu;
+  private NewWeapon weaponMenu;
   private Const.State state = Const.State.DEFAULT;
 
   /**
@@ -45,8 +48,15 @@ public class Game implements Mode {
     this.root = root;
     this.player = new Player();
     File saveFile = this.root.getFile();
-    parseSaveFile(saveFile);
-    this.draw = new GameDraw(stack, this);
+    // TODO
+    //if (saveFile != null && saveFile.canRead()) {
+      parseSaveFile(saveFile);
+      this.draw = new GameDraw(stack, this);
+    /*} else {
+      this.draw = null;
+
+      this.root.switchMode(Const.MENU_MAINMENU);
+    }*/
   }
 
   /**
@@ -90,6 +100,18 @@ public class Game implements Mode {
     direction = changeDirection(directionChange);
     logger.info(Const.LOG_WHITE + ">>> Room index: " + roomCurrentId + ", direction: " + direction
       + Const.LOG_RESET); // DEBUG
+  }
+
+  private void takeLoot() {
+    Item loot = rooms[roomCurrentId].getLoot();
+    logger.info(Const.LOG_WHITE + ">>> You have found loot: " + loot.getName() + Const.LOG_RESET); // DEBUG
+    if (player.takeLoot(loot) == 1) {
+      this.weaponMenu = new NewWeapon();
+      state = Const.State.LOOT;
+      this.draw.redraw(state);
+    } else {
+      this.draw.redraw(Const.State.INVENTORY);
+    }
   }
 
   // Key methods
@@ -141,16 +163,16 @@ public class Game implements Mode {
             }
 
             if (checkForStoryAfter()) {
+              logger.info(Const.LOG_WHITE + ">>> Story after: " + getStoryAfter()
+                      + Const.LOG_RESET); // DEBUG
+              state = Const.State.STORY_AFTER;
               break;
             }
 
             // TODO Better message
-            /*if (rooms[roomCurrentId].hasLoot()) {
-              Loot loot = rooms[roomCurrentId].getLoot();
-              logger.info(WHITE + ">>> You have found loot: " + loot.getCount() + " instance/s of " +
-                loot.getSprite() + RESET); // DEBUG
-              player.takeLoot(loot);
-            }*/
+            if (rooms[roomCurrentId].hasLoot()) {
+              takeLoot();
+            }
           }
 
           // Last room
@@ -182,6 +204,9 @@ public class Game implements Mode {
       case MENU:
         this.menu.buttonPrevious();
         break;
+      case LOOT:
+        this.weaponMenu.buttonPrevious();
+        break;
     }
     this.draw.redraw(state);
   }
@@ -210,6 +235,9 @@ public class Game implements Mode {
         return;
       case MENU:
         this.menu.buttonNext();
+        break;
+      case LOOT:
+        this.weaponMenu.buttonNext();
         break;
     }
     this.draw.redraw(state);
@@ -244,6 +272,9 @@ public class Game implements Mode {
       case MENU:
         this.menu.buttonPrevious();
         break;
+      case LOOT:
+        this.weaponMenu.buttonPrevious();
+        break;
     }
     this.draw.redraw(state);
   }
@@ -276,6 +307,9 @@ public class Game implements Mode {
         return;
       case MENU:
         this.menu.buttonNext();
+        break;
+      case LOOT:
+        this.weaponMenu.buttonNext();
         break;
     }
     this.draw.redraw(state);
@@ -331,6 +365,15 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      case STORY_AFTER:
+        draw.close();
+
+        if (checkForStoryAfter()) {
+          r;
+        }
+
+        state = Const.State.DEFAULT;
+        break;
       case MENU:
         // Cancel
         if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_CANCEL)) {
@@ -342,8 +385,40 @@ public class Game implements Mode {
           this.root.switchMode(Const.MENU_MAINMENU);
         }
         break;
+      case LOOT:
+        // Take
+        if (this.weaponMenu.getAction(this.weaponMenu.getActive()).equals(Const.MENU_TAKE)) {
+          player.changeWeapon(true);
+        // Keep
+        } else if (this.weaponMenu.getAction(this.weaponMenu.getActive()).equals(Const.MENU_KEEP)) {
+          player.changeWeapon(false);
+        }
+        this.weaponMenu = null;
+        state = Const.State.DEFAULT;
+        break;
+      case COMBAT:
+        switch (player.getActiveItem()) {
+          case WEAPON:
+            getMonster().takeDamage(player.getDamage());
+          case BOMB:
+            getMonster().takeDamage(player.useBomb());
+          case POTION:
+            player.usePotion();
+        }
+        player.takeDamage(getMonster().getDamage());
+        if (getMonster().getHP() <= 0) {
+          if (rooms[roomCurrentId].hasStoryAfter()) {
+            logger.info(Const.LOG_WHITE + ">>> Story after: " + getStoryAfter()
+                    + Const.LOG_RESET); // DEBUG
+            state = Const.State.STORY_AFTER;
+            break;
+          } else if (rooms[roomCurrentId].hasLoot()) {
+            takeLoot();
+          }
+        }
     }
     this.draw.redraw(state);
+    this.draw.redraw(Const.State.INVENTORY);
   }
 
   /**
@@ -505,10 +580,10 @@ public class Game implements Mode {
             player.setHp(Integer.parseInt(line[2]));
             logger.info(Const.LOG_WHITE + ">>> player = " + player.getHP()
               + Const.LOG_RESET); // DEBUG
-            //Weapon weapon = new Weapon(line[1], line[1].substring(0, line[1].lastIndexOf('.')), Integer.parseInt(line[3]));
-            //player.takeLoot(weapon);
-            //logger.info(Const.LOG_WHITE + ">>> player.getDamage = " + player.getDamage() + Const.LOG_RESET); // DEBUG
-            //logger.info(Const.LOG_WHITE + ">>> player.getSprite = " + player.getSprite() + Const.LOG_RESET); // DEBUG
+            Weapon weapon = new Weapon(line[1], line[1].substring(0, line[1].lastIndexOf('.')), Integer.parseInt(line[3]));
+            player.takeLoot(weapon);
+            logger.info(Const.LOG_WHITE + ">>> player.getDamage = " + player.getDamage() + Const.LOG_RESET); // DEBUG
+            logger.info(Const.LOG_WHITE + ">>> player.getSprite = " + player.getSprite() + Const.LOG_RESET); // DEBUG
             break;
           // Dungeon rooms
           case ID:
@@ -537,9 +612,9 @@ public class Game implements Mode {
             break;
           // Loot in current room
           case LOOT:
-            //rooms[roomCurrentId].setLoot(line[1], Integer.parseInt(line[2]), player.getHP());
-            //logger.info(Const.LOG_WHITE + ">>> room.getLootSprite = " +
-              //rooms[roomCurrentId].getLoot().getSprite() + Const.LOG_RESET); // DEBUG
+            rooms[roomCurrentId].setLoot(line[1], Integer.parseInt(line[2]), player.getHP());
+            logger.info(Const.LOG_WHITE + ">>> room.getLootSprite = " +
+              rooms[roomCurrentId].getLoot().getSprite() + Const.LOG_RESET); // DEBUG
             break;
           // Texture of current room
           case WALL:
@@ -665,6 +740,25 @@ public class Game implements Mode {
   /** @see Layout */
   public Integer getMenuCount() {
     return this.menu.getCount();
+  }
+
+  /**
+   * Following methods are connecting Weapon menu with GameDraw object.
+   */
+
+  /** @see Layout */
+  public String getWeaponMenuAction(Integer index) {
+    return this.weaponMenu.getAction(index);
+  }
+
+  /** @see Layout */
+  public Integer getWeaponMenuActive() {
+    return this.weaponMenu.getActive();
+  }
+
+  /** @see Layout */
+  public Integer getWeaponMenuCount() {
+    return this.weaponMenu.getCount();
   }
 
   /**

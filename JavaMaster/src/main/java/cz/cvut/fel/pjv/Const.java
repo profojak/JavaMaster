@@ -47,6 +47,7 @@ public class Const {
     // Menu options
     MENU_MAINMENU = "MainMenu", MENU_GAME = "Game", MENU_ABOUT = "About",
     MENU_EDITOR = "Editor", MENU_CANCEL = "Cancel", MENU_EXIT = "Exit",
+    MENU_KEEP = "Keep", MENU_TAKE = "Take",
 
     // Menu buttons
     BUTTON = "/sprites/menu/button.png", BUTTON_ACTIVE = "/sprites/menu/active.png",
