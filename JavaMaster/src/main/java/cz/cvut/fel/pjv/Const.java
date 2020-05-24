@@ -1,5 +1,7 @@
 package cz.cvut.fel.pjv;
 
+import java.io.File;
+
 /**
  * Class holding various constants.
  */
@@ -55,7 +57,11 @@ public class Const {
     // Draw colors
     COLOR_STROKE = "#282828", COLOR_FILL = "#FBF1C7", COLOR_BG = "#928374", COLOR_BAR = "504945",
     COLOR_INVENTORY = "#665C54", COLOR_BAR_PLAYER_BG = "#9D0006", COLOR_BAR_PLAYER_FG = "#CC241D",
-    COLOR_BAR_MONSTER_BG = "#427B58", COLOR_BAR_MONSTER_FG = "#689D6A", FONT = "/silkscreen.ttf";
+    COLOR_BAR_MONSTER_BG = "#427B58", COLOR_BAR_MONSTER_FG = "#689D6A", FONT = "/silkscreen.ttf",
+
+    // Absolute paths
+    JAVAMASTER_PATH = new File("").getAbsolutePath(),
+    SAVE_PATH = JAVAMASTER_PATH.substring(0, JAVAMASTER_PATH.lastIndexOf(File.separatorChar) + 1) + "saves";
 
   public static final Integer
     // Inventory constants

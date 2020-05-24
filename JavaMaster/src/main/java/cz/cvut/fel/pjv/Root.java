@@ -30,14 +30,16 @@ public class Root extends Application {
     FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("DUNG files (*.dung)", "*.dung");
     fileChooser.getExtensionFilters().add(extensionFilter);
 
-    // TODO doesn't work for povolji2
-    /*
-    File saveDirectory = new File(System.getProperty("user.home"));
+    File saveDirectory = new File(Const.SAVE_PATH);
 
-    System.out.println(saveDirectory.canRead());
+    logger.info(Const.LOG_WHITE + "can read saves: " + saveDirectory.canRead() + Const.LOG_RESET);
+    logger.info(Const.LOG_WHITE + "Path to saves: " + saveDirectory.getPath() + Const.LOG_RESET);
+    logger.info(Const.LOG_WHITE + "Absolute path to saves: " + saveDirectory.getAbsolutePath() + Const.LOG_RESET);
 
     fileChooser.setInitialDirectory(saveDirectory.exists() ? saveDirectory : null);
-    */
+
+    logger.info(Const.LOG_WHITE + "Initial directory: " + fileChooser.getInitialDirectory() + Const.LOG_RESET);
+
     fileChooser.setTitle("Choose dungeon file");
     return fileChooser.showOpenDialog(this.stage);
   }

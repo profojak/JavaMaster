@@ -368,10 +368,6 @@ public class Game implements Mode {
       case STORY_AFTER:
         draw.close();
 
-        if (checkForStoryAfter()) {
-          r;
-        }
-
         state = Const.State.DEFAULT;
         break;
       case MENU:
