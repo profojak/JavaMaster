@@ -32,7 +32,7 @@ public class Root extends Application {
 
     File saveDirectory = new File(Const.SAVE_PATH);
 
-    logger.info(Const.LOG_WHITE + "can read saves: " + saveDirectory.canRead() + Const.LOG_RESET);
+    logger.info(Const.LOG_WHITE + "Can read saves: " + saveDirectory.canRead() + Const.LOG_RESET);
     logger.info(Const.LOG_WHITE + "Path to saves: " + saveDirectory.getPath() + Const.LOG_RESET);
     logger.info(Const.LOG_WHITE + "Absolute path to saves: " + saveDirectory.getAbsolutePath() + Const.LOG_RESET);
 
