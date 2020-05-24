@@ -33,6 +33,7 @@ public class Game implements Mode {
 
   private Room[] rooms = new Room[Const.NUMBER_OF_ROOMS];
   private Integer roomStartId, roomEndId, roomCurrentId;
+  private File nextMap;
   private Const.Direction direction = Const.Direction.NORTH;
   private Layout menu;
   private Const.State state = Const.State.DEFAULT;
@@ -45,15 +46,15 @@ public class Game implements Mode {
     this.root = root;
     this.player = new Player();
     File saveFile = this.root.getFile();
-    // TODO
-    //if (saveFile != null && saveFile.canRead()) {
+
+    // TODO fix this shit
+    if (saveFile != null && saveFile.canRead()) {
       parseSaveFile(saveFile);
       this.draw = new GameDraw(stack, this);
-    /*} else {
+    } else {
       this.draw = null;
-
       this.root.switchMode(Const.MENU_MAINMENU);
-    }*/
+    }
   }
 
   /**
@@ -716,6 +717,10 @@ public class Game implements Mode {
     return hasRoom(Const.DONT_TURN);
   }
 
+  public Boolean hasNextMap() {
+    return nextMap != null;
+  }
+
   // Loading files
 
   /**
@@ -799,6 +804,16 @@ public class Game implements Mode {
             break;
           // Current room
           case END:
+            if (line.length == 2) {
+              String nextMapPath = Const.SAVE_PATH + File.separator + line[1];
+              if (new File(nextMapPath).canRead()) {
+                logger.info(Const.LOG_WHITE + ">>> nextMapPath = " + nextMapPath
+                  + Const.LOG_RESET); // DEBUG
+                nextMap = new File(nextMapPath);
+              } else {
+                nextMap = null;
+              }
+            }
             roomCurrentId = roomStartId;
             break;
           // Wrong file format!
