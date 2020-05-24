@@ -75,15 +75,8 @@ public class GameDraw extends Draw {
       }
     }
 
-    drawInventory(Const.State.DEFAULT);
-
-    /* HP bars */
-    gc.setFill(Color.web(Const.COLOR_BAR));
-    gc.fillRect(375, 10, BAR_WIDTH + 10, BAR_HEIGHT + 10);
-    gc.setFill(Color.web(Const.COLOR_BAR_PLAYER_BG));
-    gc.fillRect(375, 480, BAR_WIDTH, BAR_HEIGHT);
-    gc.setFill(Color.web(Const.COLOR_BAR_PLAYER_FG));
-    gc.fillRect(380, 485, BAR_WIDTH - 10, BAR_HEIGHT - 10);
+    drawInventory(false);
+    drawBars(false);
 
     redraw(Const.State.DEFAULT);
   }
@@ -135,9 +128,9 @@ public class GameDraw extends Draw {
   /**
    * Updates inventory.
    *
-   * @param state - state Game is currently in
+   * @param drawActiveItem - whether to draw active item
    */
-  private void drawInventory(Const.State state) {
+  private void drawInventory(Boolean drawActiveItem) {
     /* Inventory */
     gc.setFill(Color.web(Const.COLOR_INVENTORY));
     gc.fillRect(905, 10, 85, 505);
@@ -156,7 +149,7 @@ public class GameDraw extends Draw {
     image = new Image(INVENTORY + parent.getWeaponSprite());
     gc.drawImage(image, 910, 235);
     // If in combat, show selected item
-    if (state == Const.State.INVENTORY) {
+    if (drawActiveItem) {
       switch (parent.getActiveItem()) {
         case BOMB:
           image = new Image(INVENTORY_FRAME_ITEM_ACTIVE);
@@ -183,95 +176,180 @@ public class GameDraw extends Draw {
   }
 
   /**
+   * Updates HP bars.
+   *
+   * @param drawBothBars - whether to draw both HP bars
+   */
+  private void drawBars(Boolean drawBothBars) {
+    /* Bars */
+    gc.setFill(Color.web(Const.COLOR_BAR));
+    gc.fillRect(375, 10, BAR_WIDTH + 10, BAR_HEIGHT + 10);
+    gc.fillRect(375, 480, BAR_WIDTH + 10, BAR_HEIGHT + 10);
+    // Player HP bar
+    Integer playerBarPart = (parent.getPlayerHP() == parent.getPlayerMaxHP()) ?
+      (parent.getPlayerHP() == 0) ? 0 : BAR_WIDTH : Math.round(((float)BAR_WIDTH /
+      (float)parent.getPlayerMaxHP()) * (float)parent.getPlayerHP());
+    gc.setFill(Color.web(Const.COLOR_BAR_PLAYER_BG));
+    gc.fillRect(375, 480, playerBarPart, BAR_HEIGHT);
+    gc.setFill(Color.web(Const.COLOR_BAR_PLAYER_FG));
+    gc.fillRect(380, 485, playerBarPart - 10, BAR_HEIGHT - 10);
+    if (!drawBothBars) {
+      return;
+    }
+    // Monster HP bar
+    Integer monsterBarPart = (parent.getMonsterHP() == parent.getMonsterMaxHP()) ?
+      (parent.getMonsterHP() == 0) ? 0 : BAR_WIDTH : Math.round(((float)BAR_WIDTH /
+      (float)parent.getMonsterMaxHP()) * (float)parent.getMonsterHP());
+    if (parent.getMonsterHP() > 0) {
+      gc.setFill(Color.web(Const.COLOR_BAR_MONSTER_BG));
+      gc.fillRect(375, 10, monsterBarPart, BAR_HEIGHT);
+      gc.setFill(Color.web(Const.COLOR_BAR_MONSTER_FG));
+      gc.fillRect(380, 15, monsterBarPart - 10, BAR_HEIGHT - 10);
+    }
+    // Item bar helpers
+    switch (parent.getActiveItem()) {
+      case BOMB:
+        // Player has no bomb and takes damage
+        if (parent.getBombCount() == 0) {
+          Integer bombPlayerBarDamage = (BAR_WIDTH / parent.getPlayerMaxHP())
+            * parent.getMonsterDamage();
+          Integer bombPlayerBarRight = bombPlayerBarDamage;
+          Integer bombPlayerBarLeft = playerBarPart - bombPlayerBarDamage;
+          if (bombPlayerBarLeft < 0) {
+            bombPlayerBarRight += bombPlayerBarLeft;
+            bombPlayerBarLeft = 0;
+          }
+          gc.setFill(Color.web(Const.COLOR_FILL));
+          gc.fillRect(375 + bombPlayerBarLeft, 480, bombPlayerBarRight, BAR_HEIGHT);
+        } else {
+          // Bomb oneshots monster
+          if (parent.getBombDamage() >= parent.getMonsterMaxHP()) {
+            gc.setFill(Color.web(Const.COLOR_FILL));
+            gc.fillRect(375, 10, monsterBarPart, BAR_HEIGHT);
+          } else {
+          // Bomb hurts or finishes monster
+            Integer bombBarDamage = (BAR_WIDTH / parent.getMonsterMaxHP())
+              * parent.getBombDamage();
+            Integer bombBarRight = bombBarDamage;
+            Integer bombBarLeft = monsterBarPart - bombBarDamage;
+            if (bombBarLeft < 0) {
+              bombBarRight += bombBarLeft;
+              bombBarLeft = 0;
+            }
+            gc.setFill(Color.web(Const.COLOR_FILL));
+            gc.fillRect(375 + bombBarLeft, 10, bombBarRight, BAR_HEIGHT);
+          }
+        }
+        break;
+      case POTION:
+        // Player has no potion and takes damage
+        if (parent.getPotionCount() == 0) {
+          Integer bombPlayerBarDamage = (BAR_WIDTH / parent.getPlayerMaxHP())
+            * parent.getMonsterDamage();
+          Integer bombPlayerBarRight = bombPlayerBarDamage;
+          Integer bombPlayerBarLeft = playerBarPart - bombPlayerBarDamage;
+          if (bombPlayerBarLeft < 0) {
+            bombPlayerBarRight += bombPlayerBarLeft;
+            bombPlayerBarLeft = 0;
+          }
+          gc.setFill(Color.web(Const.COLOR_FILL));
+          gc.fillRect(375 + bombPlayerBarLeft, 480, bombPlayerBarRight, BAR_HEIGHT);
+        // Part of health bar which will be healed
+        } else {
+          Integer potionBarRight = BAR_WIDTH / 2;
+          if (playerBarPart + potionBarRight > BAR_WIDTH) {
+            potionBarRight = BAR_WIDTH - playerBarPart;
+          }
+          gc.setFill(Color.web(Const.COLOR_FILL));
+          gc.fillRect(375 + playerBarPart, 480, potionBarRight, BAR_HEIGHT);
+        }
+        break;
+      case WEAPON:
+        /* Player damage */
+        // Weapon oneshots monster
+        if (parent.getWeaponDamage() >= parent.getMonsterMaxHP()) {
+          gc.setFill(Color.web(Const.COLOR_FILL));
+          gc.fillRect(375, 10, monsterBarPart, BAR_HEIGHT);
+        } else {
+        // Weapon hurts or finishes monster
+          Integer weaponBarDamage = (BAR_WIDTH / parent.getMonsterMaxHP())
+            * parent.getWeaponDamage();
+          Integer weaponBarRight = weaponBarDamage;
+          Integer weaponBarLeft = monsterBarPart - weaponBarDamage;
+          if (weaponBarLeft < 0) {
+            weaponBarRight += weaponBarLeft;
+            weaponBarLeft = 0;
+          }
+          gc.setFill(Color.web(Const.COLOR_FILL));
+          gc.fillRect(375 + weaponBarLeft, 10, weaponBarRight, BAR_HEIGHT);
+        }
+
+        /* Monster damage */
+        if (parent.getMonsterDamage() != 0) {
+          Integer monsterBarDamage = (BAR_WIDTH / parent.getPlayerMaxHP())
+            * parent.getMonsterDamage();
+          Integer monsterBarRight = monsterBarDamage;
+          Integer monsterBarLeft = playerBarPart - monsterBarDamage;
+          if (monsterBarLeft < 0) {
+            monsterBarRight += monsterBarLeft;
+            monsterBarLeft = 0;
+          }
+          gc.setFill(Color.web(Const.COLOR_FILL));
+          gc.fillRect(375 + monsterBarLeft, 480, monsterBarRight, BAR_HEIGHT);
+        }
+        break;
+    }
+  }
+
+  /**
+   * Draws room.
+   */
+  private void drawRoom() {
+    // Background
+    Image image = new Image(ROOM_BG);
+    gc.drawImage(image, 375, 50);
+    // Front wall
+    if (!parent.hasRoomFront()) {
+      if (parent.getRoomSprite() != null) {
+        image = new Image(ROOM_FRONT + parent.getRoomSprite());
+      } else {
+        image = new Image(ROOM_FRONT + ROOM_DEFAULT);
+      }
+      gc.drawImage(image, 450, 50);
+    }
+    // Left wall
+    if (!parent.hasRoomLeft()) {
+      image = new Image(ROOM_LEFT);
+      gc.drawImage(image, 375, 50);
+    }
+    // Right wall
+    if (!parent.hasRoomRight()) {
+      image = new Image(ROOM_RIGHT);
+      gc.drawImage(image, 825, 50);
+    }
+  }
+
+  /**
    * @see Draw
    * @author profojak
    */
   public void redraw(Const.State state) {
     Image image;
-    /*try {
-      part = Part.valueOf(partString);
-    } catch (Exception exception) {
-      logger.log(Level.SEVERE, RED + ">>>  Error: Unexpected part value: " + part + RESET,
-        exception); // ERROR
-      return;
-    }*/
     switch (state) {
       case DEFAULT:
         drawMap();
+        drawRoom();
 
-        /* Room */
-        // Background
-        image = new Image(ROOM_BG);
-        gc.drawImage(image, 375, 50);
-        // Front wall
-        if (!parent.hasRoomFront()) {
-          if (parent.getRoomSprite() != null) {
-            image = new Image(ROOM_FRONT + parent.getRoomSprite());
-          } else {
-            image = new Image(ROOM_FRONT + ROOM_DEFAULT);
-          }
-          gc.drawImage(image, 450, 50);
-        }
-        // Left wall
-        if (!parent.hasRoomLeft()) {
-          image = new Image(ROOM_LEFT);
-          gc.drawImage(image, 375, 50);
-        }
-        // Right wall
-        if (!parent.hasRoomRight()) {
-          image = new Image(ROOM_RIGHT);
-          gc.drawImage(image, 825, 50);
-        }
         break;
       case INVENTORY:
-        drawInventory(state);
+        drawInventory(true);
+        drawBars(true);
         break;
       case MONSTER:
         drawMap();
-        drawInventory(Const.State.INVENTORY);
-
-        /* Room */
-        // Background
-        image = new Image(ROOM_BG);
-        gc.drawImage(image, 375, 50);
-        // Front wall
-        if (!parent.hasRoomFront()) {
-          if (parent.getRoomSprite() != null) {
-            image = new Image(ROOM_FRONT + parent.getRoomSprite());
-          } else {
-            image = new Image(ROOM_FRONT + ROOM_DEFAULT);
-          }
-          gc.drawImage(image, 450, 50);
-        }
-        // Left wall
-        if (!parent.hasRoomLeft()) {
-          image = new Image(ROOM_LEFT);
-          gc.drawImage(image, 375, 50);
-        }
-        // Right wall
-        if (!parent.hasRoomRight()) {
-          image = new Image(ROOM_RIGHT);
-          gc.drawImage(image, 825, 50);
-        }
-        // Front wall
-        if (!parent.hasRoomFront()) {
-          if (parent.getRoomSprite() != null) {
-            image = new Image(ROOM_FRONT + parent.getRoomSprite());
-          } else {
-            image = new Image(ROOM_FRONT + ROOM_DEFAULT);
-          }
-          gc.drawImage(image, 450, 50);
-        }
-
-        /* Bars */
-        gc.setFill(Color.web(Const.COLOR_BAR_MONSTER_BG));
-        gc.fillRect(375, 10, BAR_WIDTH, BAR_HEIGHT);
-        gc.setFill(Color.web(Const.COLOR_BAR_MONSTER_FG));
-        gc.fillRect(380, 15, BAR_WIDTH - 10, BAR_HEIGHT - 10);
-        gc.setFill(Color.web(Const.COLOR_BAR_PLAYER_BG));
-        gc.fillRect(375, 480, BAR_WIDTH, BAR_HEIGHT);
-        gc.setFill(Color.web(Const.COLOR_BAR_PLAYER_FG));
-        gc.fillRect(380, 485, BAR_WIDTH - 10, BAR_HEIGHT - 10);
+        drawInventory(true);
+        drawBars(true);
+        drawRoom();
 
         /* Combat */
         // Monster
@@ -291,7 +369,15 @@ public class GameDraw extends Draw {
         this.stack.setMargin(effect, new Insets(0, 0, 0, 275));
         break;
       case COMBAT:
-        drawInventory(Const.State.INVENTORY);
+        // Monster is dead
+        if (parent.getMonsterHP() <= 0) {
+          this.stack.getChildren().remove(monster);
+          drawInventory(false);
+          drawBars(false);
+          return;
+        }
+        drawInventory(true);
+        drawBars(true);
 
         /* Combat */
         if (thread.isAlive()) {
@@ -309,7 +395,18 @@ public class GameDraw extends Draw {
         thread = new Thread(new GameDrawStoryRunnable(gc, parent.getStoryBefore()));
         thread.start();
         break;
+      case STORY_AFTER:
+        drawMap();
+        drawRoom();
+
+        /* Story dialog */
+        thread = new Thread(new GameDrawStoryRunnable(gc, parent.getStoryAfter()));
+        thread.start();
+        break;
       case MENU:
+        drawMap();
+        drawRoom();
+
         this.gc.setFill(Color.web(Const.COLOR_FILL));
         Integer active = this.parent.getMenuActive();
         for (int i = 0; i < this.parent.getMenuCount(); i++) {
@@ -324,18 +421,27 @@ public class GameDraw extends Draw {
         }
         break;
       case LOOT:
-        this.gc.setFill(Color.web(Const.COLOR_FILL));
-        Integer weaponActive = this.parent.getWeaponMenuActive();
-        for (int i = 0; i < this.parent.getWeaponMenuCount(); i++) {
-          this.gc.drawImage(IMAGE_BUTTON, MENU_X, MENU_Y + i * Const.BUTTON_HEIGHT);
-          this.gc.strokeText(this.parent.getWeaponMenuAction(i), MENU_X + Const.TEXT_X_OFFSET,
-                  MENU_Y + i * Const.BUTTON_HEIGHT + Const.TEXT_Y_OFFSET);
-          this.gc.fillText(this.parent.getWeaponMenuAction(i), MENU_X + Const.TEXT_X_OFFSET,
-                  MENU_Y + i * Const.BUTTON_HEIGHT + Const.TEXT_Y_OFFSET);
-          if (i == weaponActive) {
-            this.gc.drawImage(IMAGE_BUTTON_ACTIVE, MENU_X, MENU_Y + i * Const.BUTTON_HEIGHT);
-          }
+        drawInventory(false);
+        drawRoom();
+
+        /* Loot */
+        switch (parent.getLootType()) {
+          case WEAPON:
+            image = new Image(INVENTORY + parent.getWeaponSprite());
+            this.gc.drawImage(image, 560, 125);
+            break;
+          case BOMB:
+            image = new Image(BOMB);
+            this.gc.drawImage(image, 560, 200);
+            break;
+          case POTION:
+            image = new Image(POTION);
+            this.gc.drawImage(image, 560, 200);
+            break;
         }
+        gc.setFill(Color.web(Const.COLOR_FILL));
+        gc.strokeText(String.valueOf(parent.getLootCount()), 685, 280);
+        gc.fillText(String.valueOf(parent.getLootCount()), 685, 280);
         break;
     }
     // Overlay

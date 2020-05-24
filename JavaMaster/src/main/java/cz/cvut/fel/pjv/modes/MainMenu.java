@@ -20,6 +20,8 @@ public class MainMenu implements Mode {
   private final Draw draw;
   private final Menu menu;
 
+  private Const.State state = Const.State.MENU;
+
   /**
    * @param stack - StackPane to draw images to
    * @param root - parent object
@@ -43,44 +45,84 @@ public class MainMenu implements Mode {
   // Key methods
 
   public void keyUp() {
-    this.menu.buttonPrevious();
-    this.draw.redraw(Const.State.MENU);
+    switch (state) {
+      case MENU:
+        this.menu.buttonPrevious();
+        this.draw.redraw(Const.State.MENU);
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   public void keyDown() {
-    this.menu.buttonNext();
-    this.draw.redraw(Const.State.MENU);
+    switch (state) {
+      case MENU:
+        this.menu.buttonNext();
+        this.draw.redraw(Const.State.MENU);
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   public void keyLeft() {
-    this.menu.buttonPrevious();
-    this.draw.redraw(Const.State.MENU);
+    switch (state) {
+      case MENU:
+        this.menu.buttonPrevious();
+        this.draw.redraw(Const.State.MENU);
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   public void keyRight() {
-    this.menu.buttonNext();
-    this.draw.redraw(Const.State.MENU);
+    switch (state) {
+      case MENU:
+        this.menu.buttonNext();
+        this.draw.redraw(Const.State.MENU);
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   public void keyEscape() {
+    switch (state) {
+      case DEFAULT:
+        state = Const.State.MENU;
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   public void keyEnter() {
-    switch (this.menu.getAction(this.menu.getActive())) {
-      case Const.MENU_GAME:
-        this.draw.close();
-        this.root.switchMode(Const.MENU_GAME);
+    switch (state) {
+      case MENU:
+        switch (this.menu.getAction(this.menu.getActive())) {
+          case Const.MENU_GAME:
+            this.draw.close();
+            this.root.switchMode(Const.MENU_GAME);
+            return;
+          case Const.MENU_ABOUT:
+            state = Const.State.DEFAULT;
+            break;
+          case Const.MENU_EXIT:
+            System.exit(0);
+            break;
+        }
         break;
-      case Const.MENU_ABOUT:
-        this.draw.redraw(Const.State.DEFAULT);
-        break;
-      case Const.MENU_EXIT:
-        System.exit(0);
+      case DEFAULT:
+        state = Const.State.MENU;
         break;
     }
+    this.draw.redraw(state);
   }
 
   public void keyDelete() {
+    switch (state) {
+      case DEFAULT:
+        state = Const.State.MENU;
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   // GUI

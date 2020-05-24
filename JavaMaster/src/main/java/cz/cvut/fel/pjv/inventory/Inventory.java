@@ -29,7 +29,7 @@ public class Inventory {
    *
    * @param loot - loot instance
    */
-  public Integer addLoot(Item loot) {
+  public void addLoot(Item loot) {
     // Potion
     if (loot instanceof Potion) {
       if (potion == null) {
@@ -46,22 +46,8 @@ public class Inventory {
       }
     // Weapon
     } else if (loot instanceof Weapon) {
-      if (weapon == null) {
-        weapon = (Weapon) loot;
-      } else {
-        tempWeapon = (Weapon) loot;
-        return 1;
-      }
-      // TODO Check if player wants to get new weapon
+      weapon = (Weapon) loot;
     }
-    return 0;
-  }
-
-  public void changeWeapon(Boolean choice) {
-    if (choice) {
-      weapon = tempWeapon;
-    }
-    tempWeapon = null;
   }
 
   /**

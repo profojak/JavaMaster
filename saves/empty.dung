@@ -2,17 +2,22 @@ start 0 34
 player sword.png 10 2
 id 0
 id 1
+story Is_this_some_sort_of_AAA_game?_They_even_have_potions!
 loot potion 5
 id 2
 loot bomb 1
 id 3
+story What_is_this? Oh_shit!_Some_badass_sword_that_looks_exactly_like_mine,_but_is_like_150%_better!
 loot sword.png 5
 id 6
+story Nah._This_can't_be_AAA._They_split_english_words_in_half. 2/10_IGN._Trash.
 id 8
 id 9
 id 10
 id 11
 id 12
+story Wow._This_one's_tough! Hahaha,_they_forgot_to_add_damage_to_this_monster._These_devs_are_loosers_lmao.
+monster goblin.png 100 0
 id 14
 id 15
 id 17
@@ -24,9 +29,12 @@ id 23
 id 24
 id 26
 id 27
+story What_is_that_smell? Devourer_by_Mr_Maty_-TM.
+monster devourer.png 25 3
 id 28
 id 30
 id 31
 id 33
 id 34
+story As_you_crawl_through_the_dark_dungeon,_you_stumble_upon_a_rusty_ladder. It_leads_deep_into_the_darkness_below.
 end

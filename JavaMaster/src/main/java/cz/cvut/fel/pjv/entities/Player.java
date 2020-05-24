@@ -94,10 +94,12 @@ public class Player extends Entity {
     inventory.itemPrevious();
   }
 
-  public void usePotion() {
+  public Boolean usePotion() {
     if(inventory.usePotion()) {
       heal(inventory.getPotionHeal());
+      return true;
     }
+    return false;
   }
 
   public Integer useBomb() {
@@ -126,12 +128,8 @@ public class Player extends Entity {
    * @param loot - loot instance
    *
    */
-  public Integer takeLoot(Item loot) {
-    return inventory.addLoot(loot);
-  }
-
-  public void changeWeapon(Boolean choice) {
-    inventory.changeWeapon(choice);
+  public void takeLoot(Item loot) {
+    inventory.addLoot(loot);
   }
 }
 

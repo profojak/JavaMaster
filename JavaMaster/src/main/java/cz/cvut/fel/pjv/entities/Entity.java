@@ -15,6 +15,9 @@ public abstract class Entity {
    */
   public void takeDamage(Integer damage) {
     hp -= damage;
+    if (hp < 0) {
+      hp = 0;
+    }
   }
 
   /**
