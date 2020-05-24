@@ -60,8 +60,9 @@ public class Const {
     COLOR_BAR_MONSTER_BG = "#427B58", COLOR_BAR_MONSTER_FG = "#689D6A", FONT = "/silkscreen.ttf",
 
     // Absolute paths
-    JAVAMASTER_PATH = new File("").getAbsolutePath(),
-    SAVE_PATH = JAVAMASTER_PATH.substring(0, JAVAMASTER_PATH.lastIndexOf(File.separatorChar) + 1) + "saves";
+    GAME_DIR = "profojak",
+    PATH = new File("").getAbsolutePath(),
+    SAVE_PATH = PATH.substring(0, PATH.lastIndexOf(GAME_DIR) + GAME_DIR.length() + 1) + "saves";
 
   public static final Integer
     // Inventory constants
