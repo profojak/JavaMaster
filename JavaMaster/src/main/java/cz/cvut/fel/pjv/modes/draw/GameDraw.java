@@ -27,7 +27,7 @@ public class GameDraw extends Draw {
     MAP_ARROW = "/sprites/map/arrow_", MAP_WALL = "/sprites/map/wall_",
 
     // Inventory
-    INVENTORY = "/sprites/inventory/",
+    WEAPONS = "/sprites/inventory/weapons/",
     INVENTORY_FRAME_ITEM = "/sprites/inventory/frame_item.png",
     INVENTORY_FRAME_ITEM_ACTIVE = "/sprites/inventory/active_item.png",
     INVENTORY_FRAME_WEAPON = "/sprites/inventory/frame_weapon.png",
@@ -146,7 +146,7 @@ public class GameDraw extends Draw {
     gc.drawImage(image, 910, 15);
     image = new Image(POTION);
     gc.drawImage(image, 910, 125);
-    image = new Image(INVENTORY + parent.getWeaponSprite());
+    image = new Image(WEAPONS + parent.getWeaponSprite());
     gc.drawImage(image, 910, 235);
     // If in combat, show selected item
     if (drawActiveItem) {
@@ -427,7 +427,7 @@ public class GameDraw extends Draw {
         /* Loot */
         switch (parent.getLootType()) {
           case WEAPON:
-            image = new Image(INVENTORY + parent.getWeaponSprite());
+            image = new Image(WEAPONS + parent.getWeaponSprite());
             this.gc.drawImage(image, 560, 125);
             break;
           case BOMB:
