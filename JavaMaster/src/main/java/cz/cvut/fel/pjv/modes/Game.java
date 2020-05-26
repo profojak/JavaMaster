@@ -29,11 +29,11 @@ public class Game implements Mode {
   private static final Logger logger = Logger.getLogger(Game.class.getName());
   private final Root root;
   private final Draw draw;
-  private final Player player;
 
+  private Player player;
   private Room[] rooms = new Room[Const.NUMBER_OF_ROOMS];
   private Integer roomStartId, roomEndId, roomCurrentId;
-  private File nextMap;
+  private File saveFile, nextMap;
   private Const.Direction direction = Const.Direction.NORTH;
   private Layout menu;
   private Const.State state = Const.State.DEFAULT;
@@ -45,7 +45,7 @@ public class Game implements Mode {
   public Game(StackPane stack, Root root) {
     this.root = root;
     this.player = new Player();
-    File saveFile = this.root.getFile();
+    this.saveFile = this.root.getFile();
 
     // TODO fix this shit
     if (saveFile != null && saveFile.canRead()) {
@@ -65,6 +65,38 @@ public class Game implements Mode {
     this.root = null;
     this.player = null;
     this.draw = null;
+  }
+
+  /** @see Mode */
+  public void close() {
+    this.draw.close();
+  }
+
+  /**
+   * Called when moving to new level.
+   */
+  public void changeLevel(File nextMap) {
+    this.draw.close();
+
+    if (nextMap == null) {
+      state = Const.State.VICTORY;
+      this.draw.redraw(state);
+      return;
+    }
+
+    player = null;
+    menu = null;
+    rooms = null;
+
+    rooms = new Room[Const.NUMBER_OF_ROOMS];
+    player = new Player();
+    roomStartId = 0;
+    roomEndId = 0;
+    roomCurrentId = 0;
+    direction = Const.Direction.NORTH;
+    state = Const.State.DEFAULT;
+    parseSaveFile(nextMap);
+    this.draw.redraw(Const.State.LOAD);
   }
 
   /**
@@ -444,6 +476,14 @@ public class Game implements Mode {
    */
   public void keyEnter() {
     switch (state) {
+      case VICTORY:
+        this.draw.close();
+        this.root.switchMode(Const.MENU_MAINMENU);
+        break;
+      case DEATH:
+        this.draw.close();
+        changeLevel(saveFile);
+        break;
       case COMBAT:
         // Player takes damage
         switch (player.getActiveItem()) {
@@ -474,6 +514,14 @@ public class Game implements Mode {
           if (checkForStoryAfter()) {
             break;
           }
+
+          if (checkForLoot()) {
+            break;
+          }
+        }
+        // Player is dead
+        if (getPlayerHP() <= 0) {
+          state = Const.State.DEATH;
         }
         break;
       case LOOT:
@@ -524,7 +572,8 @@ public class Game implements Mode {
           this.root.switchMode(Const.MENU_MAINMENU);
         // Descend
         } else if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_DESCEND)) {
-          // TODO
+          changeLevel(nextMap);
+          return;
         // Not yet
         } else if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_NOT_YET)) {
           this.menu = null;
@@ -805,7 +854,7 @@ public class Game implements Mode {
           // Current room
           case END:
             if (line.length == 2) {
-              String nextMapPath = Const.SAVE_PATH + File.separator + line[1];
+              String nextMapPath = Const.SAVE_PATH + line[1];
               if (new File(nextMapPath).canRead()) {
                 logger.info(Const.LOG_WHITE + ">>> nextMapPath = " + nextMapPath
                   + Const.LOG_RESET); // DEBUG

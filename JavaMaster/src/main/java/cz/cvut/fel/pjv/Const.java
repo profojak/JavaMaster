@@ -20,6 +20,9 @@ public class Const {
   }
 
   public static enum State {
+    LOAD,
+    VICTORY,
+    DEATH,
     DEFAULT,
     INVENTORY,
     MONSTER,
@@ -62,7 +65,7 @@ public class Const {
     // Absolute paths
     GAME_DIR = "profojak",
     PATH = new File("").getAbsolutePath(),
-    SAVE_PATH = PATH.substring(0, PATH.lastIndexOf(GAME_DIR) + GAME_DIR.length() + 1) + "saves";
+    SAVE_PATH = PATH.substring(0, PATH.lastIndexOf(GAME_DIR) + GAME_DIR.length() + 1) + "saves/";
 
   public static final Integer
     // Inventory constants
@@ -80,7 +83,7 @@ public class Const {
     SOUTHERN_BORDER = NUMBER_OF_ROOMS - MAP_WIDTH, WESTERN_BORDER = 0,
 
     // Menu constants
-    TEXT_X_OFFSET = 138, TEXT_Y_OFFSET = 60, BUTTON_HEIGHT = 95,
+    TEXT_X_OFFSET = 141, TEXT_Y_OFFSET = 60, BUTTON_HEIGHT = 95,
 
     // Window
     WINDOW_WIDTH = 1000, WINDOW_HEIGHT = 525;

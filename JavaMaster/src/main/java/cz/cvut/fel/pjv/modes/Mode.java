@@ -7,6 +7,11 @@ package cz.cvut.fel.pjv.modes;
  * Mode class is Game: this class handles gameplay.
  */
 public interface Mode {
+  /**
+   * Called when Mode is closed.
+   */
+  public void close();
+
   // Key methods
   
   /**

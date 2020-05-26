@@ -52,6 +52,9 @@ public class Root extends Application {
    */
   // TODO add About
   public void switchMode(String mode) {
+    if (this.mode != null) {
+      this.mode.close();
+    }
     this.mode = null;
     switch (mode) {
       case Const.MENU_MAINMENU:

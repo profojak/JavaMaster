@@ -42,6 +42,11 @@ public class MainMenu implements Mode {
     this.draw = null;
   }
 
+  /** @see Mode */
+  public void close() {
+    this.draw.close();
+  }
+
   // Key methods
 
   public void keyUp() {

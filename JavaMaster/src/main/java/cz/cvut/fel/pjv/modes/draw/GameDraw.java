@@ -33,6 +33,7 @@ public class GameDraw extends Draw {
     INVENTORY_FRAME_WEAPON = "/sprites/inventory/frame_weapon.png",
     INVENTORY_FRAME_WEAPON_ACTIVE = "/sprites/inventory/active_weapon.png",
     OVERLAY = "/sprites/overlay/game.png", PNG_EXTENSION = ".png",
+    VICTORY = "/sprites/overlay/victory.png", DEATH = "/sprites/overlay/death.png",
 
     // Monster and loot
     MONSTER = "/sprites/monster/",
@@ -66,19 +67,7 @@ public class GameDraw extends Draw {
     this.stack.getChildren().add(canvas);
     setGC();
 
-    /* Undiscovered map */
-    this.roomId = parent.getRoomId();
-    Image image = new Image(MAP_TILE);
-    for (int i = 0; i < Const.MAP_WIDTH; i++) {
-      for (int j = 0; j < Const.MAP_LENGTH; j++) {
-        gc.drawImage(image, i * Const.MAP_OFFSET, j * Const.MAP_OFFSET);
-      }
-    }
-
-    drawInventory(false);
-    drawBars(false);
-
-    redraw(Const.State.DEFAULT);
+    redraw(Const.State.LOAD);
   }
 
   /**
@@ -91,9 +80,24 @@ public class GameDraw extends Draw {
 
   /**
    * Updates map.
+   *
+   * @param drawUndiscoveredMap - whether to draw undiscovered map
    */
-  private void drawMap() {
+  private void drawMap(Boolean drawUndiscoveredMap) {
     Image image;
+
+    /* Undiscovered map */
+    if (drawUndiscoveredMap) {
+      this.roomId = parent.getRoomId();
+      image = new Image(MAP_TILE);
+      for (int i = 0; i < Const.MAP_WIDTH; i++) {
+        for (int j = 0; j < Const.MAP_LENGTH; j++) {
+          gc.drawImage(image, i * Const.MAP_OFFSET, j * Const.MAP_OFFSET);
+        }
+      }
+      return;
+    }
+
     Integer row = parent.getRoomId() % Const.MAP_WIDTH, col = parent.getRoomId() / Const.MAP_WIDTH;
     /* Map */
     // Tile player was in before
@@ -336,17 +340,50 @@ public class GameDraw extends Draw {
   public void redraw(Const.State state) {
     Image image;
     switch (state) {
+      case LOAD:
+        drawMap(true);
+        drawInventory(false);
+        drawBars(false);
+        redraw(Const.State.DEFAULT);
+        break;
+      case VICTORY:
+        image = new Image(VICTORY);
+        gc.drawImage(image, 375, 50);
+        image = new Image(Const.BUTTON);
+        gc.drawImage(image, 495, 352);
+        image = new Image(Const.BUTTON_ACTIVE);
+        gc.drawImage(image, 495, 352);
+        gc.setFill(Color.web(Const.COLOR_FILL));
+        gc.strokeText("Victory!", 495 + Const.TEXT_X_OFFSET, 72 + Const.TEXT_Y_OFFSET);
+        gc.fillText("Victory!", 495 + Const.TEXT_X_OFFSET, 72 + Const.TEXT_Y_OFFSET);
+        gc.strokeText("Quit", 495 + Const.TEXT_X_OFFSET, 352 + Const.TEXT_Y_OFFSET);
+        gc.fillText("Quit", 495 + Const.TEXT_X_OFFSET, 352 + Const.TEXT_Y_OFFSET);
+        break;
+      case DEATH:
+        drawBars(false);
+        this.stack.getChildren().remove(monster);
+        image = new Image(DEATH);
+        gc.drawImage(image, 375, 50);
+        image = new Image(Const.BUTTON);
+        gc.drawImage(image, 495, 352);
+        image = new Image(Const.BUTTON_ACTIVE);
+        gc.drawImage(image, 495, 352);
+        gc.setFill(Color.web(Const.COLOR_FILL));
+        gc.strokeText("You are dead...", 495 + Const.TEXT_X_OFFSET, 72 + Const.TEXT_Y_OFFSET);
+        gc.fillText("You are dead...", 495 + Const.TEXT_X_OFFSET, 72 + Const.TEXT_Y_OFFSET);
+        gc.strokeText("Restart", 495 + Const.TEXT_X_OFFSET, 352 + Const.TEXT_Y_OFFSET);
+        gc.fillText("Restart", 495 + Const.TEXT_X_OFFSET, 352 + Const.TEXT_Y_OFFSET);
+        break;
       case DEFAULT:
-        drawMap();
+        drawMap(false);
         drawRoom();
-
         break;
       case INVENTORY:
         drawInventory(true);
         drawBars(true);
         break;
       case MONSTER:
-        drawMap();
+        drawMap(false);
         drawInventory(true);
         drawBars(true);
         drawRoom();
@@ -389,14 +426,14 @@ public class GameDraw extends Draw {
         thread.start();
         break;
       case STORY_BEFORE:
-        drawMap();
+        drawMap(false);
 
         /* Story dialog */
         thread = new Thread(new GameDrawStoryRunnable(gc, parent.getStoryBefore()));
         thread.start();
         break;
       case STORY_AFTER:
-        drawMap();
+        drawMap(false);
         drawRoom();
 
         /* Story dialog */
@@ -404,7 +441,7 @@ public class GameDraw extends Draw {
         thread.start();
         break;
       case MENU:
-        drawMap();
+        drawMap(false);
         drawRoom();
 
         this.gc.setFill(Color.web(Const.COLOR_FILL));
