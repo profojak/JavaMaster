@@ -25,6 +25,13 @@ public class GameTest {
         assertEquals(expVal2, game.hasRoomLeft());
         game.keyLeft();
         assertEquals(expVal2, game.hasRoomLeft());
+        game.keyLeft();
+        assertEquals(expVal1, game.hasRoomLeft());
+        game.keyLeft();
+        game.keyUp();
+        game.keyUp();
+        game.keyUp();
+        assertEquals(expVal2, game.hasRoomLeft());
     }
 
     @Test

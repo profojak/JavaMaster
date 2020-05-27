@@ -33,6 +33,15 @@ public class Room {
   }
 
   /**
+   * Does this Room have non default sprite?
+   *
+   * @return whether Room has default sprite
+   */
+  public Boolean hasSprite() {
+    return sprite != null;
+  }
+
+  /**
    * Is there any loot?
    *
    * @return whether Room has Loot object assigned

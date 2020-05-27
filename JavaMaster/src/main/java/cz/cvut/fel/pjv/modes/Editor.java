@@ -8,9 +8,7 @@ import cz.cvut.fel.pjv.entities.*;
 import cz.cvut.fel.pjv.room.Room;
 import cz.cvut.fel.pjv.menu.layouts.*;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
+import java.io.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -296,9 +294,11 @@ public class Editor implements Mode {
             break;
           // Wrong file format!
           default:
+            saveReader.close();
             return false;
         }
       }
+      saveReader.close();
     } catch (Exception exception) {
       logger.log(Level.SEVERE, Const.LOG_RED + "File could not be loaded."
         + Const.LOG_RESET, exception); // ERROR
@@ -317,6 +317,85 @@ public class Editor implements Mode {
 
   public Integer getMenuCount() {
     return this.menu.getCount();
+  }
+
+  private Boolean createSaveFile(String newSaveFileName) {
+    try {
+      File newSaveFile = new File(Const.SAVE_PATH + newSaveFileName + Const.DUNG_EXTENSION);
+
+      if (!newSaveFile.exists()) {
+        newSaveFile.createNewFile();
+      }
+
+      BufferedWriter saveWriter = new BufferedWriter(new FileWriter(newSaveFile));
+
+      // Room id where the dungeon starts and ends
+      saveWriter.write(Const.LoadPart.START.toString().toLowerCase() + " " + roomStartId + " " + roomEndId);
+      saveWriter.newLine();
+      // Player variables
+      saveWriter.write(Const.LoadPart.PLAYER.toString().toLowerCase() + " " + player.getSprite() + " " + player.getMaxHP() + " " + player.getDamage());
+      saveWriter.newLine();
+      // Dungeon rooms
+      for (Integer i = 0; i < Const.NUMBER_OF_ROOMS; i++) {
+        if (rooms[i] != null) {
+          saveWriter.write(Const.LoadPart.ID.toString().toLowerCase() + " " + i);
+          saveWriter.newLine();
+          // Story of current room
+          if (rooms[i].hasStoryBefore()) {
+            String storyBefore = rooms[i].getStoryBefore().replaceAll(" ", "_");
+            saveWriter.write(Const.LoadPart.STORY.toString().toLowerCase() + " " + storyBefore);
+            if (rooms[i].hasStoryAfter()) {
+              String storyAfter = rooms[i].getStoryAfter().replaceAll(" ", "_");
+              saveWriter.write(" " + storyAfter);
+            }
+            saveWriter.newLine();
+          }
+          // Monster in current room
+          if (rooms[i].hasMonster()) {
+            Monster monster = rooms[i].getMonster();
+            saveWriter.write(Const.LoadPart.MONSTER.toString().toLowerCase() + " " + monster.getSprite() + " " + monster.getMaxHP() + " " + monster.getDamage());
+            saveWriter.newLine();
+          }
+          // Loot in current room
+          if (rooms[i].hasLoot()) {
+            Item loot = rooms[i].getLoot();
+            // Potion
+            if (loot instanceof Potion) {
+              Potion potion = (Potion) loot;
+              saveWriter.write(Const.LoadPart.LOOT.toString().toLowerCase() + " " + potion.getName() + " " + potion.getPotionCount());
+            // Bomb
+            } else if (loot instanceof Bomb) {
+              Bomb bomb = (Bomb) loot;
+              saveWriter.write(Const.LoadPart.LOOT.toString().toLowerCase() + " " + bomb.getName() + " " + bomb.getBombCount());
+            // Weapon
+            } else if (loot instanceof Weapon) {
+              Weapon weapon = (Weapon) loot;
+              saveWriter.write(Const.LoadPart.LOOT.toString().toLowerCase() + " " + weapon.getSprite() + " " + weapon.getWeaponDamage());
+            }
+
+            saveWriter.newLine();
+          }
+          // Texture of current room
+          if (rooms[i].hasSprite()) {
+            saveWriter.write(Const.LoadPart.WALL.toString().toLowerCase() + " " + rooms[i].getSprite());
+            saveWriter.newLine();
+          }
+        }
+      }
+      // End of save file
+      saveWriter.write(Const.LoadPart.END.toString().toLowerCase());
+      // TODO next map
+      // Name of next map
+      /*if () {
+        saveWriter.write(" " + nextMap);
+      }*/
+      saveWriter.close();
+    } catch (Exception exception) {
+      logger.log(Level.SEVERE, Const.LOG_RED + "File could not be saved."
+              + Const.LOG_RESET, exception); // ERROR
+      return false; // File could not be loaded
+    }
+    return true;
   }
 }
 

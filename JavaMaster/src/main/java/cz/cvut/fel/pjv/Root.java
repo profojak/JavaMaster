@@ -18,6 +18,7 @@ public class Root extends Application {
   private Stage stage;
   private StackPane stack;
   private Mode mode;
+  private File saveFile = null;
 
   /**
    * Opens file chooser to choose files.
@@ -40,7 +41,8 @@ public class Root extends Application {
     logger.info(Const.LOG_WHITE + "Initial directory: " + fileChooser.getInitialDirectory() + Const.LOG_RESET);
 
     fileChooser.setTitle("Choose dungeon file");
-    return fileChooser.showOpenDialog(this.stage);
+    saveFile = fileChooser.showOpenDialog(this.stage);
+    return saveFile;
   }
 
   /**
@@ -61,7 +63,7 @@ public class Root extends Application {
         this.mode = new MainMenu(this.stack, this);
         break;
       case Const.MENU_GAME:
-        this.mode = new Game(this.stack, this);
+        this.mode = new Game(this.stack, this, saveFile);
         break;
       case Const.MENU_EDITOR:
         this.mode = new Editor(this.stack, this);

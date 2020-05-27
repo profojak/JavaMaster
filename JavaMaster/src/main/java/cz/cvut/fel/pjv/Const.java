@@ -66,7 +66,7 @@ public class Const {
     COLOR_START = "#79740E", COLOR_END = "#9D0006",
 
     // Absolute paths
-    GAME_DIR = "profojak",
+    GAME_DIR = "profojak", DUNG_EXTENSION = ".dung",
     PATH = new File("").getAbsolutePath(),
     SAVE_PATH = PATH.substring(0, PATH.lastIndexOf(GAME_DIR) + GAME_DIR.length() + 1) + "saves/";
 

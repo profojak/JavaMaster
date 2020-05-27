@@ -8,6 +8,8 @@ import cz.cvut.fel.pjv.menu.layouts.Menu;
 
 import javafx.scene.layout.StackPane;
 
+import java.io.File;
+
 /**
  * Implementation of MainMenu mode: this class handles user input and controlls main menu behavior.
  *
@@ -103,8 +105,11 @@ public class MainMenu implements Mode {
       case MENU:
         switch (this.menu.getAction(this.menu.getActive())) {
           case Const.MENU_GAME:
-            this.draw.close();
-            this.root.switchMode(Const.MENU_GAME);
+            File saveFile = this.root.getFile();
+            if (saveFile != null && saveFile.canRead()) {
+              this.draw.close();
+              this.root.switchMode(Const.MENU_GAME);
+            }
             return;
           case Const.MENU_EDITOR:
             this.draw.close();

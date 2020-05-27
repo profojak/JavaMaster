@@ -41,19 +41,13 @@ public class Game implements Mode {
    * @param stack - StackPane to draw images to
    * @param root - parent object
    */
-  public Game(StackPane stack, Root root) {
+  public Game(StackPane stack, Root root, File saveFile) {
     this.root = root;
     this.player = new Player();
-    this.saveFile = this.root.getFile();
+    this.saveFile = saveFile;
 
-    // TODO fix this shit
-    if (saveFile != null && saveFile.canRead()) {
-      parseSaveFile(saveFile);
-      this.draw = new GameDraw(stack, this);
-    } else {
-      this.draw = null;
-      this.root.switchMode(Const.MENU_MAINMENU);
-    }
+    parseSaveFile(saveFile);
+    this.draw = new GameDraw(stack, this);
   }
 
   public Game(File saveFile) {
@@ -61,6 +55,7 @@ public class Game implements Mode {
     this.player = new Player();
     this.draw = null;
     if (saveFile != null && saveFile.canRead()) {
+      this.saveFile = saveFile;
       parseSaveFile(saveFile);
     }
   }
@@ -92,7 +87,7 @@ public class Game implements Mode {
    * Called when moving to new level.
    */
   private void changeLevel(File nextMap) {
-    this.draw.close();
+    close();
 
     player = null;
     menu = null;
@@ -216,7 +211,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_BEFORE:
-        draw.close();
+        close();
 
         if (checkForMonster()) {
           return;
@@ -237,7 +232,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_AFTER:
-        draw.close();
+        close();
 
         if (checkForLoot()) {
           break;
@@ -269,7 +264,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_BEFORE:
-        draw.close();
+        close();
 
         if (checkForMonster()) {
           return;
@@ -290,7 +285,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_AFTER:
-        draw.close();
+        close();
 
         if (checkForLoot()) {
           break;
@@ -326,7 +321,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_BEFORE:
-        draw.close();
+        close();
 
         if (checkForMonster()) {
           return;
@@ -347,7 +342,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_AFTER:
-        draw.close();
+        close();
 
         if (checkForLoot()) {
           break;
@@ -383,7 +378,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_BEFORE:
-        draw.close();
+        close();
 
         if (checkForMonster()) {
           return;
@@ -404,7 +399,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_AFTER:
-        draw.close();
+        close();
 
         if (checkForLoot()) {
           break;
@@ -439,7 +434,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_BEFORE:
-        draw.close();
+        close();
 
         if (checkForMonster()) {
           return;
@@ -460,7 +455,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_AFTER:
-        draw.close();
+        close();
 
         if (checkForLoot()) {
           break;
@@ -487,11 +482,11 @@ public class Game implements Mode {
   public void keyEnter() {
     switch (state) {
       case VICTORY:
-        this.draw.close();
+        close();
         this.root.switchMode(Const.MENU_MAINMENU);
         break;
       case DEATH:
-        this.draw.close();
+        close();
         changeLevel(saveFile);
         break;
       case COMBAT:
@@ -538,7 +533,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_BEFORE:
-        draw.close();
+        close();
 
         if (checkForMonster()) {
           return;
@@ -559,7 +554,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_AFTER:
-        draw.close();
+        close();
 
         if (checkForLoot()) {
           break;
@@ -578,7 +573,7 @@ public class Game implements Mode {
           state = Const.State.DEFAULT;
         // Exit
         } else if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_EXIT)) {
-          this.draw.close();
+          close();
           this.root.switchMode(Const.MENU_MAINMENU);
         // Descend
         } else if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_DESCEND)) {
@@ -610,7 +605,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_BEFORE:
-        draw.close();
+        close();
 
         if (checkForMonster()) {
           return;
@@ -631,7 +626,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
       case STORY_AFTER:
-        draw.close();
+        close();
 
         if (checkForLoot()) {
           break;
@@ -716,7 +711,7 @@ public class Game implements Mode {
    */
   private Boolean checkForLoot() {
     if (rooms[roomCurrentId].hasLoot()) {
-      logger.info(Const.LOG_WHITE + ">>> Room has Loot!"); // DEBUG
+      logger.info(Const.LOG_WHITE + ">>> Room has Loot!" + Const.LOG_RESET); // DEBUG
       takeLoot();
       state = Const.State.LOOT;
       return true;
@@ -804,9 +799,9 @@ public class Game implements Mode {
    * @return whether parsing was successful
    * @author profojak
    */
-  private Boolean parseSaveFile(File saveFile) { 
+  private Boolean parseSaveFile(File parsedFile) {
     try {
-      BufferedReader saveReader = new BufferedReader(new FileReader(saveFile));
+      BufferedReader saveReader = new BufferedReader(new FileReader(parsedFile));
       while (saveReader.ready()) {
         String[] line = saveReader.readLine().split(" ");
         Const.LoadPart load = Const.LoadPart.valueOf(line[0].toUpperCase());
@@ -892,9 +887,11 @@ public class Game implements Mode {
             break;
           // Wrong file format!
           default:
+            saveReader.close();
             return false;
         }
       }
+      saveReader.close();
     } catch (Exception exception) {
       logger.log(Level.SEVERE, Const.LOG_RED + "File could not be loaded."
         + Const.LOG_RESET, exception); // ERROR
