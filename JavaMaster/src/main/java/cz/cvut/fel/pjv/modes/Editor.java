@@ -6,6 +6,7 @@ import cz.cvut.fel.pjv.inventory.items.*;
 import cz.cvut.fel.pjv.modes.draw.*;
 import cz.cvut.fel.pjv.entities.*;
 import cz.cvut.fel.pjv.room.Room;
+import cz.cvut.fel.pjv.menu.layouts.*;
 
 import java.io.File;
 import java.io.FileReader;
@@ -27,8 +28,9 @@ public class Editor implements Mode {
 
   private Player player;
   private Room[] rooms = new Room[Const.NUMBER_OF_ROOMS];
-  private Integer roomStartId, roomEndId, roomCurrentId;
+  private Integer roomStartId = 0, roomEndId = Const.NUMBER_OF_ROOMS - 1, roomCurrentId = 0;
   private File saveFile = null, nextMap = null;
+  private Layout menu;
   private Const.State state = Const.State.LOAD;
 
   public Editor(StackPane stack, Root root) {
@@ -57,6 +59,9 @@ public class Editor implements Mode {
           roomCurrentId -= Const.GO_NORTH;
         }
         break;
+      case MENU:
+        this.menu.buttonPrevious();
+        break;
     }
     this.draw.redraw(state);
   }
@@ -68,6 +73,10 @@ public class Editor implements Mode {
         if (roomCurrentId >= Const.NUMBER_OF_ROOMS) {
           roomCurrentId -= Const.GO_SOUTH;
         }
+        break;
+      case MENU:
+        this.menu.buttonNext();
+        break;
     }
     this.draw.redraw(state);
   }
@@ -75,12 +84,20 @@ public class Editor implements Mode {
   public void keyLeft() {
     switch (state) {
       case LOAD:
+        this.draw.redraw(Const.State.SET);
+        state = Const.State.DEFAULT;
         break;
       case DEFAULT:
         roomCurrentId += Const.GO_WEST;
         if (roomCurrentId < 0) {
           roomCurrentId -= Const.GO_WEST;
         }
+        break;
+      case LOOT:
+        state = Const.State.ROOM;
+        break;
+      case MENU:
+        this.menu.buttonPrevious();
         break;
     }
     this.draw.redraw(state);
@@ -100,30 +117,88 @@ public class Editor implements Mode {
           roomCurrentId -= Const.GO_EAST;
         }
         break;
+      case MENU:
+        this.menu.buttonNext();
+        break;
     }
     this.draw.redraw(state);
   }
 
   public void keyEnter() {
+    switch (state) {
+      case DEFAULT:
+        if (!hasRoom(roomCurrentId)) {
+          rooms[roomCurrentId] = new Room();
+        }
+        state = Const.State.LOOT;
+        break;
+      case MENU:
+        // Cancel
+        if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_CANCEL)) {
+          this.menu = null;
+          state = Const.State.DEFAULT;
+        // Save
+        } else if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_SAVE)) {
+        // Exit
+        } else if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_EXIT)) {
+          this.draw.close();
+          this.root.switchMode(Const.MENU_MAINMENU);
+          return;
+        }
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   public void keyEscape() {
+    switch (state) {
+      case DEFAULT:
+        this.menu = new Save();
+        state = Const.State.MENU;
+        break;
+      case LOOT:
+        state = Const.State.DEFAULT;
+        break;
+      case ROOM:
+        state = Const.State.LOOT;
+        break;
+      case MENU:
+        this.menu = null;
+        state = Const.State.DEFAULT;
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   public void keyDelete() {
+    switch (state) {
+      case DEFAULT:
+        rooms[roomCurrentId] = null;
+        break;
+    }
+    this.draw.redraw(state);
   }
 
   public Boolean hasRoom(Integer index) {
-    if (rooms[index] != null) {
-      return true;
-    }
-    return false;
+    return rooms[index] != null;
+  }
+
+  public Boolean isStartRoom(Integer index) {
+    return index == roomStartId;
+  }
+
+  public Boolean isEndRoom(Integer index) {
+    return index == roomEndId;
   }
 
   // Getters
 
   public Integer getRoomId() {
     return roomCurrentId;
+  }
+
+  public String getRoomSprite() {
+    return rooms[roomCurrentId].getSprite();
   }
 
   // Save files
@@ -230,6 +305,18 @@ public class Editor implements Mode {
       return false; // File could not be loaded
     }
     return true;
+  }
+
+  public String getMenuAction(Integer index) {
+    return this.menu.getAction(index);
+  }
+
+  public Integer getMenuActive() {
+    return this.menu.getActive();
+  }
+
+  public Integer getMenuCount() {
+    return this.menu.getCount();
   }
 }
 
@@ -784,26 +871,6 @@ public class Editor implements Mode {
     return null;
   }
 
-  public Boolean hasRoomLeft() {
-    return hasRoom(Const.TURN_LEFT);
-  }
-
-  public Boolean hasRoomRight() {
-    return hasRoom(Const.TURN_RIGHT);
-  }
-
-  public Boolean hasRoomFront() {
-    return hasRoom(Const.DONT_TURN);
-  }
-
-  public Boolean hasNextMap() {
-    return nextMap != null;
-  }
-
-  public String getRoomSprite() {
-    return rooms[roomCurrentId].getSprite();
-  }
-
   public String getStoryBefore() {
     return rooms[roomCurrentId].getStoryBefore();
   }
@@ -848,22 +915,6 @@ public class Editor implements Mode {
 
   public String getRightDirection() {
     return changeDirection(Const.TURN_RIGHT).toString();
-  }
-
-  public String getMenuAction(Integer index) {
-    return this.menu.getAction(index);
-  }
-
-  public Integer getMenuActive() {
-    return this.menu.getActive();
-  }
-
-  public Integer getMenuCount() {
-    return this.menu.getCount();
-  }
-
-  public Const.ItemType getActiveItem() {
-    return player.getActiveItem();
   }
 
   public void itemNext() {

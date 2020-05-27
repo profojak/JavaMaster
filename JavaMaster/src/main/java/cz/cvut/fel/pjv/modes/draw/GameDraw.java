@@ -108,20 +108,24 @@ public class GameDraw extends Draw {
     // Current tile if not visited
     if (!parent.isRoomVisited(parent.getRoomId())) {
       gc.fillRect(row * Const.MAP_OFFSET, col * Const.MAP_OFFSET,
-        Const.MAP_OFFSET, Const.MAP_OFFSET);
-      // Walls
-      if (!parent.hasRoomFront()) {
-        image = new Image(MAP_WALL + parent.getDirection() + PNG_EXTENSION);
-        gc.drawImage(image, (row) * Const.MAP_OFFSET, (col) * Const.MAP_OFFSET);
-      }
-      if (!parent.hasRoomLeft()) {
-        image = new Image(MAP_WALL + parent.getLeftDirection() + PNG_EXTENSION);
-        gc.drawImage(image, (row) * Const.MAP_OFFSET, (col) * Const.MAP_OFFSET);
-      }
-      if (!parent.hasRoomRight()) {
-        image = new Image(MAP_WALL + parent.getRightDirection() + PNG_EXTENSION);
-        gc.drawImage(image, (row) * Const.MAP_OFFSET, (col) * Const.MAP_OFFSET);
-      }
+      Const.MAP_OFFSET, Const.MAP_OFFSET);
+    }
+    // Walls
+    if (!parent.hasRoomFront()) {
+      image = new Image(MAP_WALL + parent.getDirection() + PNG_EXTENSION);
+      gc.drawImage(image, (row) * Const.MAP_OFFSET, (col) * Const.MAP_OFFSET);
+    }
+    if (!parent.hasRoomLeft()) {
+      image = new Image(MAP_WALL + parent.getLeftDirection() + PNG_EXTENSION);
+      gc.drawImage(image, (row) * Const.MAP_OFFSET, (col) * Const.MAP_OFFSET);
+    }
+    if (!parent.hasRoomRight()) {
+      image = new Image(MAP_WALL + parent.getRightDirection() + PNG_EXTENSION);
+      gc.drawImage(image, (row) * Const.MAP_OFFSET, (col) * Const.MAP_OFFSET);
+    }
+    if (!parent.hasRoomBehind()) {
+      image = new Image(MAP_WALL + parent.getBackDirection() + PNG_EXTENSION);
+      gc.drawImage(image, (row) * Const.MAP_OFFSET, (col) * Const.MAP_OFFSET);
     }
     gc.fillRect(row * Const.MAP_OFFSET + 10, col * Const.MAP_OFFSET + 10,
       Const.MAP_OFFSET - 20, Const.MAP_OFFSET - 20);

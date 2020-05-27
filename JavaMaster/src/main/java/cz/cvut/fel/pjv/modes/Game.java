@@ -3,7 +3,6 @@ package cz.cvut.fel.pjv.modes;
 import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.Root;
 import cz.cvut.fel.pjv.inventory.items.*;
-import cz.cvut.fel.pjv.menu.layouts.Layout;
 import cz.cvut.fel.pjv.modes.draw.*;
 import cz.cvut.fel.pjv.entities.*;
 import cz.cvut.fel.pjv.room.Room;
@@ -94,12 +93,6 @@ public class Game implements Mode {
    */
   private void changeLevel(File nextMap) {
     this.draw.close();
-
-    if (!hasNextMap()) {
-      state = Const.State.VICTORY;
-      redraw(state);
-      return;
-    }
 
     player = null;
     menu = null;
@@ -589,6 +582,11 @@ public class Game implements Mode {
           this.root.switchMode(Const.MENU_MAINMENU);
         // Descend
         } else if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_DESCEND)) {
+          if (!hasNextMap()) {
+            state = Const.State.VICTORY;
+            redraw(state);
+            return;
+          }
           changeLevel(nextMap);
           return;
         // Not yet
@@ -781,6 +779,13 @@ public class Game implements Mode {
    */
   public Boolean hasRoomFront() {
     return hasRoom(Const.DONT_TURN);
+  }
+
+  /**
+   * @return whether there is a room behind the player
+   */
+  public Boolean hasRoomBehind() {
+    return hasRoom(Const.TURN_RIGHT + Const.TURN_RIGHT);
   }
 
   public Boolean hasNextMap() {
@@ -1012,6 +1017,15 @@ public class Game implements Mode {
    */
   public String getRightDirection() {
     return changeDirection(Const.TURN_RIGHT).toString();
+  }
+
+  /**
+   * Returns right direction relative to current direction converted to String.
+   *
+   * @return right direction relative to current direction converted to String
+   */
+  public String getBackDirection() {
+    return changeDirection(Const.TURN_RIGHT + Const.TURN_RIGHT).toString();
   }
 
   /**

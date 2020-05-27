@@ -31,7 +31,8 @@ public class Const {
     STORY_BEFORE,
     STORY_AFTER,
     MENU,
-    SET
+    SET,
+    ROOM
   }
 
   public static enum LoadPart {
@@ -53,7 +54,7 @@ public class Const {
     // Menu options
     MENU_MAINMENU = "MainMenu", MENU_GAME = "Game", MENU_ABOUT = "About",
     MENU_EDITOR = "Editor", MENU_CANCEL = "Cancel", MENU_EXIT = "Exit",
-    MENU_DESCEND = "Descend", MENU_NOT_YET = "Not yet",
+    MENU_DESCEND = "Descend", MENU_NOT_YET = "Not yet", MENU_SAVE = "Save",
 
     // Menu buttons
     BUTTON = "/sprites/menu/button.png", BUTTON_ACTIVE = "/sprites/menu/active.png",
@@ -62,6 +63,7 @@ public class Const {
     COLOR_STROKE = "#282828", COLOR_FILL = "#FBF1C7", COLOR_BG = "#928374", COLOR_BAR = "504945",
     COLOR_INVENTORY = "#665C54", COLOR_BAR_PLAYER_BG = "#9D0006", COLOR_BAR_PLAYER_FG = "#CC241D",
     COLOR_BAR_MONSTER_BG = "#427B58", COLOR_BAR_MONSTER_FG = "#689D6A", FONT = "/silkscreen.ttf",
+    COLOR_START = "#79740E", COLOR_END = "#9D0006",
 
     // Absolute paths
     GAME_DIR = "profojak",
