@@ -52,6 +52,10 @@ public class Root extends Application {
    */
   // TODO add About
   public void switchMode(String mode) {
+    System.out.println(mode);
+    System.out.println(Const.MENU_MAINMENU);
+    System.out.println(Const.MENU_GAME);
+    System.out.println(this.mode != null);
     if (this.mode != null) {
       this.mode.close();
     }

@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import javafx.scene.layout.StackPane;
 
 /**
- * Implementation of Game mode: this class handles user input and controlls the flow of the game.
+ * Implementation of Game mode: this class handles user input and controls the flow of the game.
  *
  * <p>This mode is loaded when user wants to play.
  *
@@ -57,6 +57,15 @@ public class Game implements Mode {
     }
   }
 
+  public Game(File saveFile) {
+    this.root = null;
+    this.player = new Player();
+    this.draw = null;
+    if (saveFile != null && saveFile.canRead()) {
+      parseSaveFile(saveFile);
+    }
+  }
+
   /**
    * @deprecated use Game(String) constructor instead
    */
@@ -69,18 +78,26 @@ public class Game implements Mode {
 
   /** @see Mode */
   public void close() {
-    this.draw.close();
+    if (this.draw != null) {
+      this.draw.close();
+    }
+  }
+
+  private void redraw(Const.State state) {
+    if (this.draw != null) {
+      this.draw.redraw(state);
+    }
   }
 
   /**
    * Called when moving to new level.
    */
-  public void changeLevel(File nextMap) {
+  private void changeLevel(File nextMap) {
     this.draw.close();
 
-    if (hasNextMap()) {
+    if (!hasNextMap()) {
       state = Const.State.VICTORY;
-      this.draw.redraw(state);
+      redraw(state);
       return;
     }
 
@@ -96,7 +113,7 @@ public class Game implements Mode {
     direction = Const.Direction.NORTH;
     state = Const.State.DEFAULT;
     parseSaveFile(nextMap);
-    this.draw.redraw(Const.State.LOAD);
+    redraw(Const.State.LOAD);
   }
 
   /**
@@ -172,7 +189,7 @@ public class Game implements Mode {
 
           // Story and Monster
           if (!isRoomVisited(roomCurrentId)) {
-            this.draw.redraw(Const.State.DEFAULT);
+            redraw(Const.State.DEFAULT);
             rooms[roomCurrentId].setVisited();
             // Story before
             if (checkForStoryBefore()) {
@@ -200,7 +217,7 @@ public class Game implements Mode {
         break;
       case COMBAT:
         itemPrevious();
-        this.draw.redraw(Const.State.INVENTORY);
+        redraw(Const.State.INVENTORY);
         return;
       case LOOT:
         state = Const.State.DEFAULT;
@@ -243,7 +260,7 @@ public class Game implements Mode {
         this.menu.buttonPrevious();
         break;
     }
-    this.draw.redraw(state);
+    redraw(state);
   }
 
   /**
@@ -253,7 +270,7 @@ public class Game implements Mode {
     switch (state) {
       case COMBAT:
         itemNext();
-        this.draw.redraw(Const.State.INVENTORY);
+        redraw(Const.State.INVENTORY);
         return;
       case LOOT:
         state = Const.State.DEFAULT;
@@ -296,7 +313,7 @@ public class Game implements Mode {
         this.menu.buttonNext();
         break;
     }
-    this.draw.redraw(state);
+    redraw(state);
   }
 
   /**
@@ -310,7 +327,7 @@ public class Game implements Mode {
         break;
       case COMBAT:
         itemPrevious();
-        this.draw.redraw(Const.State.INVENTORY);
+        redraw(Const.State.INVENTORY);
         return;
       case LOOT:
         state = Const.State.DEFAULT;
@@ -353,7 +370,7 @@ public class Game implements Mode {
         this.menu.buttonPrevious();
         break;
     }
-    this.draw.redraw(state);
+    redraw(state);
   }
 
   /**
@@ -367,7 +384,7 @@ public class Game implements Mode {
         break;
       case COMBAT:
         itemNext();
-        this.draw.redraw(Const.State.INVENTORY);
+        redraw(Const.State.INVENTORY);
         return;
       case LOOT:
         state = Const.State.DEFAULT;
@@ -410,7 +427,7 @@ public class Game implements Mode {
         this.menu.buttonNext();
         break;
     }
-    this.draw.redraw(state);
+    redraw(state);
   }
 
   /**
@@ -468,7 +485,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
     }
-    this.draw.redraw(state);
+    redraw(state);
   }
 
   /**
@@ -509,7 +526,7 @@ public class Game implements Mode {
         }
         // Monster is dead
         if (getMonsterHP() <= 0) {
-          this.draw.redraw(state);
+          redraw(state);
 
           if (checkForStoryAfter()) {
             break;
@@ -581,7 +598,7 @@ public class Game implements Mode {
         }
         break;
     }
-    this.draw.redraw(state);
+    redraw(state);
   }
 
   /**
@@ -629,7 +646,7 @@ public class Game implements Mode {
         state = Const.State.DEFAULT;
         break;
     }
-    this.draw.redraw(state);
+    redraw(state);
   }
 
   // Boolean methods
@@ -642,7 +659,7 @@ public class Game implements Mode {
   private Boolean checkForMonster() {
     if (rooms[roomCurrentId].hasMonster()) {
       state = Const.State.COMBAT;
-      this.draw.redraw(Const.State.MONSTER);
+      redraw(Const.State.MONSTER);
       return true;
     }
     return false;
@@ -716,7 +733,7 @@ public class Game implements Mode {
    * @return whether there is a room
    * @author povolji2
    */
-  public Boolean hasRoom(int directionChange) {
+  private Boolean hasRoom(int directionChange) {
     Const.Direction newDirection = direction;
     if (directionChange != 0) {
       newDirection = changeDirection(directionChange);
@@ -866,6 +883,7 @@ public class Game implements Mode {
               nextMap = null;
             }
             roomCurrentId = roomStartId;
+            rooms[roomCurrentId].setVisited();
             break;
           // Wrong file format!
           default:
