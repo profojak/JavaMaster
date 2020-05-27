@@ -106,6 +106,10 @@ public class MainMenu implements Mode {
             this.draw.close();
             this.root.switchMode(Const.MENU_GAME);
             return;
+          case Const.MENU_EDITOR:
+            this.draw.close();
+            this.root.switchMode(Const.MENU_EDITOR);
+            return;
           case Const.MENU_ABOUT:
             state = Const.State.DEFAULT;
             break;

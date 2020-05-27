@@ -78,7 +78,7 @@ public class Game implements Mode {
   public void changeLevel(File nextMap) {
     this.draw.close();
 
-    if (nextMap == null) {
+    if (hasNextMap()) {
       state = Const.State.VICTORY;
       this.draw.redraw(state);
       return;
@@ -862,6 +862,8 @@ public class Game implements Mode {
               } else {
                 nextMap = null;
               }
+            } else {
+              nextMap = null;
             }
             roomCurrentId = roomStartId;
             break;

@@ -30,7 +30,8 @@ public class Const {
     LOOT,
     STORY_BEFORE,
     STORY_AFTER,
-    MENU
+    MENU,
+    SET
   }
 
   public static enum LoadPart {

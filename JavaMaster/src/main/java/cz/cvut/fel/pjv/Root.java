@@ -63,6 +63,9 @@ public class Root extends Application {
       case Const.MENU_GAME:
         this.mode = new Game(this.stack, this);
         break;
+      case Const.MENU_EDITOR:
+        this.mode = new Editor(this.stack, this);
+        break;
     }
   }
 
