@@ -512,6 +512,12 @@ public class Game implements Mode {
             }
             break;
         }
+        // Player is dead
+        if (getPlayerHP() <= 0) {
+          state = Const.State.DEATH;
+          break;
+        }
+
         // Monster is dead
         if (getMonsterHP() <= 0) {
           redraw(state);
@@ -523,10 +529,6 @@ public class Game implements Mode {
           if (checkForLoot()) {
             break;
           }
-        }
-        // Player is dead
-        if (getPlayerHP() <= 0) {
-          state = Const.State.DEATH;
         }
         break;
       case LOOT:

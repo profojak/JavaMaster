@@ -171,6 +171,10 @@ public class Room {
     monster = new Monster(sprite, hp, damage);
   }
 
+  public void deleteMonster() {
+    monster = null;
+  }
+
   /**
    * Sets loot.
    *
@@ -189,6 +193,10 @@ public class Room {
       default:
         loot = new Weapon(name, name.substring(0, name.lastIndexOf('.')), number);
     }
+  }
+
+  public void deleteLoot() {
+    loot = null;
   }
 }
 

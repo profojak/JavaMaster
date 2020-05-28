@@ -22,6 +22,10 @@ public class Monster extends Entity {
     this.damage = damage;
   }
 
+  public void setDamage(Integer damage) {
+    this.damage = damage;
+  }
+
   // Getters
 
   /**

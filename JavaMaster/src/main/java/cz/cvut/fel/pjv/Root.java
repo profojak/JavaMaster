@@ -4,6 +4,7 @@ import cz.cvut.fel.pjv.modes.*;
 
 import java.io.File;
 import java.util.logging.Logger;
+import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.scene.layout.StackPane;
@@ -11,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
+import javafx.scene.control.TextInputDialog;
 
 public class Root extends Application {
   private static final Logger logger = Logger.getLogger(Root.class.getName());
@@ -43,6 +45,81 @@ public class Root extends Application {
     fileChooser.setTitle("Choose dungeon file");
     saveFile = fileChooser.showOpenDialog(this.stage);
     return saveFile;
+  }
+
+  public String getInputDialog(Const.State state, String text) {
+    TextInputDialog dialog = null;
+    switch (state) {
+      case LOAD:
+        dialog = new TextInputDialog(text);
+        dialog.setContentText("Name of dungeon:");
+        dialog.setHeaderText(".dung is not required.");
+        break;
+      case ROOM:
+        if (text != null) {
+          dialog = new TextInputDialog(text);
+        } else {
+          dialog = new TextInputDialog("default.png");
+        }
+        dialog.setContentText("Room texture:");
+        dialog.setHeaderText(null);
+        break;
+      case STORY_BEFORE:
+        dialog = new TextInputDialog(text);
+        dialog.setContentText("Story before:");
+        dialog.setHeaderText(null);
+        break;
+      case STORY_AFTER:
+        dialog = new TextInputDialog(text);
+        dialog.setContentText("Story after:");
+        dialog.setHeaderText(null);
+        break;
+      case MONSTER:
+        if (text != null) {
+          dialog = new TextInputDialog(text);
+        } else {
+          dialog = new TextInputDialog("goblin.png");
+        }
+        dialog.setContentText("Monster texture:");
+        dialog.setHeaderText(null);
+        break;
+      case LOOT:
+        dialog = new TextInputDialog(text);
+        dialog.setContentText("Weapon texture:");
+        dialog.setHeaderText("Use 'potion' or 'bomb' for consumables.");
+        break;
+      case VICTORY:
+        dialog = new TextInputDialog(text);
+        dialog.setContentText("Weapon texture:");
+        dialog.setHeaderText(null);
+        break;
+      case INVENTORY:
+        dialog = new TextInputDialog(text);
+        dialog.setContentText("Loot count:");
+        dialog.setHeaderText(null);
+        break;
+      case HP:
+        dialog = new TextInputDialog(text);
+        dialog.setContentText("HP:");
+        dialog.setHeaderText(null);
+        break;
+      case DAMAGE:
+        dialog = new TextInputDialog(text);
+        dialog.setContentText("Damage:");
+        dialog.setHeaderText(null);
+        break;
+      default:
+        dialog = new TextInputDialog();
+        dialog.setHeaderText(null);
+        break;
+    }
+    dialog.setTitle("Java Master: Editor Input Dialog");
+
+    Optional<String> result = dialog.showAndWait();
+    if (result.isPresent()) {
+      return result.get();
+    }
+    return null;
   }
 
   /**

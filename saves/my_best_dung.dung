@@ -1,0 +1,16 @@
+start 12 26
+player saw.png 30 10
+id 12
+id 17
+story ahoj jsem_Matej
+wall pillars.png
+id 18
+id 21
+id 22
+monster devourer.png 1 90
+loot potion 2
+id 23
+id 26
+id 27
+id 28
+end

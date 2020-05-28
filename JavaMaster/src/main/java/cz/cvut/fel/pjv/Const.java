@@ -32,7 +32,9 @@ public class Const {
     STORY_AFTER,
     MENU,
     SET,
-    ROOM
+    ROOM,
+    HP,
+    DAMAGE
   }
 
   public static enum LoadPart {

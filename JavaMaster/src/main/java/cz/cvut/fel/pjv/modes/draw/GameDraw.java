@@ -351,6 +351,12 @@ public class GameDraw extends Draw {
         redraw(Const.State.DEFAULT);
         break;
       case VICTORY:
+        try {
+          this.stack.getChildren().remove(monster);
+          this.stack.getChildren().remove(effect);
+        } catch (Exception e) {
+          logger.info(Const.LOG_WHITE + "This room did not include any combat.");
+        }
         image = new Image(VICTORY);
         gc.drawImage(image, 375, 50);
         image = new Image(Const.BUTTON);
@@ -366,6 +372,7 @@ public class GameDraw extends Draw {
       case DEATH:
         drawBars(false);
         this.stack.getChildren().remove(monster);
+        this.stack.getChildren().remove(effect);
         image = new Image(DEATH);
         gc.drawImage(image, 375, 50);
         image = new Image(Const.BUTTON);
@@ -440,6 +447,13 @@ public class GameDraw extends Draw {
         drawMap(false);
         drawRoom();
 
+        try {
+          this.stack.getChildren().remove(monster);
+          this.stack.getChildren().remove(effect);
+        } catch (Exception e) {
+          logger.info(Const.LOG_WHITE + "This room did not include any combat.");
+        }
+
         /* Story dialog */
         thread = new Thread(new GameDrawStoryRunnable(gc, parent.getStoryAfter()));
         thread.start();
@@ -464,6 +478,13 @@ public class GameDraw extends Draw {
       case LOOT:
         drawInventory(false);
         drawRoom();
+
+        try {
+          this.stack.getChildren().remove(monster);
+          this.stack.getChildren().remove(effect);
+        } catch (Exception e) {
+          logger.info(Const.LOG_WHITE + "This room did not include any combat.");
+        }
 
         /* Loot */
         switch (parent.getLootType()) {
