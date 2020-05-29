@@ -163,6 +163,9 @@ public class Inventory {
    * @return damage of weapon
    */
   public Integer getWeaponDamage() {
+    if (weapon == null) {
+      return 0;
+    }
     return weapon.getWeaponDamage();
   }
 
@@ -172,6 +175,9 @@ public class Inventory {
    * @return texture of weapon
    */
   public String getWeaponSprite() {
+    if (weapon == null) {
+      return null;
+    }
     return weapon.getSprite();
   }
 
