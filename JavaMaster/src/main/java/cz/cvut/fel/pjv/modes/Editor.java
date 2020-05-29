@@ -161,7 +161,7 @@ public class Editor implements Mode {
         } catch (Exception e) {
           logger.log(Level.SEVERE, Const.LOG_RED + temp + " is not a number!"
             + Const.LOG_RESET); // DEBUG
-          damage = 0;
+          damage = 1;
         }
         rooms[getRoomId()].getMonster().setDamage(damage);
         break;
@@ -217,7 +217,7 @@ public class Editor implements Mode {
         } catch (Exception e) {
           logger.log(Level.SEVERE, Const.LOG_RED + temp + " is not a number!"
             + Const.LOG_RESET); // DEBUG
-          HP = 0;
+          HP = 1;
         }
         rooms[getRoomId()].getMonster().setHp(HP);
         break;
@@ -278,7 +278,7 @@ public class Editor implements Mode {
         } catch (Exception e) {
           logger.log(Level.SEVERE, Const.LOG_RED + temp + " is not a number!"
             + Const.LOG_RESET); // DEBUG
-          damage = 0;
+          damage = 1;
         }
         rooms[getRoomId()].getMonster().setDamage(damage);
 
@@ -288,7 +288,7 @@ public class Editor implements Mode {
         } catch (Exception e) {
           logger.log(Level.SEVERE, Const.LOG_RED + temp + " is not a number!"
             + Const.LOG_RESET); // DEBUG
-          HP = 0;
+          HP = 1;
         }
         rooms[getRoomId()].getMonster().setHp(HP);
         break;
@@ -658,11 +658,11 @@ public class Editor implements Mode {
       }
       // End of save file
       saveWriter.write(Const.LoadPart.END.toString().toLowerCase());
-      // TODO next map
       // Name of next map
-      /*if () {
-        saveWriter.write(" " + nextMap);
-      }*/
+      String nextMap = this.root.getInputDialog(Const.State.MENU, "next_dung");
+      if (nextMap != null && !nextMap.equals("")) {
+        saveWriter.write(" " + nextMap + ".dung");
+      }
       saveWriter.close();
     } catch (Exception exception) {
       logger.log(Level.SEVERE, Const.LOG_RED + "File could not be saved."

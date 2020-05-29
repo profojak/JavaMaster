@@ -108,6 +108,11 @@ public class Root extends Application {
         dialog.setContentText("Damage:");
         dialog.setHeaderText(null);
         break;
+      case MENU:
+        dialog = new TextInputDialog(text);
+        dialog.setContentText("Next dungeon:");
+        dialog.setHeaderText(".dung is not required.");
+        break;
       default:
         dialog = new TextInputDialog();
         dialog.setHeaderText(null);
