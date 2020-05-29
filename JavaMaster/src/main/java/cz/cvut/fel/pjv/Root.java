@@ -86,7 +86,7 @@ public class Root extends Application {
       case LOOT:
         dialog = new TextInputDialog(text);
         dialog.setContentText("Weapon texture:");
-        dialog.setHeaderText("Use 'potion' or 'bomb' for consumables.");
+        dialog.setHeaderText("Use 'potion' or 'bomb' for consumables.\nClick on cancel to delete loot from the room.");
         break;
       case VICTORY:
         dialog = new TextInputDialog(text);
