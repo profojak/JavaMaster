@@ -1,16 +1,20 @@
-start 12 26
-player saw.png 30 10
+start 15 4
+player sword.png 10 2
+id 3
+id 4
+id 7
+id 8
 id 12
+id 14
+monster goblin.png 10 3
+loot potion 3
+id 15
 id 17
-story ahoj jsem_Matej
-wall pillars.png
 id 18
-id 21
+id 19
+id 20
 id 22
-monster devourer.png 1 90
-loot potion 2
-id 23
+id 25
 id 26
 id 27
-id 28
-end empty.dung
+end

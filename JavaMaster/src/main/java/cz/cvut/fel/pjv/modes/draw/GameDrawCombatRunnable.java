@@ -6,7 +6,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.image.ImageView;
 
 /**
- * Implementation of DrawGameCombatRunnable: thread that draws combat.
+ * Class implementing thread that draws combat.
  *
  * @author profojak
  */

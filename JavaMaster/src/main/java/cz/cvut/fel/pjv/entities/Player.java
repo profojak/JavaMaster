@@ -6,9 +6,10 @@ import cz.cvut.fel.pjv.inventory.Inventory;
 import cz.cvut.fel.pjv.inventory.items.Item;
 
 /**
- * Implementation of Player: Entity controlled by user.
+ * Class implementing Player, Entity controlled by user in Game.
  *
  * @see Entity
+ * @author profojak
  */
 public class Player extends Entity {
   private Inventory inventory;
@@ -84,16 +85,25 @@ public class Player extends Entity {
 
   // Actions
 
-  /** Selects next item. */
+  /**
+   * Selects next item.
+   */
   public void itemNext() {
     inventory.itemNext();
   }
 
-  /** Selects previous item. */
+  /**
+   * Selects previous item.
+   */
   public void itemPrevious() {
     inventory.itemPrevious();
   }
 
+  /**
+   * Uses potion.
+   *
+   * @return whether potion was used
+   */
   public Boolean usePotion() {
     if(inventory.usePotion()) {
       heal(inventory.getPotionHeal());
@@ -102,6 +112,11 @@ public class Player extends Entity {
     return false;
   }
 
+  /**
+   * Uses bomb.
+   *
+   * @return whether bomb was used
+   */
   public Integer useBomb() {
     if(inventory.useBomb()) {
       return inventory.getBombDamage();
@@ -126,7 +141,6 @@ public class Player extends Entity {
    * Adds loot to player inventory.
    *
    * @param loot - loot instance
-   *
    */
   public void takeLoot(Item loot) {
     inventory.addLoot(loot);

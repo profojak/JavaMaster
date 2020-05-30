@@ -7,6 +7,7 @@ import cz.cvut.fel.pjv.menu.Button;
  * Implementation of Menu: menu layout used in main menu.
  *
  * @see Layout
+ * @author profojak
  */
 public class Menu extends Layout {
   public Menu() {

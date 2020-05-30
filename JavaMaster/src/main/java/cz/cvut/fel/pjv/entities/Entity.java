@@ -2,6 +2,8 @@ package cz.cvut.fel.pjv.entities;
 
 /**
  * Abstract class implementing basic HP and damage related methods of entities.
+ *
+ * @author profojak
  */
 public abstract class Entity {
   protected Integer hp, hpMax;

@@ -16,9 +16,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.image.Image;
 
 /**
- * Implementation of Editor mode: this class handles user input and controlls dungeon editing.
+ * Class implementing Editor.
+ *
+ * <p>This mode is loaded when player wants to create or edit dungeon.
  *
  * @see Mode
+ * @author profojak
  */
 public class Editor implements Mode {
   private static final Logger logger = Logger.getLogger(Editor.class.getName());
@@ -32,6 +35,10 @@ public class Editor implements Mode {
   private Layout menu;
   private Const.State state = Const.State.LOAD;
 
+  /**
+   * @param stack - StackPane to draw images to
+   * @param root - parent object
+   */
   public Editor(StackPane stack, Root root) {
     this.root = root;
     this.player = new Player();
@@ -39,6 +46,9 @@ public class Editor implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @deprecated use Editor(StackPane, Root) instead
+   */
   @Deprecated
   public Editor() {
     this.root = null;
@@ -46,18 +56,19 @@ public class Editor implements Mode {
     this.draw = null;
   }
 
-  public void close() {
-    this.draw.close();
-  }
-
+  /**
+   * @see Mode
+   */
   public void keyUp() {
     switch (state) {
+      /* Select room */
       case DEFAULT:
         roomCurrentId += Const.GO_NORTH;
         if (roomCurrentId < 0) {
           roomCurrentId -= Const.GO_NORTH;
         }
         break;
+      /* Edit room */
       case LOOT:
         if (getRoomId() != roomEndId) {
           roomStartId = getRoomId();        
@@ -66,6 +77,7 @@ public class Editor implements Mode {
           rooms[roomCurrentId].setStoryAfter("");
         }
         break;
+      /* Edit monster and loot */
       case MONSTER:
         Integer count;
         String loot = root.getInputDialog(Const.State.LOOT, "sword.png");
@@ -91,19 +103,21 @@ public class Editor implements Mode {
 
         rooms[getRoomId()].setLoot(loot, count, 1);
         break;
+      /* Edit room texture and story */
       case ROOM:
         String texture = root.getInputDialog(state, getRoomSprite());
-        if (texture != null || !texture.equals("default.png")) {
-          try {
+        try {
+          if (texture != null || !texture.equals("default.png")) {
             Image checkImage = new Image("/sprites/room/front/" + texture);
-          } catch (Exception e) {
-            logger.log(Level.SEVERE, Const.LOG_RED + "Room sprite " + texture + " does not exist!"
-              + Const.LOG_RESET); // DEBUG
-            break;
           }
           rooms[roomCurrentId].setSprite(texture);
+        } catch (Exception e) {
+          logger.log(Level.SEVERE, Const.LOG_RED + "Room sprite " + texture + " does not exist!"
+            + Const.LOG_RESET); // DEBUG
+          break;
         }
         break;
+      /* Menu */
       case MENU:
         this.menu.buttonPrevious();
         break;
@@ -111,20 +125,26 @@ public class Editor implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyDown() {
     switch (state) {
+      /* Select room */
       case DEFAULT:
         roomCurrentId += Const.GO_SOUTH;
         if (roomCurrentId >= Const.NUMBER_OF_ROOMS) {
           roomCurrentId -= Const.GO_SOUTH;
         }
         break;
+      /* Edit room */
       case LOOT:
         if (getRoomId() != roomStartId) {
           roomEndId = getRoomId();
           rooms[getRoomId()].deleteMonster();
         }
         break;
+      /* Menu */
       case MENU:
         this.menu.buttonNext();
         break;
@@ -132,8 +152,12 @@ public class Editor implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyLeft() {
     switch (state) {
+      /* Create or load dungeon */
       case LOAD:
         player.setHp(10);
         Weapon weapon = new Weapon("sword.png", "sword", 2);
@@ -141,15 +165,18 @@ public class Editor implements Mode {
         this.draw.redraw(Const.State.SET);
         state = Const.State.DEFAULT;
         break;
+      /* Select room */
       case DEFAULT:
         roomCurrentId += Const.GO_WEST;
         if (roomCurrentId < 0) {
           roomCurrentId -= Const.GO_WEST;
         }
         break;
+      /* Edit room */
       case LOOT:
         state = Const.State.ROOM;
         break;
+      /* Edit monster and loot */
       case MONSTER:
         if (getMonsterSprite() == null) {
           return;
@@ -165,6 +192,7 @@ public class Editor implements Mode {
         }
         rooms[getRoomId()].getMonster().setDamage(damage);
         break;
+      /* Edit room texture and story */
       case ROOM:
         if (getRoomId() != roomStartId) {
           String story = root.getInputDialog(Const.State.STORY_BEFORE, getStoryBefore());
@@ -179,6 +207,7 @@ public class Editor implements Mode {
             + Const.LOG_RESET); // DEBUG
         }
         break;
+      /* Menu */
       case MENU:
         this.menu.buttonPrevious();
         break;
@@ -186,8 +215,12 @@ public class Editor implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyRight() {
     switch (state) {
+      /* Create or load dungeon */
       case LOAD:
         this.saveFile = this.root.getFile();
         if (saveFile != null && saveFile.canRead()) {
@@ -200,12 +233,14 @@ public class Editor implements Mode {
         this.draw.redraw(Const.State.SET);
         state = Const.State.DEFAULT;
         break;
+      /* Select room */
       case DEFAULT:
         roomCurrentId += Const.GO_EAST;
         if (roomCurrentId >= Const.NUMBER_OF_ROOMS) {
           roomCurrentId -= Const.GO_EAST;
         }
         break;
+      /* Edit monster and loot */
       case MONSTER:
         if (getMonsterSprite() == null) {
           return;
@@ -221,6 +256,7 @@ public class Editor implements Mode {
         }
         rooms[getRoomId()].getMonster().setHp(HP);
         break;
+      /* Edit room */
       case LOOT:
         if (getRoomId() != roomStartId && getRoomId() != roomEndId) {
           state = Const.State.MONSTER;
@@ -229,22 +265,22 @@ public class Editor implements Mode {
             + Const.LOG_RESET); // DEBUG
         }
         break;
+      /* Edit room texture and story */
       case ROOM:
         if (getRoomId() != roomStartId) {
           String story = root.getInputDialog(Const.State.STORY_AFTER, getStoryAfter());
-          if (!story.equals("") && story != null &&
-              !getStoryBefore().equals("") && getStoryBefore() != null) {
+          if (story != null && !story.equals("") &&
+              getStoryBefore() != null && !getStoryBefore().equals("")) {
             rooms[roomCurrentId].setStoryAfter(story);
           } else {
             rooms[roomCurrentId].setStoryAfter("");
-            logger.log(Level.SEVERE, Const.LOG_RED + "Story before is not set! Ignoring story after."
-              + Const.LOG_RESET); // DEBUG
           }
         } else {
           logger.log(Level.SEVERE, Const.LOG_RED + "Cannot assign story to start room!"
             + Const.LOG_RESET); // DEBUG
         }
         break;
+      /* Menu */
       case MENU:
         this.menu.buttonNext();
         break;
@@ -252,14 +288,19 @@ public class Editor implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyEnter() {
     switch (state) {
+      /* Select room */
       case DEFAULT:
         if (!hasRoom(roomCurrentId)) {
           rooms[roomCurrentId] = new Room();
         }
         state = Const.State.LOOT;
         break;
+      /* Edit monster and loot */
       case MONSTER:
         Integer damage, HP;
         String temp = root.getInputDialog(Const.State.MONSTER, getMonsterSprite());
@@ -292,6 +333,7 @@ public class Editor implements Mode {
         }
         rooms[getRoomId()].getMonster().setHp(HP);
         break;
+      /* Edit room */
       case LOOT:
         Integer dmg;
         String textur = root.getInputDialog(Const.State.VICTORY, "sword.png");
@@ -315,6 +357,7 @@ public class Editor implements Mode {
         Weapon weapon = new Weapon(textur, textur.substring(0, textur.lastIndexOf('.')), dmg);
         player.takeLoot(weapon);
         break;
+      /* Menu */
       case MENU:
         // Cancel
         if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_CANCEL)) {
@@ -337,21 +380,29 @@ public class Editor implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyEscape() {
     switch (state) {
+      /* Select room */
       case DEFAULT:
         this.menu = new Save();
         state = Const.State.MENU;
         break;
+      /* Edit room */
       case LOOT:
         state = Const.State.DEFAULT;
         break;
+      /* Edit monster and loot */
       case MONSTER:
         state = Const.State.LOOT;
         break;
+      /* Edit room texture and story */
       case ROOM:
         state = Const.State.LOOT;
         break;
+      /* Menu */
       case MENU:
         this.menu = null;
         state = Const.State.DEFAULT;
@@ -360,14 +411,20 @@ public class Editor implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyDelete() {
     switch (state) {
+      /* Select room */
       case DEFAULT:
         rooms[roomCurrentId] = null;
         break;
+      /* Edit monster and loot */
       case MONSTER:
         rooms[roomCurrentId].deleteMonster();
         break;
+      /* Edit room */
       case LOOT:
         Integer Hp;
         String string = root.getInputDialog(Const.State.HP, "10");
@@ -384,20 +441,43 @@ public class Editor implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * Returns whether there is a room at the specified index.
+   *
+   * @param index - index of room to check
+   * @return whether there is a room at the specified index
+   */
   public Boolean hasRoom(Integer index) {
     return rooms[index] != null;
   }
 
+  /**
+   * Returns whether a room specified by index is the starting one.
+   *
+   * @param index - index of room to check
+   * @return whether a room is the starting one
+   */
   public Boolean isStartRoom(Integer index) {
     return index == roomStartId;
   }
 
+  /**
+   * Returns whether a room specified by index is the ending one.
+   *
+   * @param index - index of room to check
+   * @return whether a room is the ending one
+   */
   public Boolean isEndRoom(Integer index) {
     return index == roomEndId;
   }
 
   // Getters
 
+  /**
+   * Gets monster max HP.
+   *
+   * @return monster max HP
+   */
   public Integer getMonsterMaxHP() {
     if (rooms[getRoomId()].getMonster() != null) {
       return rooms[getRoomId()].getMonster().getMaxHP();
@@ -405,6 +485,11 @@ public class Editor implements Mode {
     return 0;
   }
 
+  /**
+   * Gets monster damage.
+   *
+   * @return monster damage
+   */
   public Integer getMonsterDamage() {
     if (rooms[getRoomId()].getMonster() != null) {
       return rooms[getRoomId()].getMonster().getDamage();
@@ -412,6 +497,11 @@ public class Editor implements Mode {
     return 0;
   }
 
+  /**
+   * Gets monster sprite.
+   *
+   * @return monster sprite
+   */
   public String getMonsterSprite() {
     if (rooms[getRoomId()].getMonster() != null) {
       return rooms[getRoomId()].getMonster().getSprite();
@@ -419,22 +509,47 @@ public class Editor implements Mode {
     return null;
   }
 
+  /**
+   * Gets player max HP.
+   *
+   * @return player max HP
+   */
   public Integer getPlayerMaxHP() {
     return player.getMaxHP();
   }
 
+  /**
+   * Gets player's weapon damage.
+   *
+   * @return player's weapon damage
+   */
   public Integer getWeaponDamage() {
     return player.getDamage();
   }
 
+  /**
+   * Gets player's weapon sprite.
+   *
+   * @return player's weapon sprite
+   */
   public String getWeaponSprite() {
     return player.getSprite();
   }
 
+  /**
+   * Gets loot.
+   *
+   * @return loot
+   */
   public Item getLoot() {
     return rooms[getRoomId()].getLoot();
   }
 
+  /**
+   * Gets loot type.
+   *
+   * @return loot type
+   */
   public Const.ItemType getLootType() {
     if (getLoot() instanceof Weapon) {
       return Const.ItemType.WEAPON;
@@ -446,6 +561,11 @@ public class Editor implements Mode {
     return null;
   }
 
+  /**
+   * Gets loot count.
+   *
+   * @return loot count
+   */
   public Integer getLootCount() {
     if (getLoot() instanceof Weapon) {
       return ((Weapon)getLoot()).getWeaponDamage();
@@ -457,30 +577,65 @@ public class Editor implements Mode {
     return null;
   }
 
+  /**
+   * Gets current room index.
+   *
+   * @return current room index
+   */
   public Integer getRoomId() {
     return roomCurrentId;
   }
 
+  /**
+   * Gets story before.
+   *
+   * @return story before
+   */
   public String getStoryBefore() {
     return rooms[getRoomId()].getStoryBefore();
   }
 
+  /**
+   * Gets story after.
+   *
+   * @return story after
+   */
   public String getStoryAfter() {
     return rooms[getRoomId()].getStoryAfter();
   }
 
+  /**
+   * Gets room texture.
+   *
+   * @return room texture
+   */
   public String getRoomSprite() {
     return rooms[getRoomId()].getSprite();
   }
 
+  /**
+   * Gets room texture.
+   *
+   * @return room texture
+   */
   public String getMenuAction(Integer index) {
     return this.menu.getAction(index);
   }
 
+  /**
+   * Gets index of active menu option.
+   *
+   * @return index of active menu option
+   */
   public Integer getMenuActive() {
     return this.menu.getActive();
   }
 
+  /**
+   * Gets count of menu options.
+   *
+   * @return count of menu options
+   */
   public Integer getMenuCount() {
     return this.menu.getCount();
   }
@@ -491,7 +646,7 @@ public class Editor implements Mode {
    * Parses save file and prepares the dungeon.
    *
    * <p>This method reads .dung text file and creates instances of described classes. After this
-   * method is finished, Game object is ready for playthrough.
+   * method is finished, Editor object is ready for editing.
    *
    * @param saveFile - dungeon to be parsed, saved in .dung file
    * @return whether parsing was successful
@@ -593,6 +748,15 @@ public class Editor implements Mode {
     return true;
   }
 
+  /**
+   * Save dungeon to file.
+   *
+   * <p>This method processes the dungeon structure and saves it to .dung text file.
+   *
+   * @param saveFile - .dung file to save to
+   * @return whether saving was successful
+   * @author povolji2
+   */
   private Boolean createSaveFile(String newSaveFileName) {
     try {
       File newSaveFile = new File(Const.SAVE_PATH + newSaveFileName + Const.DUNG_EXTENSION);
@@ -670,6 +834,13 @@ public class Editor implements Mode {
       return false; // File could not be loaded
     }
     return true;
+  }
+
+  /**
+   * @see Mode
+   */
+  public void close() {
+    this.draw.close();
   }
 }
 

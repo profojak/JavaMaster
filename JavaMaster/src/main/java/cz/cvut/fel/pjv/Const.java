@@ -4,8 +4,11 @@ import java.io.File;
 
 /**
  * Class holding various constants.
+ *
+ * @author profojak, povolji2
  */
 public class Const {
+  // Player directions
   public static enum Direction {
     NORTH,
     EAST,
@@ -13,12 +16,14 @@ public class Const {
     WEST
   }
 
+  // Types of items
   public static enum ItemType {
     BOMB,
     POTION,
     WEAPON
   }
 
+  // Game and Editor states
   public static enum State {
     LOAD,
     VICTORY,
@@ -37,6 +42,7 @@ public class Const {
     DAMAGE
   }
 
+  // Part of save files to load
   public static enum LoadPart {
     START,
     PLAYER,

@@ -4,9 +4,10 @@ import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.menu.Button;
 
 /**
- * Implementation of Menu: menu layout used in game menu.
+ * Class implementing Menu shown in MainMenu.
  *
  * @see Layout
+ * @author profojak
  */
 public class Save extends Layout {
   public Save() {

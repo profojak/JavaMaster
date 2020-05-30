@@ -6,7 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * Implementation of DrawGameStoryRunnable: thread that prints letters of story dialogs.
+ * Class implementing thread that prints letters of story dialogs.
  *
  * @author profojak
  */

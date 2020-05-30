@@ -1,5 +1,10 @@
 package cz.cvut.fel.pjv.inventory.items;
 
+/**
+ * Class implementing Potion item.
+ *
+ * @author povolji2
+ */
 public class Potion extends Item {
   private Integer heal, count;
 
@@ -18,6 +23,8 @@ public class Potion extends Item {
   public void updatePotionCount(Integer addCount) {
     count += addCount;
   }
+
+  // Getters
 
   /**
    * Gets how much HP potion heals.

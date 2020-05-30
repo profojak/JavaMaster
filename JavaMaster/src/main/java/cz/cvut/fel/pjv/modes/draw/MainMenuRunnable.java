@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * Implementation of MainMenuRunnable: thread that draws pulsing logo.
+ * Class implementing thread that draws pulsing logo.
  *
  * @author profojak
  */

@@ -1,9 +1,10 @@
 start 22 12
 player sword.png 10 2
 id 12
+wall trapdoor.png
 story You_step_on_a_wooden_trapdoor.
 id 17
-story You_can_see_red_eyes_lurking_from_the_darkness... You_split_goblin_in_half_with_your_mighty_sword!
+story You_can_see_eyes_lurking_from_the_darkness... You_split_goblin_in_half_with_your_mighty_sword!
 monster goblin.png 5 1
 loot potion 1
 id 22

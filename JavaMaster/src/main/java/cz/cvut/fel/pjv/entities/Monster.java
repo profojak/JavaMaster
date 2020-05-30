@@ -3,9 +3,10 @@ package cz.cvut.fel.pjv.entities;
 import cz.cvut.fel.pjv.entities.Entity;
 
 /**
- * Implementation of Monster: hostile Entity present in dungeons.
+ * Class implementing Monster, hostile Entity present in dungeons.
  *
  * @see Entity
+ * @author profojak
  */
 public class Monster extends Entity {
   private String sprite;
@@ -22,6 +23,13 @@ public class Monster extends Entity {
     this.damage = damage;
   }
 
+  // Setters
+
+  /**
+   * Sets damage of monster.
+   *
+   * @param damage - damage to set
+   */
   public void setDamage(Integer damage) {
     this.damage = damage;
   }

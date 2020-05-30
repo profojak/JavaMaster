@@ -2,6 +2,8 @@ package cz.cvut.fel.pjv.inventory.items;
 
 /**
  * Class implementing Bomb Item in inventory.
+ *
+ * @author povolji2
  */
 public class Bomb extends Item {
   private Integer damage, count;

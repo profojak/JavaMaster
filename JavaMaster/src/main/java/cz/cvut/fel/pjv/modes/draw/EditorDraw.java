@@ -11,6 +11,12 @@ import javafx.scene.image.Image;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Class drawing Editor state to the screen.
+ *
+ * @see Draw
+ * @author profojak
+ */
 public class EditorDraw extends Draw {
   private static final Logger logger = Logger.getLogger(EditorDraw.class.getName());
   private final Editor parent;
@@ -52,11 +58,17 @@ public class EditorDraw extends Draw {
     setGC();
   }
 
+  /**
+   * @deprecated use EditorDraw(StackPane, Editor) instead
+   */
   @Deprecated
   public EditorDraw() {
     this.parent = null;
   }
 
+  /**
+   * Redraws map.
+   */
   private void drawMap() {
     this.roomId = parent.getRoomId();
     Image image = new Image(MAP_TILE);
@@ -80,9 +92,13 @@ public class EditorDraw extends Draw {
     gc.drawImage(image, row * Const.MAP_OFFSET, col * Const.MAP_OFFSET);
   }
 
+  /**
+   * @see Draw
+   */
   public void redraw(Const.State state) {
     Image image;
     switch (state) {
+      /* Create new dungeon or load existing one */
       case LOAD:
         gc.setFill(Color.web(Const.COLOR_INVENTORY));
         gc.fillRect(0, 0, 375, 525);
@@ -92,6 +108,7 @@ public class EditorDraw extends Draw {
         gc.fillRect(375, 0, 525, 50);
         gc.fillRect(375, 475, 525, 50);
         gc.setFill(Color.web(Const.COLOR_FILL));
+
         /* Text */
         // Greeter
         gc.strokeText("Welcome to", 190, 80);
@@ -114,6 +131,7 @@ public class EditorDraw extends Draw {
         gc.strokeText("dungeon file", 660, 447);
         gc.fillText("dungeon file", 660, 447);
         break;
+      /* Select room */
       case DEFAULT:
         drawMap();
         gc.setFill(Color.web(Const.COLOR_INVENTORY));
@@ -144,6 +162,7 @@ public class EditorDraw extends Draw {
         gc.strokeText(String.valueOf(parent.getPlayerMaxHP()), 947, 65);
         gc.fillText(String.valueOf(parent.getPlayerMaxHP()), 947, 65);
         break;
+      /* Edit room */
       case LOOT:
         drawMap();
         gc.setFill(Color.web(Const.COLOR_INVENTORY));
@@ -182,6 +201,7 @@ public class EditorDraw extends Draw {
         gc.strokeText(String.valueOf(parent.getPlayerMaxHP()), 947, 65);
         gc.fillText(String.valueOf(parent.getPlayerMaxHP()), 947, 65);
         break;
+      /* Edit monster and loot */
       case MONSTER:
         gc.setFill(Color.web(Const.COLOR_INVENTORY));
         gc.fillRect(375, 50, 525, 425);
@@ -231,6 +251,7 @@ public class EditorDraw extends Draw {
         gc.strokeText("delete it", 595, 447);
         gc.fillText("delete it", 595, 447);
         break;
+      /* Edit room texture and story */
       case ROOM:
         image = new Image(ROOM_BG);
         gc.drawImage(image, 375, 50);
@@ -258,6 +279,7 @@ public class EditorDraw extends Draw {
         gc.strokeText("edit texture", 655, 447);
         gc.fillText("edit texture", 655, 447);
         break;
+      /* Menu */
       case MENU:
         gc.setFill(Color.web(Const.COLOR_INVENTORY));
         gc.fillRect(375, 50, 525, 425);
@@ -276,6 +298,7 @@ public class EditorDraw extends Draw {
           }
         }
         break;
+      /* Redraw when file is opened */
       case SET:
         drawMap();
         break;
@@ -287,6 +310,9 @@ public class EditorDraw extends Draw {
     roomId = parent.getRoomId();
   }
 
+  /**
+   * @see Draw
+   */
   public void close() {
   }
 }

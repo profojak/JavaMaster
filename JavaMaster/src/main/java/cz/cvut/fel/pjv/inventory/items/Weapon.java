@@ -1,5 +1,10 @@
 package cz.cvut.fel.pjv.inventory.items;
 
+/**
+ * Class implementing Weapon item.
+ *
+ * @author povolji2
+ */
 public class Weapon extends Item {
   private Integer damage;
 
@@ -18,3 +23,4 @@ public class Weapon extends Item {
     return damage;
   }
 }
+

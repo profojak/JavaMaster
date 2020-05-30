@@ -10,7 +10,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Inventory class holding number of potions and bombs and a weapon.
+ * Class implementing Inventory holding multiple Items.
+ *
+ * @author povolji2
  */
 public class Inventory {
   private static final Logger logger = Logger.getLogger(Inventory.class.getName());
@@ -19,8 +21,6 @@ public class Inventory {
   private Potion potion = null;
   private Bomb bomb = null;
   private Const.ItemType activeItem = Const.ItemType.WEAPON;
-
-  // Pick ups
 
   /**
    * Adds loot to inventory.
@@ -76,12 +76,11 @@ public class Inventory {
     return false;
   }
 
-  // Choosing item
-
   /**
    * Changes current item.
    *
    * @param itemChange - number to determine current item index
+   * @return which item type is selected
    */
   private Const.ItemType changeItem(Integer itemChange) {
     Const.ItemType newItem = null;
@@ -97,17 +96,21 @@ public class Inventory {
     return newItem;
   }
 
-  /** Selects next item. */
+  /**
+   * Selects next item.
+   */
   public void itemNext() {
     activeItem = changeItem(Const.NEXT_ITEM);
   }
 
-  /** Selects previous item. */
+  /**
+   * Selects previous item.
+   */
   public void itemPrevious() {
     activeItem = changeItem(Const.PREVIOUS_ITEM);
   }
 
-  // GUI
+  // Getters
 
   /**
    * Gets number of potions.

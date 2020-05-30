@@ -11,9 +11,12 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.image.Image;
 
 /**
- * Abstract class Draw implementing basic functionality of draw classes.
+ * Abstract class implementing basic functionality of draw classes.
+ *
+ * @author profojak
  */
 public abstract class Draw {
+  // Button images
   protected final Image IMAGE_BUTTON = new Image(Const.BUTTON),
     IMAGE_BUTTON_ACTIVE = new Image(Const.BUTTON_ACTIVE);
 

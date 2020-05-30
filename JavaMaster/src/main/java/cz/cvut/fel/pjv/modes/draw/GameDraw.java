@@ -15,9 +15,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Implementation of GameDraw: Draw object that handles drawing of Game mode.
+ * Class drawing Game state to the screen.
  *
  * @see Draw
+ * @author profojak
  */
 public class GameDraw extends Draw {
   private final Integer MENU_X = 500, MENU_Y = 170, BAR_WIDTH = 525, BAR_HEIGHT = 35;
@@ -339,17 +340,19 @@ public class GameDraw extends Draw {
 
   /**
    * @see Draw
-   * @author profojak
+   * @author profojak, povolji2
    */
   public void redraw(Const.State state) {
     Image image;
     switch (state) {
+      /* Redraw when dungeon is loaded */
       case LOAD:
         drawMap(true);
         drawInventory(false);
         drawBars(false);
         redraw(Const.State.DEFAULT);
         break;
+      /* Victory */
       case VICTORY:
         try {
           this.stack.getChildren().remove(monster);
@@ -369,6 +372,7 @@ public class GameDraw extends Draw {
         gc.strokeText("Quit", 495 + Const.TEXT_X_OFFSET, 352 + Const.TEXT_Y_OFFSET);
         gc.fillText("Quit", 495 + Const.TEXT_X_OFFSET, 352 + Const.TEXT_Y_OFFSET);
         break;
+      /* Death */
       case DEATH:
         drawBars(false);
         this.stack.getChildren().remove(monster);
@@ -385,14 +389,17 @@ public class GameDraw extends Draw {
         gc.strokeText("Restart", 495 + Const.TEXT_X_OFFSET, 352 + Const.TEXT_Y_OFFSET);
         gc.fillText("Restart", 495 + Const.TEXT_X_OFFSET, 352 + Const.TEXT_Y_OFFSET);
         break;
+      /* Walking through dungeon */
       case DEFAULT:
         drawMap(false);
         drawRoom();
         break;
+      /* Choosing items while in combat */
       case INVENTORY:
         drawInventory(true);
         drawBars(true);
         break;
+      /* Redraw when monster shows up */
       case MONSTER:
         drawMap(false);
         drawInventory(true);
@@ -416,6 +423,7 @@ public class GameDraw extends Draw {
         this.stack.getChildren().add(effect);
         this.stack.setMargin(effect, new Insets(0, 0, 0, 275));
         break;
+      /* Combat */
       case COMBAT:
         // Monster is dead
         if (parent.getMonsterHP() <= 0) {
@@ -428,7 +436,7 @@ public class GameDraw extends Draw {
         drawBars(true);
 
         /* Combat */
-        if (thread.isAlive()) {
+        if (thread != null && thread.isAlive()) {
           thread.interrupt();
           this.effect.setOpacity(0);
           this.monster.setFitWidth(Const.WINDOW_HEIGHT);
@@ -436,6 +444,7 @@ public class GameDraw extends Draw {
         thread = new Thread(new GameDrawCombatRunnable(monster, effect));
         thread.start();
         break;
+      /* Story before */
       case STORY_BEFORE:
         drawMap(false);
 
@@ -443,6 +452,7 @@ public class GameDraw extends Draw {
         thread = new Thread(new GameDrawStoryRunnable(gc, parent.getStoryBefore()));
         thread.start();
         break;
+      /* Story after */
       case STORY_AFTER:
         drawMap(false);
         drawRoom();
@@ -458,6 +468,7 @@ public class GameDraw extends Draw {
         thread = new Thread(new GameDrawStoryRunnable(gc, parent.getStoryAfter()));
         thread.start();
         break;
+      /* Menu */
       case MENU:
         drawMap(false);
         drawRoom();
@@ -475,6 +486,7 @@ public class GameDraw extends Draw {
           }
         }
         break;
+      /* Loot */
       case LOOT:
         drawInventory(false);
         drawRoom();
@@ -513,7 +525,9 @@ public class GameDraw extends Draw {
     roomId = parent.getRoomId();
   }
 
-  /** @see Draw */
+  /**
+   * @see Draw
+   */
   public void close() {
     if (this.thread != null && this.thread.isAlive()) {
       this.thread.interrupt();

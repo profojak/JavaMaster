@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 
 /**
- * Implementation of MainMenuDraw: Draw object that handles drawing of MainMenu mode.
+ * Class drawing MainMenu state to the screen.
  *
  * @see Draw
  * @author profojak
@@ -53,9 +53,11 @@ public class MainMenuDraw extends Draw {
 
   /**
    * @see Draw
+   * @author profojak, povolji2
    */
   public void redraw(Const.State state) {
     switch (state) {
+      /* Menu */
       case MENU:
         this.gc.setFill(Color.web(Const.COLOR_BG));
         this.gc.fillRect(30, 75, 345, 280);
@@ -72,6 +74,7 @@ public class MainMenuDraw extends Draw {
           }
         }
         break;
+      /* About */
       case DEFAULT:
         this.gc.setFill(Color.web(Const.COLOR_BG));
         this.gc.fillRect(60, 75, 285, 280);
@@ -96,7 +99,9 @@ public class MainMenuDraw extends Draw {
     }
   }
 
-  /** @see Draw */
+  /**
+   * @see Draw
+   */
   public void close() {
     this.logo.interrupt();
   }

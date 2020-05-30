@@ -14,6 +14,13 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.scene.control.TextInputDialog;
 
+/**
+ * Class implementing Root, the main object.
+ *
+ * <p>Root's role is to hold mode objects, switch them and get user input.
+ *
+ * @author profojak
+ */
 public class Root extends Application {
   private static final Logger logger = Logger.getLogger(Root.class.getName());
 
@@ -26,6 +33,7 @@ public class Root extends Application {
    * Opens file chooser to choose files.
    *
    * @return selected file
+   * @author povolji2
    */
   public File getFile() {
     FileChooser fileChooser = new FileChooser();
@@ -47,14 +55,23 @@ public class Root extends Application {
     return saveFile;
   }
 
+  /**
+   * Opens text input dialog to get text input.
+   *
+   * @param state - which information is requested
+   * @param text - which text is displayed as default input option
+   * @return text input
+   */
   public String getInputDialog(Const.State state, String text) {
     TextInputDialog dialog = null;
     switch (state) {
+      /* Load existing dungeon */
       case LOAD:
         dialog = new TextInputDialog(text);
         dialog.setContentText("Name of dungeon:");
         dialog.setHeaderText(".dung is not required.");
         break;
+      /* Room texture */
       case ROOM:
         if (text != null) {
           dialog = new TextInputDialog(text);
@@ -64,16 +81,19 @@ public class Root extends Application {
         dialog.setContentText("Room texture:");
         dialog.setHeaderText(null);
         break;
+      /* Story before */
       case STORY_BEFORE:
         dialog = new TextInputDialog(text);
         dialog.setContentText("Story before:");
-        dialog.setHeaderText(null);
+        dialog.setHeaderText("Click on cancel to delete story from the room.\nNote that deleting this story also deletes 'story after'.");
         break;
+      /* Story after */
       case STORY_AFTER:
         dialog = new TextInputDialog(text);
         dialog.setContentText("Story after:");
-        dialog.setHeaderText(null);
+        dialog.setHeaderText("Click on cancel to delete story from the room.");
         break;
+      /* Monster texture */
       case MONSTER:
         if (text != null) {
           dialog = new TextInputDialog(text);
@@ -83,35 +103,41 @@ public class Root extends Application {
         dialog.setContentText("Monster texture:");
         dialog.setHeaderText(null);
         break;
+      /* Loot type */
       case LOOT:
         dialog = new TextInputDialog(text);
         dialog.setContentText("Weapon texture:");
         dialog.setHeaderText("Use 'potion' or 'bomb' for consumables.\nClick on cancel to delete loot from the room.");
         break;
+      /* Weapon texture */
       case VICTORY:
         dialog = new TextInputDialog(text);
         dialog.setContentText("Weapon texture:");
         dialog.setHeaderText(null);
         break;
+      /* Loot count */
       case INVENTORY:
         dialog = new TextInputDialog(text);
         dialog.setContentText("Loot count:");
         dialog.setHeaderText(null);
         break;
+      /* HP */
       case HP:
         dialog = new TextInputDialog(text);
         dialog.setContentText("HP:");
         dialog.setHeaderText(null);
         break;
+      /* Damage */
       case DAMAGE:
         dialog = new TextInputDialog(text);
         dialog.setContentText("Damage:");
         dialog.setHeaderText(null);
         break;
+      /* Next dungeon name */
       case MENU:
         dialog = new TextInputDialog(text);
         dialog.setContentText("Next dungeon:");
-        dialog.setHeaderText(".dung is not required.");
+        dialog.setHeaderText(".dung is not required.\nClick on cancel to mark this dungeon as the final one.");
         break;
       default:
         dialog = new TextInputDialog();
@@ -157,7 +183,6 @@ public class Root extends Application {
    * Handles key press events and calls corresponding method in Mode object.
    *
    * @param e - key event
-   * @author profojak
    */
   private void keyPressHandler(KeyEvent e) {
     logger.info(Const.LOG_WHITE + e.getCode() + Const.LOG_RESET); // DEBUG
@@ -201,7 +226,6 @@ public class Root extends Application {
 
   /**
    * @see Application
-   * @author profojak
    */
   @Override
   public void start(Stage stage) {

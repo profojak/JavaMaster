@@ -1,10 +1,14 @@
 package cz.cvut.fel.pjv.inventory.items;
 
 /**
- * Abstract class Item implementing basic functionality of item classes.
+ * Abstract class implementing basic functionality of item classes.
+ *
+ * @author povolji2
  */
 public abstract class Item {
   protected String name, sprite;
+
+  // Getters
 
   /**
    * Gets name of item.

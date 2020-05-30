@@ -4,9 +4,10 @@ import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.menu.Button;
 
 /**
- * Implementation of Menu: menu layout used in game menu.
+ * Class implementing Exit menu that pops up when player wishes to exit the Game.
  *
  * @see Layout
+ * @author profojak
  */
 public class Exit extends Layout {
   public Exit() {

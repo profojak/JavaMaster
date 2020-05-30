@@ -11,11 +11,12 @@ import javafx.scene.layout.StackPane;
 import java.io.File;
 
 /**
- * Implementation of MainMenu mode: this class handles user input and controlls main menu behavior.
+ * Class implementing MainMenu.
  *
  * <p>This class is loaded when the game is launched. It is used for switching between other modes.
  *
  * @see Mode
+ * @profojak
  */
 public class MainMenu implements Mode {
   private final Root root;
@@ -44,15 +45,14 @@ public class MainMenu implements Mode {
     this.draw = null;
   }
 
-  /** @see Mode */
-  public void close() {
-    this.draw.close();
-  }
-
   // Key methods
 
+  /**
+   * @see Mode
+   */
   public void keyUp() {
     switch (state) {
+      /* Menu */
       case MENU:
         this.menu.buttonPrevious();
         this.draw.redraw(Const.State.MENU);
@@ -61,8 +61,12 @@ public class MainMenu implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyDown() {
     switch (state) {
+      /* Menu */
       case MENU:
         this.menu.buttonNext();
         this.draw.redraw(Const.State.MENU);
@@ -71,8 +75,12 @@ public class MainMenu implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyLeft() {
     switch (state) {
+      /* Menu */
       case MENU:
         this.menu.buttonPrevious();
         this.draw.redraw(Const.State.MENU);
@@ -81,8 +89,12 @@ public class MainMenu implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyRight() {
     switch (state) {
+      /* Menu */
       case MENU:
         this.menu.buttonNext();
         this.draw.redraw(Const.State.MENU);
@@ -91,8 +103,12 @@ public class MainMenu implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyEscape() {
     switch (state) {
+      /* About */
       case DEFAULT:
         state = Const.State.MENU;
         break;
@@ -100,8 +116,12 @@ public class MainMenu implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyEnter() {
     switch (state) {
+      /* Menu */
       case MENU:
         switch (this.menu.getAction(this.menu.getActive())) {
           case Const.MENU_GAME:
@@ -123,6 +143,7 @@ public class MainMenu implements Mode {
             break;
         }
         break;
+      /* About */
       case DEFAULT:
         state = Const.State.MENU;
         break;
@@ -130,8 +151,12 @@ public class MainMenu implements Mode {
     this.draw.redraw(state);
   }
 
+  /**
+   * @see Mode
+   */
   public void keyDelete() {
     switch (state) {
+      /* About */
       case DEFAULT:
         state = Const.State.MENU;
         break;
@@ -141,23 +166,34 @@ public class MainMenu implements Mode {
 
   // GUI
 
-  /**
-   * Following methods are connecting Menu with MainMenuDraw object.
-   */
+  // Following methods are connecting Menu with MainMenuDraw object.
 
-  /** @see Layout */
+  /**
+   * @see Layout
+   */
   public String getMenuAction(Integer index) {
     return this.menu.getAction(index);
   }
 
-  /** @see Layout */
+  /**
+   * @see Layout
+   */
   public Integer getMenuActive() {
     return this.menu.getActive();
   }  
 
-  /** @see Layout */
+  /**
+   * @see Layout
+   */
   public Integer getMenuCount() {
     return this.menu.getCount();
+  }
+
+  /**
+   * @see Mode
+   */
+  public void close() {
+    this.draw.close();
   }
 }
 

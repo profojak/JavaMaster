@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import javafx.scene.layout.StackPane;
 
 /**
- * Implementation of Game mode: this class handles user input and controls the flow of the game.
+ * Class implementing Game.
  *
  * <p>This mode is loaded when user wants to play.
  *
@@ -40,6 +40,7 @@ public class Game implements Mode {
   /**
    * @param stack - StackPane to draw images to
    * @param root - parent object
+   * @author profojak
    */
   public Game(StackPane stack, Root root, File saveFile) {
     this.root = root;
@@ -50,6 +51,10 @@ public class Game implements Mode {
     this.draw = new GameDraw(stack, this);
   }
 
+  /**
+   * Used in UnitTests.
+   * @author povolji2
+   */  
   public Game(File saveFile) {
     this.root = null;
     this.player = new Player();
@@ -70,13 +75,6 @@ public class Game implements Mode {
     this.draw = null;
   }
 
-  /** @see Mode */
-  public void close() {
-    if (this.draw != null) {
-      this.draw.close();
-    }
-  }
-
   private void redraw(Const.State state) {
     if (this.draw != null) {
       this.draw.redraw(state);
@@ -85,6 +83,8 @@ public class Game implements Mode {
 
   /**
    * Called when moving to new level.
+   *
+   * @author profojak
    */
   private void changeLevel(File nextMap) {
     close();
@@ -137,6 +137,11 @@ public class Game implements Mode {
       + Const.LOG_RESET); // DEBUG
   }
 
+  /**
+   * Takes loot.
+   *
+   * @author povolji2
+   */
   private void takeLoot() {
     Item loot = rooms[roomCurrentId].getLoot();
     logger.info(Const.LOG_WHITE + ">>> You have found loot: " + loot.getName() + Const.LOG_RESET); // DEBUG
@@ -146,10 +151,12 @@ public class Game implements Mode {
   // Key methods
 
   /**
-   * Handles up key event.
+   * @see Mode
+   * @author profojak, povolji2
    */
   public void keyUp() {
     switch (state) {
+      /* Walking */
       case DEFAULT:
         // Go to the next room
         if (hasRoomFront()) {
@@ -203,13 +210,16 @@ public class Game implements Mode {
           logger.warning(Const.LOG_YELLOW + ">>>  You can't go there." + Const.LOG_RESET); // DEBUG
         }
         break;
+      /* Combat */
       case COMBAT:
         itemPrevious();
         redraw(Const.State.INVENTORY);
         return;
+      /* Loot */
       case LOOT:
         state = Const.State.DEFAULT;
         break;
+      /* Story before */
       case STORY_BEFORE:
         close();
 
@@ -231,6 +241,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Story after */
       case STORY_AFTER:
         close();
 
@@ -244,6 +255,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Menu */
       case MENU:
         this.menu.buttonPrevious();
         break;
@@ -252,17 +264,21 @@ public class Game implements Mode {
   }
 
   /**
-   * Handles down key event.
+   * @see Mode
+   * @author profojak, povolji2
    */
   public void keyDown() {
     switch (state) {
+      /* Combat */
       case COMBAT:
         itemNext();
         redraw(Const.State.INVENTORY);
         return;
+      /* Loot */
       case LOOT:
         state = Const.State.DEFAULT;
         break;
+      /* Story before */
       case STORY_BEFORE:
         close();
 
@@ -284,6 +300,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Story after */
       case STORY_AFTER:
         close();
 
@@ -297,6 +314,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Menu */
       case MENU:
         this.menu.buttonNext();
         break;
@@ -305,21 +323,26 @@ public class Game implements Mode {
   }
 
   /**
-   * Handles left key event.
+   * @see Mode
+   * @author profojak, povolji2
    */
   public void keyLeft() {
     switch (state) {
+      /* Walking */
       case DEFAULT:
         // Turns player to the left
         turnPlayer(Const.TURN_LEFT);
         break;
+      /* Combat */
       case COMBAT:
         itemPrevious();
         redraw(Const.State.INVENTORY);
         return;
+      /* Loot */
       case LOOT:
         state = Const.State.DEFAULT;
         break;
+      /* Story before */
       case STORY_BEFORE:
         close();
 
@@ -341,6 +364,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Story after */
       case STORY_AFTER:
         close();
 
@@ -354,6 +378,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Menu */
       case MENU:
         this.menu.buttonPrevious();
         break;
@@ -362,21 +387,26 @@ public class Game implements Mode {
   }
 
   /**
-   * Handles right key event.
+   * @see Mode
+   * @author profojak, povolji2
    */
   public void keyRight() {
     switch (state) {
+      /* Walking */
       case DEFAULT:
         // Turns player to the right
         turnPlayer(Const.TURN_RIGHT);
         break;
+      /* Combat */
       case COMBAT:
         itemNext();
         redraw(Const.State.INVENTORY);
         return;
+      /* Loot */
       case LOOT:
         state = Const.State.DEFAULT;
         break;
+      /* Story before */
       case STORY_BEFORE:
         close();
 
@@ -398,6 +428,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Story after */
       case STORY_AFTER:
         close();
 
@@ -411,6 +442,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Menu */
       case MENU:
         this.menu.buttonNext();
         break;
@@ -419,20 +451,25 @@ public class Game implements Mode {
   }
 
   /**
-   * Handles escape key event.
+   * @see Mode
+   * @author profojak, povolji2
    */
   public void keyEscape() {
     switch (state) {
+      /* Walking */
       case DEFAULT:
         // Opens menu
         this.menu = new Exit();
         state = Const.State.MENU;
         break;
+      /* Combat */
       case COMBAT:
         return;
+      /* Loot */
       case LOOT:
         state = Const.State.DEFAULT;
         break;
+      /* Story before */
       case STORY_BEFORE:
         close();
 
@@ -454,6 +491,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Story after */
       case STORY_AFTER:
         close();
 
@@ -467,6 +505,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Menu */
       case MENU:
         // Closes menu
         this.menu = null;
@@ -477,18 +516,22 @@ public class Game implements Mode {
   }
 
   /**
-   * Handles enter key event.
+   * @see Mode
+   * @author profojak, povolji2
    */
   public void keyEnter() {
     switch (state) {
+      /* Victory */
       case VICTORY:
         close();
         this.root.switchMode(Const.MENU_MAINMENU);
         break;
+      /* Death */
       case DEATH:
         close();
         changeLevel(saveFile);
         break;
+      /* Combat */
       case COMBAT:
         // Player takes damage
         switch (player.getActiveItem()) {
@@ -531,9 +574,11 @@ public class Game implements Mode {
           }
         }
         break;
+      /* Loot */
       case LOOT:
         state = Const.State.DEFAULT;
         break;
+      /* Story before */
       case STORY_BEFORE:
         close();
 
@@ -555,6 +600,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Story after */
       case STORY_AFTER:
         close();
 
@@ -568,6 +614,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Menu */
       case MENU:
         // Cancel
         if (this.menu.getAction(this.menu.getActive()).equals(Const.MENU_CANCEL)) {
@@ -597,15 +644,19 @@ public class Game implements Mode {
   }
 
   /**
-   * Handles delete key event.
+   * @see Mode
+   * @author profojak, povolji2
    */
   public void keyDelete() {
     switch (state) {
+      /* Combat */
       case COMBAT:
         return;
+      /* Loot */
       case LOOT:
         state = Const.State.DEFAULT;
         break;
+      /* Story before */
       case STORY_BEFORE:
         close();
 
@@ -627,6 +678,7 @@ public class Game implements Mode {
 
         state = Const.State.DEFAULT;
         break;
+      /* Story after */
       case STORY_AFTER:
         close();
 
@@ -650,6 +702,7 @@ public class Game implements Mode {
    * Sets state if room has monster.
    *
    * @return whether room has monster
+   * @author profojak, povolji2
    */
   private Boolean checkForMonster() {
     if (rooms[roomCurrentId].hasMonster()) {
@@ -664,6 +717,7 @@ public class Game implements Mode {
    * Sets state if room is the end of dungeon floor.
    *
    * @return whether room is the end of dungeon floor
+   * @author profojak, povolji2
    */
   private Boolean checkForFloorEnd() {
     if (roomCurrentId.equals(roomEndId)) {
@@ -680,6 +734,7 @@ public class Game implements Mode {
    * Sets state if room has story before monster combat.
    *
    * @return whether room has story before monster combat
+   * @author profojak, povolji2
    */
   private Boolean checkForStoryBefore() {
     if (rooms[roomCurrentId].hasStoryBefore()) {
@@ -695,6 +750,7 @@ public class Game implements Mode {
    * Sets state if room has story after monster combat.
    *
    * @return whether room has story after monster combat
+   * @author profojak, povolji2
    */
   private Boolean checkForStoryAfter() {
     if (rooms[roomCurrentId].hasStoryAfter()) {
@@ -710,6 +766,7 @@ public class Game implements Mode {
    * Sets state if room has loot.
    *
    * @return whether room has loot.
+   * @author profojak, povolji2
    */
   private Boolean checkForLoot() {
     if (rooms[roomCurrentId].hasLoot()) {
@@ -758,33 +815,51 @@ public class Game implements Mode {
   }
 
   /**
+   * Returns whether there is a room to the left of the player.
+   *
    * @return whether there is a room to the left of the player
+   * @author povolji2
    */
   public Boolean hasRoomLeft() {
     return hasRoom(Const.TURN_LEFT);
   }
 
   /**
+   * Returns whether there is a room to the right of the player.
+   *
    * @return whether there is a room to the right of the player
+   * @author povolji2
    */
   public Boolean hasRoomRight() {
     return hasRoom(Const.TURN_RIGHT);
   }
 
   /**
+   * Returns whether there is a room in front of the player.
+   *
    * @return whether there is a room in front of the player
+   * @author povolji2
    */
   public Boolean hasRoomFront() {
     return hasRoom(Const.DONT_TURN);
   }
 
   /**
+   * Returns whether there is a room behind the player.
+   *
    * @return whether there is a room behind the player
+   * @author povolji2
    */
   public Boolean hasRoomBehind() {
     return hasRoom(Const.TURN_RIGHT + Const.TURN_RIGHT);
   }
 
+  /**
+   * Returns whether there is a room behind the player.
+   *
+   * @return whether there is a room behind the player
+   * @author povolji2
+   */
   public Boolean hasNextMap() {
     return nextMap != null;
   }
@@ -799,7 +874,7 @@ public class Game implements Mode {
    *
    * @param saveFile - dungeon to be parsed, saved in .dung file
    * @return whether parsing was successful
-   * @author profojak
+   * @author profojak, povolji2
    */
   private Boolean parseSaveFile(File parsedFile) {
     try {
@@ -902,13 +977,14 @@ public class Game implements Mode {
     return true;
   }
 
-  // GUI
+  // Getters
 
   /**
    * Returns whether room specified by index is visited.
    *
    * @param index - index of room to check
    * @return whther room specified by index is visited
+   * @author povolji2
    */
   public Boolean isRoomVisited(Integer index) {
     return rooms[index].isVisited();
@@ -918,6 +994,7 @@ public class Game implements Mode {
    * Returns index of current room.
    *
    * @return index of current room
+   * @author povolji2
    */
   public Integer getRoomId() {
     return roomCurrentId;
@@ -927,6 +1004,7 @@ public class Game implements Mode {
    * Returns sprite of current room.
    *
    * @return current room sprite
+   * @author povolji2
    */
   public String getRoomSprite() {
     return rooms[roomCurrentId].getSprite();
@@ -936,6 +1014,7 @@ public class Game implements Mode {
    * Gets story before entering a room.
    *
    * @return story string
+   * @author povolji2
    */
   public String getStoryBefore() {
     return rooms[roomCurrentId].getStoryBefore();
@@ -945,6 +1024,7 @@ public class Game implements Mode {
    * Gets story after killing a monster.
    *
    * @return story string
+   * @author povolji2
    */
   public String getStoryAfter() {
     return rooms[roomCurrentId].getStoryAfter();
@@ -954,6 +1034,7 @@ public class Game implements Mode {
    * Gets monster instance.
    *
    * @return monster instance
+   * @author povolji2
    */
   public Monster getMonster() {
     return rooms[roomCurrentId].getMonster();
@@ -963,6 +1044,7 @@ public class Game implements Mode {
    * Gets Loot type.
    *
    * @return type of Loot.
+   * @author profojak
    */
   public Const.ItemType getLootType() {
     if (rooms[roomCurrentId].getLoot() instanceof Weapon) {
@@ -979,6 +1061,7 @@ public class Game implements Mode {
    * Gets loot count.
    *
    * @return count of loot
+   * @author profojak
    */
   public Integer getLootCount() {
     if (rooms[roomCurrentId].getLoot() instanceof Weapon) {
@@ -995,6 +1078,7 @@ public class Game implements Mode {
    * Returns current direction converted to String.
    *
    * @return current direction converted to String
+   * @author povolji2
    */
   public String getDirection() {
     return direction.toString();
@@ -1004,6 +1088,7 @@ public class Game implements Mode {
    * Returns left direction relative to current direction converted to String.
    *
    * @return left direction relative to current direction converted to String
+   * @author povolji2
    */
   public String getLeftDirection() {
     return changeDirection(Const.TURN_LEFT).toString();
@@ -1013,6 +1098,7 @@ public class Game implements Mode {
    * Returns right direction relative to current direction converted to String.
    *
    * @return right direction relative to current direction converted to String
+   * @author povolji2
    */
   public String getRightDirection() {
     return changeDirection(Const.TURN_RIGHT).toString();
@@ -1022,6 +1108,7 @@ public class Game implements Mode {
    * Returns right direction relative to current direction converted to String.
    *
    * @return right direction relative to current direction converted to String
+   * @author povolji2
    */
   public String getBackDirection() {
     return changeDirection(Const.TURN_RIGHT + Const.TURN_RIGHT).toString();
@@ -1031,98 +1118,141 @@ public class Game implements Mode {
    * Following methods are connecting Exit menu with GameDraw object.
    */
 
-  /** @see Layout */
+  /**
+   * @see Layout
+   */
   public String getMenuAction(Integer index) {
     return this.menu.getAction(index);
   }
 
-  /** @see Layout */
+  /**
+   * @see Layout
+   */
   public Integer getMenuActive() {
     return this.menu.getActive();
   }
 
-  /** @see Layout */
+  /**
+   * @see Layout
+   */
   public Integer getMenuCount() {
     return this.menu.getCount();
   }
 
-  /**
-   * Following methods are described in Entity, Player and Monster classes.
-   */
+  // Following methods are described in Entity, Player and Monster classes.
 
-  /** @see Player */
+  /**
+   * @see Player
+   */
   public Const.ItemType getActiveItem() {
     return player.getActiveItem();
   }
 
-  /** @see Player */
+  /**
+   * @see Player
+   */
   public void itemNext() {
     player.itemNext();
   }
 
-  /** @see Player */
+  /**
+   * @see Player
+   */
   public void itemPrevious() {
     player.itemPrevious();
   }
 
-  /** @see Player */
+  /**
+   * @see Player
+   */
   public Integer getBombDamage() {
     return player.getBombDamage();
   }
 
-  /** @see Player */
+  /**
+   * @see Player
+   */
   public Integer getPotionHeal() {
     return player.getPotionHeal();
   }
 
-  /** @see Entity */
+  /**
+   * @see Player
+   */
   public Integer getPlayerHP() {
     return player.getHP();
   }
 
-  /** @see Entity */
+  /**
+   * @see Player
+   */
   public Integer getPlayerMaxHP() {
     return player.getMaxHP();
   }
 
-  /** @see Player */
+  /**
+   * @see Player
+   */
   public Integer getWeaponDamage() {
     return player.getDamage();
   }
 
-  /** @see Player */
+  /**
+   * @see Player
+   */
   public Integer getBombCount() {
     return player.getBombCount();
   }
 
-  /** @see Player */
+  /**
+   * @see Player
+   */
   public Integer getPotionCount() {
     return player.getPotionCount();
   }
 
-  /** @see Player */
+  /**
+   * @see Player
+   */
   public String getWeaponSprite() {
     return player.getSprite();
   }
 
-  /** @see Entity */
+  /**
+   * @see Monster
+   */
   public Integer getMonsterHP() {
     return getMonster().getHP();
   }
 
-  /** @see Entity */
+  /**
+   * @see Monster
+   */
   public Integer getMonsterMaxHP() {
     return getMonster().getMaxHP();
   }
 
-  /** @see Monster */
+  /**
+   * @see Monster
+   */
   public Integer getMonsterDamage() {
     return getMonster().getDamage();
   }
 
-  /** @see Monster */
+  /**
+   * @see Monster
+   */
   public String getMonsterSprite() {
     return getMonster().getSprite();
+  }
+
+  /**
+   * @see Mode
+   */
+  public void close() {
+    if (this.draw != null) {
+      this.draw.close();
+    }
   }
 }
 

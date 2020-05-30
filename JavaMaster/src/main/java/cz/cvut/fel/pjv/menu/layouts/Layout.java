@@ -4,6 +4,8 @@ import cz.cvut.fel.pjv.menu.Button;
 
 /**
  * Abstract class implementing menu functionality.
+ *
+ * @author profojak
  */
 public abstract class Layout {
   protected Button[] buttons = new Button[1];

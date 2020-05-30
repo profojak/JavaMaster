@@ -7,7 +7,7 @@ import cz.cvut.fel.pjv.inventory.items.Potion;
 import cz.cvut.fel.pjv.inventory.items.Weapon;
 
 /**
- * Implementation of Room: class that holds Monster and Loot objects.
+ * Class implementing Room.
  *
  * <p>Multiple instances of this class form a dungeon. Mode object changes current room and
  * calls room methods to interact with room objects and variables.
@@ -27,6 +27,7 @@ public class Room {
    * Is there any monster?
    *
    * @return whether Room has Monster object assigned
+   * @author povolji2
    */
   public Boolean hasMonster() {
     return monster != null;
@@ -36,6 +37,7 @@ public class Room {
    * Does this Room have non default sprite?
    *
    * @return whether Room has default sprite
+   * @author povolji2
    */
   public Boolean hasSprite() {
     return sprite != null;
@@ -45,6 +47,7 @@ public class Room {
    * Is there any loot?
    *
    * @return whether Room has Loot object assigned
+   * @author povolji2
    */
   public Boolean hasLoot() {
     return loot != null;
@@ -54,6 +57,7 @@ public class Room {
    * Is there any story dialog before monster encounter?
    *
    * @return whether Room has StoryBefore variable set
+   * @author povolji2
    */
   public Boolean hasStoryBefore() {
     return storyBefore != null && !storyBefore.isBlank();
@@ -63,6 +67,7 @@ public class Room {
    * Is there any story dialog after monster encounter?
    *
    * @return whether Room has StoryAfter variable set
+   * @author povolji2
    */
   public Boolean hasStoryAfter() {
     return storyAfter != null && !storyAfter.isBlank();
@@ -72,6 +77,7 @@ public class Room {
    * Is room already visited?
    *
    * @return whether Room is already visited
+   * @author povolji2
    */
   public Boolean isVisited() {
     return isVisited;
@@ -83,6 +89,7 @@ public class Room {
    * Gets story dialog before monster encounter.
    *
    * @return StoryBefore variable assigned to this room
+   * @author profojak
    */
   public String getStoryBefore() {
     return storyBefore;
@@ -92,6 +99,7 @@ public class Room {
    * Gets story dialog after monster encounter.
    *
    * @return StoryAfter variable assigned to this room
+   * @author profojak
    */
   public String getStoryAfter() {
     return storyAfter;
@@ -101,6 +109,7 @@ public class Room {
    * Gets wall texture.
    *
    * @return texture of room wall
+   * @author profojak
    */
   public String getSprite() {
     return sprite;
@@ -110,6 +119,7 @@ public class Room {
    * Gets monster.
    *
    * @return instance of monster
+   * @author profojak
    */
   public Monster getMonster() {
     return monster;
@@ -119,6 +129,7 @@ public class Room {
    * Gets loot.
    *
    * @return loot
+   * @author profojak
    */
   public Item getLoot() {
     return loot;
@@ -128,6 +139,8 @@ public class Room {
 
   /**
    * Sets room as visited.
+   *
+   * @author povolji2
    */
   public void setVisited() {
     isVisited = true;
@@ -137,6 +150,7 @@ public class Room {
    * Sets story dialog before monster encounter.
    *
    * @param dialog - string to save as story dialog
+   * @author profojak
    */
   public void setStoryBefore(String dialog) {
     storyBefore = dialog;
@@ -146,6 +160,7 @@ public class Room {
    * Sets story dialog after monster encounter.
    *
    * @param dialog - string to save as story dialog
+   * @author profojak
    */
   public void setStoryAfter(String dialog) {
     storyAfter = dialog;
@@ -155,6 +170,7 @@ public class Room {
    * Sets texture of room walls.
    *
    * @param sprite - texture of room walls
+   * @author profojak
    */
   public void setSprite(String sprite) {
     this.sprite = sprite;
@@ -166,11 +182,17 @@ public class Room {
    * @param sprite - monster texture
    * @param hp - monster HP
    * @param damage - monster damage
+   * @author profojak
    */
   public void setMonster(String sprite, Integer hp, Integer damage) {
     monster = new Monster(sprite, hp, damage);
   }
 
+  /**
+   * Deletes monster.
+   *
+   * @author profojak
+   */
   public void deleteMonster() {
     monster = null;
   }
@@ -181,6 +203,7 @@ public class Room {
    * @param name - loot name/type/texture
    * @param number - loot count/damage
    * @param playerHP - max HP of player
+   * @author povolji2
    */
   public void setLoot(String name, Integer number, Integer playerHP) {
     switch(name) {
@@ -195,6 +218,9 @@ public class Room {
     }
   }
 
+  /**
+   * Deletes loot.
+   */
   public void deleteLoot() {
     loot = null;
   }
