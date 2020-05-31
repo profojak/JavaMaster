@@ -1,0 +1,47 @@
+start 17 33
+player sword.png 22 2
+id 1
+id 2
+story This_dungeon_is_swarming_with_them!
+id 3
+monster goblin.png 10 3
+id 5
+id 6
+story Something_is_behind_you! You_turn_around,_but_see_nothing...
+wall window.png
+id 8
+id 9
+story There_is_a_potion_beneath_the_brick.
+loot potion 1
+id 10
+story Something_crawls_above_you...
+id 12
+story As_you_walk_a_few_steps,_trapdoor_above_you_shuts. It_is_cold_in_here...
+wall default.png
+id 13
+wall pillars.png
+id 15
+story Something_is_hiding_in_the_shadow...
+id 17
+id 20
+story Oh_no! Skin_of_the_spider_is_tough._Your_sword_breaks!
+monster spider.png 4 5
+loot broken.png 1
+id 21
+id 25
+id 26
+story Spider_webs_are_all_around_you.
+id 27
+story Another_one!
+monster spider.png 4 5
+loot potion 1
+id 28
+story You_scream_in_pain_from_spider_bites.
+id 30
+story There_is_something_standing_next_to_the_wall. Battle_axe!_You_grab_it_and_throw_your_broken_sword_away.
+loot axe.png 4
+wall window.png
+id 33
+story At_least_are_these_insects_squishy_and_die_fast! You_run_away_before_another_one_shows_up,_drinking_your_potion.
+wall door.png
+end story_3.dung

@@ -1,0 +1,55 @@
+start 29 33
+player axe.png 30 4
+id 1
+story Floor_behind_you_starts_to_shake!
+id 2
+id 3
+id 4
+story His_scream_echoes_through_the_dark_dungeon.
+wall window.png
+id 5
+story You_grab_the_wall_next_to_you. It_is_hard_not_to_fall.
+id 6
+loot potion 1
+wall pillars.png
+id 9
+story The_last_one_tries_to_run_away! Goblin_managed_to_shout_horribly_before_you_decapitated_him.
+monster goblin.png 11 3
+loot potion 1
+id 10
+id 12
+monster goblin.png 10 2
+loot bomb 2
+id 13
+story As_you_walk_through_cold_hallways,_you_stumble_upon_a_small_group_of_goblins.
+monster goblin.png 12 3
+id 14
+story They_must_be_guarding_something!
+monster goblin.png 11 3
+wall window.png
+id 15
+wall pillars.png
+id 16
+story The_shaking_suddenly_stops. You_can_hear_water_droping_really_close_to_you...
+id 18
+id 21
+story ...really,_really_close... When_you_deal_the_final_blow,_monster_explodes_and_covers_you_in_stinky_slime.
+monster devourer.png 45 3
+id 23
+story You_see_those_red_eyes_again. Something_is_here_with_you...
+wall pillars.png
+id 24
+story As_you_descend_even_deeper,_horrible_chill_goes_down_your_spine.
+id 26
+id 27
+wall pillars.png
+id 29
+id 31
+wall window.png
+id 32
+story That_stink_is_terrible._It_is_even_hard_to_breathe!_As_you_try_to_wipe_the_slime_off,_you_fall_over_a_chest. You_open_the_chest_and_you_find_huge_badass_greatsword!_Yeah!
+monster chest.png 1 0
+loot machette.png 6
+id 33
+story You_can_hear_steps_and_water_droping_all_around_you. As_you_walk_down_the_stairs,_you_throw_your_old_axe_away_and_grab_the_greatsword_with_both_hands.
+end story_5.dung

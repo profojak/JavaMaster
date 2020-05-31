@@ -1,0 +1,55 @@
+start 2 29
+player axe.png 25 4
+id 2
+id 6
+monster spider.png 5 5
+wall web.png
+id 7
+story You_walk_directly_into_spider_nest! You_have_to_fight_your_way_through...
+monster spider.png 4 5
+wall web.png
+id 10
+story Nothing_there.
+wall web.png
+id 11
+story There_are_so_many_of_them!
+monster spider.png 4 4
+wall web.png
+id 13
+wall web.png
+id 14
+story Oh,_a_chest! Finally!
+monster chest.png 15 0
+loot potion 3
+wall web.png
+id 16
+wall web.png
+id 17
+wall web.png
+id 18
+story You_will_not_last_much_longer...
+monster spider.png 4 5
+wall web.png
+id 20
+wall web.png
+id 21
+story You_are_covered_in_sticky_web. It_is_hard_to_walk_through_these_hallways.
+monster spider.png 5 5
+wall web.png
+id 25
+wall web.png
+id 28
+monster spider.png 5 5
+wall web.png
+id 29
+story Trapdoor!_Finally! You_jump_right_in_and_shut_the_trapdoor.
+wall trapdoor.png
+id 30
+story As_you_walk_further,_webs_start_to_decay.
+id 31
+monster spider.png 6 5
+wall web.png
+id 32
+monster spider.png 4 4
+id 33
+end story_4.dung

@@ -1,0 +1,37 @@
+start 31 16
+player sword.png 20 2
+id 4
+story There_is_something_on_the_floor. It_is_a_bomb!
+loot bomb 1
+id 5
+id 6
+story Goblin_shouts_at_you_and_punches_walls_around_him. Bottles_with_weird_red_liquid_dropped_from_his_belt.
+monster goblin.png 12 2
+loot potion 2
+id 7
+story You_see_those_red_eyes_again.
+id 8
+story An_intersection._You_wonder_where_to_go_first...
+wall pillars.png
+id 9
+wall window.png
+id 10
+monster goblin.png 8 3
+id 13
+id 15
+story As_you_drank_those_potions,_the_wound_on_your_hand_disappeared. You_feel_healthy_as_never_before.
+id 16
+story You_step_on_a_wooden_trapdoor. Where_does_it_lead?
+wall trapdoor.png
+id 18
+story Red_eyes_lurk_from_the_darkness! Sword_splits_goblin_in_half,_but_your_hand_is_bleeding.
+monster goblin.png 10 3
+id 23
+story Someone_is_watching_you...
+id 26
+id 27
+story You_can_hear_horrible_scream_around_the_corner. You_withdraw_your_trusted_sword.
+id 28
+wall window.png
+id 31
+end story_2.dung

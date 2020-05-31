@@ -1,0 +1,65 @@
+start 33 30
+player machette.png 35 6
+id 0
+monster chest.png 15 0
+loot bomb 3
+wall pillars.png
+id 2
+story ...but_something_is_not_right. You_see_those_red_eyes_closer_and_closer_here_and_there...
+id 3
+story This_time,_you_managed_to_run_away_before_the_thing_exploded.
+id 4
+story Huge_bloody_eye_pops_up_from_the_darkness. These_things_are_tough!
+monster devourer.png 45 3
+wall pillars.png
+id 5
+wall web.png
+id 6
+story It_is_getting_colder_down_here... Your_weapon_freezes._It_is_so_uncomfortable_to_hold_in_your_hands...
+monster devourer.png 50 2
+wall window.png
+id 7
+monster devourer.png 50 3
+loot potion 2
+wall window.png
+id 9
+story And_you_hear_that_water_drops_again...
+id 10
+monster spider.png 3 5
+wall web.png
+id 13
+monster chest.png 30 0
+loot potion 2
+wall window.png
+id 14
+story Oh_no!_These_bastard_again!
+monster spider.png 5 6
+wall web.png
+id 15
+story Your_skin_is_really_badly_damaged_from_all_those_bites.
+monster spider.png 7 5
+wall web.png
+id 16
+monster devourer.png 38 3
+id 19
+id 21
+story Suddenly,_all_monsters_around_you_start_running_away!
+id 22
+story Nothing_is_here...
+wall web.png
+id 24
+monster goblin.png 13 3
+id 26
+story Walls_around_you_are_whispering_some_words_you_do_not_understand.
+id 29
+monster goblin.png 11 4
+loot bomb 1
+id 30
+wall door.png
+id 31
+story Something_is_not_right..._your_head_is_spinning...
+id 33
+id 34
+story They_are_all_around_you._You_can_hear_screaming_and_water_droping_everywhere. You_hope_your_new_weapon_is_any_good.
+wall pillars.png
+end

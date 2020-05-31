@@ -100,6 +100,7 @@ public class Game implements Mode {
     roomCurrentId = 0;
     direction = Const.Direction.NORTH;
     state = Const.State.DEFAULT;
+    saveFile = nextMap;
     parseSaveFile(nextMap);
     redraw(Const.State.LOAD);
   }
@@ -545,6 +546,7 @@ public class Game implements Mode {
             Integer bombDamage = player.useBomb();
             if (bombDamage > 0) {
               getMonster().takeDamage(bombDamage);
+              break;
             }
             player.takeDamage(getMonsterDamage());
             break;
@@ -572,6 +574,7 @@ public class Game implements Mode {
           if (checkForLoot()) {
             break;
           }
+          state = Const.State.DEFAULT;
         }
         break;
       /* Loot */
