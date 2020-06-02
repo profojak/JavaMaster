@@ -11,7 +11,7 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
-    String testFileName = "test.dung";
+    String testFileName = "empty.dung";
     File testFile = new File(Const.SAVE_PATH + testFileName);
     Game game = new Game(testFile);
 
