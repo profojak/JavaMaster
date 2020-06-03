@@ -420,6 +420,7 @@ public class GameDraw extends Draw {
         this.effect.setCache(true);
         this.effect.setSmooth(false);
         this.effect.setOpacity(0);
+        this.effect.toFront();
         this.stack.getChildren().add(effect);
         this.stack.setMargin(effect, new Insets(0, 0, 0, 275));
         break;
