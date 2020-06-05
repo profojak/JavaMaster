@@ -978,7 +978,7 @@ public class Game implements Mode {
     } catch (Exception exception) {
       logger.log(Level.SEVERE, Const.LOG_RED + "File could not be loaded."
         + Const.LOG_RESET, exception); // ERROR
-      throw new IllegalArgumentException("Save file can't be read or doesn't exist.");
+      throw new IllegalArgumentException("Save file can't be read, doesn't exist or is corrupted.");
       //return false; // File could not be loaded
     }
     return true;
