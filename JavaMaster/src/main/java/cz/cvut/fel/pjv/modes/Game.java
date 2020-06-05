@@ -875,7 +875,7 @@ public class Game implements Mode {
    * <p>This method reads .dung text file and creates instances of described classes. After this
    * method is finished, Game object is ready for playthrough.
    *
-   * @param saveFile - dungeon to be parsed, saved in .dung file
+   * @param parsedFile - dungeon to be parsed, saved in .dung file
    * @return whether parsing was successful
    * @author profojak, povolji2
    */

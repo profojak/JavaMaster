@@ -753,7 +753,7 @@ public class Editor implements Mode {
    *
    * <p>This method processes the dungeon structure and saves it to .dung text file.
    *
-   * @param saveFile - .dung file to save to
+   * @param newSaveFileName - .dung file to save to
    * @return whether saving was successful
    * @author povolji2
    */
