@@ -2,8 +2,8 @@ package cz.cvut.fel.pjv.modes;
 
 
 import cz.cvut.fel.pjv.Const;
-import cz.cvut.fel.pjv.Root;
-import javafx.scene.layout.StackPane;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -11,9 +11,19 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
-    String testFileName = "empty.dung";
-    File testFile = new File(Const.SAVE_PATH + testFileName);
-    Game game = new Game(testFile);
+    final String testFileName = "empty.dung";
+    final File testFile = new File(Const.SAVE_PATH + testFileName);
+    Game game;
+
+    @BeforeEach
+    void before() {
+        game = new Game(testFile);
+    }
+
+    @AfterEach
+    void after() {
+        game = null;
+    }
 
     @Test
     public void testHasRoomLeft() {
@@ -91,5 +101,21 @@ public class GameTest {
         game.keyRight();
         game.keyUp();
         assertEquals(expVal1, game.isRoomVisited(notVisitedRoomIndex));
+    }
+
+    @Test
+    public void testParseSaveFile() {
+        Boolean expVal = true;
+        assertEquals(expVal, game.parseSaveFile(testFile));
+        final String nonExistentFileName = "džava.dung";
+        final String corruptedFileName = "list_of_reasons_why_windows_is_great.dung";
+        final File nonExistentFile = new File(Const.SAVE_PATH + nonExistentFileName);
+        final File corruptedFile = new File(Const.SAVE_PATH + corruptedFileName);
+        assertThrows(IllegalArgumentException.class, () -> {
+            game.parseSaveFile(nonExistentFile);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            game.parseSaveFile(corruptedFile);
+        });
     }
 }

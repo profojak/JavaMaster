@@ -879,8 +879,11 @@ public class Game implements Mode {
    * @return whether parsing was successful
    * @author profojak, povolji2
    */
-  private Boolean parseSaveFile(File parsedFile) {
+  public Boolean parseSaveFile(File parsedFile) {
     try {
+      if (!parsedFile.canRead()) {
+        throw new IllegalArgumentException("File can't be read or doesn't exist.");
+      }
       BufferedReader saveReader = new BufferedReader(new FileReader(parsedFile));
       while (saveReader.ready()) {
         String[] line = saveReader.readLine().split(" ");
@@ -968,14 +971,15 @@ public class Game implements Mode {
           // Wrong file format!
           default:
             saveReader.close();
-            return false;
+            throw new IllegalArgumentException("Unexpected ENUM values.");
         }
       }
       saveReader.close();
     } catch (Exception exception) {
       logger.log(Level.SEVERE, Const.LOG_RED + "File could not be loaded."
         + Const.LOG_RESET, exception); // ERROR
-      return false; // File could not be loaded
+      throw new IllegalArgumentException("Save file can't be read or doesn't exist.");
+      //return false; // File could not be loaded
     }
     return true;
   }

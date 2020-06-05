@@ -4,17 +4,30 @@ import cz.cvut.fel.pjv.Const;
 import cz.cvut.fel.pjv.inventory.items.Bomb;
 import cz.cvut.fel.pjv.inventory.items.Potion;
 import cz.cvut.fel.pjv.inventory.items.Weapon;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
-    Player player = new Player();
-    String test = "test";
-    Integer damage = 50, count = 1;
+    Player player;
+    final String test = "test";
+    final Integer damage = 50, count = 1, hp = 100;
     Bomb bomb = new Bomb(test, test, damage, count);
     Potion potion = new Potion(test, test, damage, count);
     Weapon weapon = new Weapon(test, test, damage);
+
+    @BeforeEach
+    void before() {
+        player = new Player();
+        player.setHp(hp);
+    }
+
+    @AfterEach
+    void after() {
+        player = null;
+    }
 
     @Test
     void testGetDamage() {
@@ -69,7 +82,7 @@ class PlayerTest {
     }
 
     @Test
-    void getPotionHeal() {
+    void testGetPotionHeal() {
         Integer expVal = 0;
         assertEquals(expVal, player.getPotionHeal());
         player.takeLoot(potion);
@@ -81,17 +94,26 @@ class PlayerTest {
     }
 
     @Test
-    void usePotion() {
+    void testUsePotion() {
+        Boolean expVal1 = false, expVal2 = true;
+        assertEquals(expVal1, player.usePotion());
+        player.takeLoot(potion);
+        assertEquals(expVal2, player.usePotion());
+        assertEquals(expVal1, player.usePotion());
     }
 
     @Test
-    void useBomb() {
+    void testUseBomb() {
+        Integer expVal = 0;
+        assertEquals(expVal, player.useBomb());
+        player.takeLoot(bomb);
+        assertEquals(damage, player.useBomb());
+        assertEquals(expVal, player.useBomb());
     }
 
     @Test
     void testHeal() {
         Integer expVal1 = 100, expVal2 = 0, damage = 60, heal = 120;
-        player.setHp(expVal1);
         assertEquals(expVal1, player.getMaxHP());
         assertEquals(expVal1, player.getHP());
         player.takeDamage(damage);
